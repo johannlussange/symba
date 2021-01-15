@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <iomanip>
 #include <cstdlib>
+#include <random>
 
 
 #include <gsl/gsl_linalg.h>
@@ -37,7 +38,8 @@ string MAChome="/Users/johann/Documents/SYMBA/";
 string MACwork="/Users/admin/Documents/GNT/SYMBA/";
 string MACwork2="/Users/johanngnt/Documents/GNT/SYMBA/";
 string PCwork="C:\\Users\\lussange\\Desktop\\";
-string Machine=MACwork2;
+string AZhukov="C:/Users/andreasxp/Desktop/symba";
+string Machine=AZhukov;
 
 
 
@@ -647,28 +649,34 @@ vector<vector<double> > GSLMatrixToSTLMatrix (gsl_matrix * M) {
 };
 
 
-
 // Function to shuffle a given STL vector V={0,1,2,3,...,N} (including 0, excluding N)
-int myrandom (int i) {srand (unsigned (time(0))); return rand()%i;};
-vector<int> Shuffle(int N)
-{
+vector<int> Shuffle(int N) {
+    static random_device rd;
+    static mt19937 generator(rd());
+
     vector<int> V;
     srand ( unsigned ( time(0) ) );
     for (int i=0; i<N; ++i) V.push_back(i);
-    random_shuffle ( V.begin(), V.end() );
-    random_shuffle ( V.begin(), V.end(), myrandom);
+
+    shuffle ( V.begin(), V.end(), generator);
+    //shuffle ( V.begin(), V.end(), myrandom);
+    
     return V;
-};
+}
 
 
 
-vector<int> Shuffle2(int N) // Including N
-{
+vector<int> Shuffle2(int N) { // Including N
+    static random_device rd;
+    static mt19937 generator(rd());
+
     vector<int> V;
     srand ( unsigned ( time(0) ) );
     for (int i=0; i<=N; ++i) V.push_back(i);
-    random_shuffle ( V.begin(), V.end() );
-    random_shuffle ( V.begin(), V.end(), myrandom);
+
+    shuffle ( V.begin(), V.end(), generator);
+    //shuffle ( V.begin(), V.end(), myrandom);
+
     return V;
 };
 
@@ -827,10 +835,14 @@ vector<double>* Intensity(std::vector<double>* t, const double rescale, const do
     size_t n = (*t).size();
     std::vector<double>* res = new vector<double>[2]; // JJJ10
     std::vector<double> jump;
-    double logr[n-1];
+    
+    vector<double> logr;
+    logr.reserve(n-1);
+
     for (size_t i = 0; i < n-1; i++) {
-        logr[i] = log((*t)[i+1]/(*t)[i]);
-    };
+        logr.push_back(((*t)[i+1]/(*t)[i]));
+    }
+
     gsl_rstat_quantile_workspace* quantile1 =  gsl_rstat_quantile_alloc(pct);
     gsl_rstat_quantile_workspace* quantile2 = gsl_rstat_quantile_alloc(1-pct);
     for (size_t i = 0; i < n-1; i++) {
