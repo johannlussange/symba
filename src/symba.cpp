@@ -38,7 +38,7 @@ string MAChome="/Users/johann/Documents/SYMBA/";
 string MACwork="/Users/admin/Documents/GNT/SYMBA/";
 string MACwork2="/Users/johanngnt/Documents/GNT/SYMBA/";
 string PCwork="C:\\Users\\lussange\\Desktop\\";
-string AZhukov="C:/Users/andreasxp/Desktop/symba";
+string AZhukov="C:/Users/andreasxp/Desktop/symba/";
 string Machine=AZhukov;
 
 
@@ -5108,27 +5108,27 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
         //gsl_matrix * Hawkes = HistoricalIntensity(Prices, 0);
         //for (int t=0; t<Time-LearningPhase; t++) {gsl_matrix_set(SystemicRisk, 14+Modulo, t, gsl_matrix_get (Hawkes, 0, t));};
         
-        vector<double> V, GoF; for (int t=0; t<Time-LearningPhase; t++) {V.push_back(gsl_matrix_get (Prices, 0, t)); GoF.push_back(1);};
-        vector<double> * pV= & V;
-        const double Rescale=10; // Rescale factor
-        const double Threshold=0.1; // Threshold (0.1)
-        const size_t NumIteration=10000000; // Number of iterations of the minimizer (stops before once a minimum is found)
-        double R; double * pR = & R; // Hawkes process parameters (does not need to be initialized)
-        vector<double> & pGoF = GoF; // Goodness of fit
-        vector<double> * pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
-        for (int t=0; t<Time-LearningPhase; t++) {gsl_matrix_set (SystemicRisk, 14, t, (*pRes)[t]);}; // Hawkes process intensity in column 9
+        // vector<double> V, GoF; for (int t=0; t<Time-LearningPhase; t++) {V.push_back(gsl_matrix_get (Prices, 0, t)); GoF.push_back(1);};
+        // vector<double> * pV= & V;
+        // const double Rescale=10; // Rescale factor
+        // const double Threshold=0.1; // Threshold (0.1)
+        // const size_t NumIteration=10000000; // Number of iterations of the minimizer (stops before once a minimum is found)
+        // double R; double * pR = & R; // Hawkes process parameters (does not need to be initialized)
+        // vector<double> & pGoF = GoF; // Goodness of fit
+        // vector<double> * pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
+        // for (int t=0; t<Time-LearningPhase; t++) {gsl_matrix_set (SystemicRisk, 14, t, (*pRes)[t]);}; // Hawkes process intensity in column 9
         
-        for (int t=0; t<Time-LearningPhase; t++) { // Hawkes process intensity in column 9
-            if ((*pRes)[t]>10) { // Maximum value of Hawkes at 10
-                gsl_matrix_set (SystemicRisk, 14, t, 10);
-            }
-            else if ((*pRes)[t]<0) { // Minimum value of Hawkes at 0
-                gsl_matrix_set (SystemicRisk, 14, t, 0);
-            };
-        };
+        // for (int t=0; t<Time-LearningPhase; t++) { // Hawkes process intensity in column 9
+        //     if ((*pRes)[t]>10) { // Maximum value of Hawkes at 10
+        //         gsl_matrix_set (SystemicRisk, 14, t, 10);
+        //     }
+        //     else if ((*pRes)[t]<0) { // Minimum value of Hawkes at 0
+        //         gsl_matrix_set (SystemicRisk, 14, t, 0);
+        //     };
+        // };
         
-        pV=0; pR=0; pRes=0;
-        //delete pV; delete pR; delete pRes;
+        // pV=0; pR=0; pRes=0;
+        // //delete pV; delete pR; delete pRes;
         
         
         
