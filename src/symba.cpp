@@ -5459,22 +5459,6 @@ void JointDistributions (vector<vector<gsl_matrix *> > MultiSim, int m, int Prec
 }; // closes JointDistributions()
 
 
-
-
-
-
-// Function pauses code for a time T in s
-void Pause (int T) {
-    int Start=int(time(0));
-    while (int(time(0))-Start<T) {continue;};
-}
-
-
-
-
-
-
-
 // Takes a string name of the csv file as input (N2 can be something like "AAPL.csv") and returns a vector<double> for a matrix of dimension MxN at batch m (in a file of stacked matrices). For Input() to work we must 1- pre-specify the dimensions of the input, 2- the input must be converted from xls to csv (by changing the name file, not via LibreOffice)
 gsl_matrix * InputOLD (int M, int N, string S1, int m) {
     gsl_matrix * Res = gsl_matrix_alloc (M, N);
