@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <random>
+#include <numeric>
 
 
 #include <gsl/gsl_linalg.h>
@@ -634,38 +635,19 @@ vector<vector<double> > GSLMatrixToSTLMatrix (gsl_matrix * M) {
 };
 
 
-// Function to shuffle a given STL vector V={0,1,2,3,...,N} (including 0, excluding N)
-vector<int> Shuffle(int N) {
+/**
+ * @brief Produce a vector with N elements [0, N), randomly shuffled.
+ */
+vector<int> Shuffle(int n) {
     static random_device rd;
     static mt19937 generator(rd());
 
-    vector<int> V;
-    srand ( unsigned ( time(0) ) );
-    for (int i=0; i<N; ++i) V.push_back(i);
+    vector<int> result(n);
+    iota(result.begin(), result.end(), 0);
+    shuffle(result.begin(), result.end(), generator);
 
-    shuffle ( V.begin(), V.end(), generator);
-    //shuffle ( V.begin(), V.end(), myrandom);
-    
-    return V;
+    return result;
 }
-
-
-
-vector<int> Shuffle2(int N) { // Including N
-    static random_device rd;
-    static mt19937 generator(rd());
-
-    vector<int> V;
-    srand ( unsigned ( time(0) ) );
-    for (int i=0; i<=N; ++i) V.push_back(i);
-
-    shuffle ( V.begin(), V.end(), generator);
-    //shuffle ( V.begin(), V.end(), myrandom);
-
-    return V;
-};
-
-
 
 
 // Fail for Tool=2 and Lag=0 because Start=
@@ -3380,7 +3362,7 @@ public:
         ofstream outputMetalog(Machine+"MetaorderLog.txt", ofstream::app);
         int Res=-1;
         if (OBLevelSize>-1) {
-            vector<int> J = Shuffle2(OBLevelSize);
+            vector<int> J = Shuffle(OBLevelSize+1);
             int MetaorderLevel=J[0]; // OB level where the metaorder will be injected (whether in the ask or the bid order)
             int BidOrAskMetaorder=int(time(0))%2; // If 0 then bid, if 1 then ask
             if ((BidOrAskMetaorder==0) && (OBLevelSize>-1)) {
@@ -5565,23 +5547,44 @@ gsl_matrix * CSVInput (int M, int N, string S1, int Opt) {
 };
 
 
-// Computes the factorial of an integer
+/**
+ * @brief Compute the factorial of an integer.
+ */
 double Factorial (int n) {
-    double Res=1;
-    for (int i=1; i<=n; i++) {Res*=i;}
+    double Res = 1;
+
+    for (int i = 1; i <= n; i++) {
+		Res *= i;
+	}
+
     return Res;
 }
-//In a set of n elements, the number of possible subsets of k elements (when non-ordered and without repetition) is given by the number of k-combination C(n,k)=n!/(k!(n-k)!)
+
+
+/**
+ * @brief Compute the number of k-combinations of n elements.
+ * In a set of n elements, the number of possible subsets of k elements (when non-ordered and without repetition) is
+ * given by the number of k-combination C(n,k)=n!/(k!(n-k)!).
+ */
 double Combination (int n, int k) {
     double Res=Factorial(n)/(Factorial(k) * Factorial(n-k));
     return Res;
 }
-//Number of all poissble k-combinations of a set of n elements
+
+
+/**
+ * @brief Number of all poissble k-combinations of a set of n elements.
+ */
 double TotalCombination (int n) {
     double Res=n;
     for (int k=2; k<=n; k++) {Res+=Combination(n,k);}
     return Res;
 }
+
+
+/**
+ * @brief Number of all poissble k-combinations of a set of n elements.
+ */
 void TotalCombinationMatrix (int N) {
     gsl_matrix * Res = gsl_matrix_calloc (1, N+1);
     for (int k=1; k<=N; k++) {
@@ -5591,12 +5594,6 @@ void TotalCombinationMatrix (int N) {
     PlotGSLMatrix(Res, "TotalCombinationMatrix.csv", 1);
 };
 //TotalCombinationMatrix(100); exit(0);
-
-
-
-
-
-
 
 
 void HPMarketSimulatorAll (int HPI, int HPGesture, double HPTrueMu, int HPAccuracy, int HPTime, int HPLiquidationFloor, string TypeNEB, string Leader, int ClusterLimit, int pNEB, double Rate, int S) {
