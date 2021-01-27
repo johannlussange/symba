@@ -7,9 +7,8 @@
 #include <string>
 #include <ctime>
 #include <algorithm>
-#include <stdlib.h>
 #include <cmath>
-#include <stdio.h>
+#include <cstdio>
 #include <iomanip>
 #include <cstdlib>
 #include <random>
