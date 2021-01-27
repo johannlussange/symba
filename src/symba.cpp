@@ -61,21 +61,6 @@ gsl_rng * make_rng()
 }
 
 
-
-
-
-
-
-// This converts an int to a string
-string IntToString (int A) {
-    std::ostringstream ostr;
-    ostr << A;
-    std::string NewA = ostr.str();
-    return NewA;
-};
-
-
-
 // Trunks any double number with a number "Digits" of Significant digits
 double DigitTrunk (double x, int Digits, string FloorOrCeil) {
     double res=0;
@@ -188,7 +173,7 @@ void PlotSTL(vector<double> V, string Name, string XL) {
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
-    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=IntToString(B);};
+    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
     A2+=B2;
     const char * Title2 = A2.c_str();
     ofstream outputV(Title2, ofstream::app);
@@ -210,7 +195,7 @@ void PlotSTLInt(vector<int> V, string Name) {
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
-    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=IntToString(B);};
+    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
     A2+=B2;
     const char * Title2 = A2.c_str();
     ofstream outputV(Title2, ofstream::app);
@@ -230,7 +215,7 @@ void PlotSTLMarket(vector<double> V, string Name) {
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
-    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=IntToString(B);};
+    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
     A2+=B2;
     const char * Title2 = A2.c_str();
     ofstream outputV(Title2, ofstream::app);
@@ -251,7 +236,7 @@ void PlotGSLMatrix(gsl_matrix * M, string Name, int F) {
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
-    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=IntToString(B);};
+    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
     A2+=B2;
     const char * Title2 = A2.c_str();
     ofstream outputM(Title2, ofstream::app);
@@ -2646,7 +2631,7 @@ public:
                     if ((u%TA==TA-1) && (Max!=0)) {Qs[j].push_back(Max);};
                     //if (u%TA==TA-1) {Qs[j].push_back(Max);};
                 }; // closes u loop
-                //string A = "TQ_"; string B=IntToString(t); string C=".txt"; A+=B+C; if (j==0) {PlotSTL(Qs[j], A.c_str(), "0");};
+                //string A = "TQ_"; string B=to_string(t); string C=".txt"; A+=B+C; if (j==0) {PlotSTL(Qs[j], A.c_str(), "0");};
             }; // closes if
             double TSPercentile=0; double QsPresent=-999999; // QsPresent=arg max_a Q(s,a) for present state s
             for (int u=Tid; u<Tid+TA; u++) {if (TQ[j][u]>=QsPresent) {QsPresent=TQ[j][u];};}; // Defining QsPresent
@@ -3442,7 +3427,7 @@ vector<vector<double> > Distribution (vector<double> X, int Precision, double Xm
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
-    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=IntToString(B);};
+    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
     A2+=B2;
     const char * Title = A2.c_str();
     ofstream output5(Title);
@@ -3733,7 +3718,7 @@ void AgentParameters (vector<Agent> &Market, int NumberOfAgents, int NumberOfAge
 void AgentVariables (vector<Agent> &Market, int NumberOfAgents, int NumberOfAgentsFull, int NumberOfStocks, int Time, gsl_matrix * ReflexiveValues, int j) {
     vector<int> J = Shuffle(NumberOfAgentsFull);
     string A = Machine+"AgentVariables_j";
-    string B=IntToString(j);
+    string B=to_string(j);
     string C= ".txt";
     A+=B+C;
     const char * Title=A.c_str();
@@ -3826,7 +3811,7 @@ gsl_matrix *  StockMoments (gsl_matrix * ReflexiveValues, gsl_matrix * Spread, g
     };
     StocksDistributions = GSLDistribution(StockIndexMoments, 1000);
     AutoCorrLagP = AutocorrelationLagP (StockIndexMoments);
-    string B=IntToString(j); string C= ".xls";
+    string B=to_string(j); string C= ".xls";
     string A = "Moments_j"; A+=B+C;
     PlotGSLMatrix(StockIndexMoments, A.c_str(), 1);
     A = "Distributions_j"; A+=B+C;
@@ -4132,7 +4117,7 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     /*
      int t=0;
      string N1="/Users/admin/Documents/GNT/SYMBA/SimLog";
-     string N2=IntToString(t);
+     string N2=to_string(t);
      string N3=".txt";
      N1+=N2+N3;
      const char * Title = N1.c_str();
@@ -4713,28 +4698,28 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
         
         
         
-        // METAORDERS
-        // Counting the OB business levels
-        //if (t>1000) {Plot="On";};
-        int OBLevelSize=0;
-        int CountOB=0; int OBLevel=0;
-        for (int k=0; k<int(min(FullOrderBook[t][0].Bids.size(), FullOrderBook[t][0].Asks.size())); k++) {
-            if ((FullOrderBook[t][0].Bids[k].Price < FullOrderBook[t][0].Asks[k].Price) && (OBLevel==0)) {OBLevel=1; OBLevelSize=k-1;};
-            CountOB=1;
-        }; // closes k loop
-        //ofstream outputOBLevels(Machine+"OBlevels.log", ofstream::app); outputOBLevels << " At t=" << t << " OB size =" << OBLevelSize << endl;;
-        // Meta order injection
-        if ((t>500) && (t-LastMetaorder>=6*Month) && (MetaorderImpact>0)) {
-            int Res=FullOrderBook[t][0].MetaorderInjection(Market, SharesOutstanding, MetaorderImpact, OBLevelSize);
-            if (Res>-1) {
-                LastMetaorder=t;
-                outputMetalog << "t=" << t << ", metaorder successfully injected at OB level " << Res << ", last metaorder was at t=" << LastMetaorder << endl;
-                if ((t-LearningPhase>1000) && (Time-t>7*Month)) {
-                    MetaorderInjectionTimes.push_back(LastMetaorder-LearningPhase);
-                    outputMetalog << "And metaorder recorded in MetaorderInjectionTimes[]..." << endl;
-                };
-            };
-        };
+        // // METAORDERS
+        // // Counting the OB business levels
+        // //if (t>1000) {Plot="On";};
+        // int OBLevelSize=0;
+        // int CountOB=0; int OBLevel=0;
+        // for (int k=0; k<int(min(FullOrderBook[t][0].Bids.size(), FullOrderBook[t][0].Asks.size())); k++) {
+        //     if ((FullOrderBook[t][0].Bids[k].Price < FullOrderBook[t][0].Asks[k].Price) && (OBLevel==0)) {OBLevel=1; OBLevelSize=k-1;};
+        //     CountOB=1;
+        // }; // closes k loop
+        // //ofstream outputOBLevels(Machine+"OBlevels.log", ofstream::app); outputOBLevels << " At t=" << t << " OB size =" << OBLevelSize << endl;;
+        // // Meta order injection
+        // if ((t>500) && (t-LastMetaorder>=6*Month) && (MetaorderImpact>0)) {
+        //     int Res=FullOrderBook[t][0].MetaorderInjection(Market, SharesOutstanding, MetaorderImpact, OBLevelSize);
+        //     if (Res>-1) {
+        //         LastMetaorder=t;
+        //         outputMetalog << "t=" << t << ", metaorder successfully injected at OB level " << Res << ", last metaorder was at t=" << LastMetaorder << endl;
+        //         if ((t-LearningPhase>1000) && (Time-t>7*Month)) {
+        //             MetaorderInjectionTimes.push_back(LastMetaorder-LearningPhase);
+        //             outputMetalog << "And metaorder recorded in MetaorderInjectionTimes[]..." << endl;
+        //         };
+        //     };
+        // };
         
         
         // OUTPUTING THE ORDER BOOK AT TIME t (SS10)
@@ -5255,9 +5240,9 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     
     //MetaorderImpactResults
     //We want to see at a given time t where a large order is sent (say once per year for each simulation) the metaorder impact on prices i1(t)=sigma_prices[t->t+tau]/sigma_prices[t-tau->t] (and likewise i2(t) on volumes) as a function of the metaorder size j(t)=Q_order(t)/Q_total(t), sigma being the standard deviation (of prices or volumes) over an interval of size tau, and Q being the stock quantity. For each of the S=20 simulation runs, we record and output the last 5 such tuples (j, i1(tau=w), i1(tau=2w), i1(tau=m), i1(tau=3m), i1(tau=6m), i2(tau=w), i2(tau=2w), i2(tau=m), i2(tau=3m), i2(tau=6m)), disregarding the first 5 because of being not yet learned by the agents. We do 4 such S=20 simulation runs for values of j=5%, 10%, 25%, 50%. The metaorder is sent during each run once every year by a random (yet non-bankrupt) agent whose stock holding is suddenly increased to these values (5%, 10%, 25%, 50%) of the total share outstanding at time t and then revert back to its value at time t+1.
-    ofstream outputMetaorderImpactResults(Machine+"MetaorderImpact_size" + IntToString(MetaorderImpact) + "pct.xls", ofstream::app);
+    ofstream outputMetaorderImpactResults(Machine+"MetaorderImpact_size" + to_string(MetaorderImpact) + "pct.xls", ofstream::app);
     outputMetaorderImpactResults<< "Q/Qtot(%)" << '\t' << "Psig(t,t+w)/Psig(t-w,t)(%)" << '\t' << "Psig(t,t+2w)/Psig(t-2w,t)(%)" << '\t' << "Psig(t,t+3w)/Psig(t-3w,t)(%)" << '\t' << "Psig(t,t+4w)/Psig(t-4w,t)(%)" << '\t' << "Psig(t,t+5w)/Psig(t-5w,t)(%)" << '\t' << "Psig(t,t+6w)/Psig(t-6w,t)(%)" << '\t' << "Psig(t,t+7w)/Psig(t-7w,t)(%)" << '\t' << "Vsig(t,t+w)/Vsig(t-w,t)(%)" << '\t' << "Vsig(t,t+2w)/Vsig(t-2w,t)(%)" << '\t' << "Vsig(t,t+3w)/Vsig(t-3w,t)(%)" << '\t' << "Vsig(t,t+4w)/Vsig(t-4w,t)(%)" << '\t' << "Vsig(t,t+5w)/Vsig(t-5w,t)(%)" << '\t' << "Vsig(t,t+6w)/Vsig(t-6w,t)(%)" << '\t' << "Vsig(t,t+7w)/Vsig(t-7w,t)(%)" << '\t' << "t" << endl;
-    PlotGSLMatrix(MetaorderImpactResults, "MetaorderImpact_size" + IntToString(MetaorderImpact) + "pct.xls", 1);
+    PlotGSLMatrix(MetaorderImpactResults, "MetaorderImpact_size" + to_string(MetaorderImpact) + "pct.xls", 1);
     outputMetaorderImpactResults.close();
     
     
@@ -5377,11 +5362,11 @@ vector<gsl_matrix *> Bollinger (vector<vector<gsl_matrix *> > MultiSim, int m) {
             gsl_matrix_set (ResMeanMinusSigma, c, r, Mean-2*sqrt(Variance));
         }; // closes r loop
     }; // closes c loop
-    string A = "BollingerMean_m"; string B = IntToString(m); string C = ".xls"; A+=B+C; PlotGSLMatrix(ResMean, A.c_str(), 1);
-    A = "BollingerMeanPlusSigma_m"; B = IntToString(m); C = ".xls"; A+=B+C; PlotGSLMatrix(ResMeanPlusSigma, A.c_str(), 1);
-    A = "BollingerMeanMinusSigma_m"; B = IntToString(m); C = ".xls"; A+=B+C; PlotGSLMatrix(ResMeanMinusSigma, A.c_str(), 1);
-    A = "BollingerMeanPlus2Sigma_m"; B = IntToString(m); C = ".xls"; A+=B+C; PlotGSLMatrix(ResMeanPlus2Sigma, A.c_str(), 1);
-    A = "BollingerMeanMinus2Sigma_m"; B = IntToString(m); C = ".xls"; A+=B+C; PlotGSLMatrix(ResMeanMinus2Sigma, A.c_str(), 1);
+    string A = "BollingerMean_m"; string B = to_string(m); string C = ".xls"; A+=B+C; PlotGSLMatrix(ResMean, A.c_str(), 1);
+    A = "BollingerMeanPlusSigma_m"; B = to_string(m); C = ".xls"; A+=B+C; PlotGSLMatrix(ResMeanPlusSigma, A.c_str(), 1);
+    A = "BollingerMeanMinusSigma_m"; B = to_string(m); C = ".xls"; A+=B+C; PlotGSLMatrix(ResMeanMinusSigma, A.c_str(), 1);
+    A = "BollingerMeanPlus2Sigma_m"; B = to_string(m); C = ".xls"; A+=B+C; PlotGSLMatrix(ResMeanPlus2Sigma, A.c_str(), 1);
+    A = "BollingerMeanMinus2Sigma_m"; B = to_string(m); C = ".xls"; A+=B+C; PlotGSLMatrix(ResMeanMinus2Sigma, A.c_str(), 1);
     Res.push_back(ResMean); Res.push_back(ResMeanPlusSigma); Res.push_back(ResMeanMinusSigma); Res.push_back(ResMeanPlus2Sigma); Res.push_back(ResMeanMinus2Sigma);
     return Res;
 }; // closes Bollinger()
@@ -5440,7 +5425,7 @@ void JointDistributions (vector<vector<gsl_matrix *> > MultiSim, int m, int Prec
     }; // closes s loop
     //PlotGSLMatrix(Res, "StackedRes.xls", 1);
     gsl_matrix * JointDistributions = GSLDistribution(Res, Precision);
-    //string A = "JointDistributions_m"; string B = IntToString(m); string C = ".xls"; A+=B+C;
+    //string A = "JointDistributions_m"; string B = to_string(m); string C = ".xls"; A+=B+C;
     string A = "JointDistributions.xls";
     ofstream outputJointDistribution(Machine+"JointDistributions.xls", ofstream::app);
     if (m==0) {
@@ -5507,7 +5492,7 @@ gsl_matrix * InputOLD (int M, int N, string S1, int m) {
             if (j<N) {gsl_matrix_set (Res, i, j-m*(N+3), atof(Item.c_str()));};
         }
     }
-    string S3="M"; string S3a=IntToString(m); string S3b=".txt"; S3+=S3a+S3b;
+    string S3="M"; string S3a=to_string(m); string S3b=".txt"; S3+=S3a+S3b;
     PlotGSLMatrix(Res, S3.c_str(), 1);
     FileInput.close();
     return Res;
@@ -5550,7 +5535,7 @@ gsl_matrix * Input (int M, int N, string S1, int m, int Letter, int Opt, int Per
             gsl_matrix_set (Res2, i, j-N+Period, gsl_matrix_get (Res, i, j));
         };
     };
-    string S3="/OUTPUT/M"; string S3a=IntToString(m+Letter); string S3b=".txt"; S3+=S3a+S3b;
+    string S3="/OUTPUT/M"; string S3a=to_string(m+Letter); string S3b=".txt"; S3+=S3a+S3b;
     PlotGSLMatrix(Res2, S3.c_str(), 1);
     FileInput.close();
     return Res2;
