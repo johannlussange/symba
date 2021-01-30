@@ -14,7 +14,6 @@
 #include <random>
 #include <numeric>
 
-
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
@@ -28,19 +27,9 @@
 #include <gsl/gsl_statistics_double.h>
 #include <gsl/gsl_rstat.h>
 
-
-
-
+#include <CLI/CLI.hpp>
 
 using namespace std;
-
-string MAChome="/Users/johann/Documents/SYMBA/";
-string MACwork="/Users/admin/Documents/GNT/SYMBA/";
-string MACwork2="/Users/johanngnt/Documents/GNT/SYMBA/";
-string PCwork="C:\\Users\\lussange\\Desktop\\";
-string AZhukov="C:/Users/andreasxp/Desktop/symba/";
-string Machine=AZhukov;
-
 
 
 int DayTicks = 1;
@@ -5882,27 +5871,49 @@ void CheckTrueGenerationAll () {
 
 
 
+/**
+ * @brief Process command-line arguments.
+ */
+void process_cli(int argc, char** argv) {
+    namespace fs = std::filesystem;
 
+    CLI::App app("A market simulator built in C++.", "symba");
 
+    fs::path output_dir;
+    app.add_option("-o,--output-dir", output_dir, "Output directory for simulation results")
+        ->required()
+        ->check(CLI::ExistingDirectory);
+
+    try {
+        app.parse(argc, argv);
+    }
+    catch (const CLI::ParseError& e) {
+        std::exit(app.exit(e));
+    }
+
+    Machine = fs::absolute(output_dir).string();
+}
 
 // MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM
 // SPECIFY "string Machine" JUSTE BELOW "using namespace std" ACCORDING TO LOCAL PATHWAY
 // DOWNLOAD DATA ON THE GOOGLE DRIVE: https://drive.google.com/open?id=1J0ZHXnf_2wg80QyUyQwMN2YaUU9U45Xl
 // DOWNLOAD GNU SCIENTIFIC LIBRARY GSL-v2.5 at https://www.gnu.org/software/gsl/
 // SOME MEMORY ISSUES MAY REQUIRE REBOOT AND RESUME DURING COMPUTATIONS (work in progress)
-int main () {
-     int S=20; // NUMBER OF SIMULATIONS
+int main (int argc, char** argv) {
+    process_cli(argc, argv);
 
-     // REAL DATA STATISTICS
-     //vector<Share> PF=PortfolioGenerator ("ExchangesLSE", 20070102); // LOADS FULL LONDON STOCK EXCHANGE RAW DATA
-     //PortfolioOutput (PF, 20); exit(0);
-     //JointDistributions (PortfolioMultiOutput (PF, 0), 0, 100); // OUTPUTS FULL LONDON STOCK EXCHANGE CALIBRATION STATISTICS
-     //vector<vector<Share> > PFTwin = PFTrainingTesting (PF, int(PF.size()/2)); // LOADS FULL LONDON STOCK EXCHANGE RAW DATA IN TRAINING AND TESTING SETS
-     //JointDistributions (PortfolioMultiOutput (PFTwin[0], 0), 0, 100); // OUTPUTS TRAINING SET OF LONDON STOCK EXCHANGE CALIBRATION STATISTICS
-     //JointDistributions (PortfolioMultiOutput (PFTwin[1], 0), 0, 100); // OUTPUTS TESTING SET OF LONDON STOCK EXCHANGE CALIBRATION STATISTICS
-     //HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Classic", "NoCluster", 1, S); // Best calib
-     //HPMarketSimulatorDummy (); exit(0);
-     //for (int k=1; k<=8; k++) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "LearningRate", "NoCluster", 1, 100, 0.5*k, S);}; // LearningRateScale={0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0}
+    int S=20; // NUMBER OF SIMULATIONS
+
+    // REAL DATA STATISTICS
+    //vector<Share> PF=PortfolioGenerator ("ExchangesLSE", 20070102); // LOADS FULL LONDON STOCK EXCHANGE RAW DATA
+    //PortfolioOutput (PF, 20); exit(0);
+    //JointDistributions (PortfolioMultiOutput (PF, 0), 0, 100); // OUTPUTS FULL LONDON STOCK EXCHANGE CALIBRATION STATISTICS
+    //vector<vector<Share> > PFTwin = PFTrainingTesting (PF, int(PF.size()/2)); // LOADS FULL LONDON STOCK EXCHANGE RAW DATA IN TRAINING AND TESTING SETS
+    //JointDistributions (PortfolioMultiOutput (PFTwin[0], 0), 0, 100); // OUTPUTS TRAINING SET OF LONDON STOCK EXCHANGE CALIBRATION STATISTICS
+    //JointDistributions (PortfolioMultiOutput (PFTwin[1], 0), 0, 100); // OUTPUTS TESTING SET OF LONDON STOCK EXCHANGE CALIBRATION STATISTICS
+    //HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Classic", "NoCluster", 1, S); // Best calib
+    //HPMarketSimulatorDummy (); exit(0);
+    //for (int k=1; k<=8; k++) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "LearningRate", "NoCluster", 1, 100, 0.5*k, S);}; // LearningRateScale={0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0}
     
     
     HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
