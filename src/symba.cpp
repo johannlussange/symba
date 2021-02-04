@@ -38,7 +38,7 @@ int Month = 21*DayTicks;
 int Year = 252*DayTicks;
 int Year2 = 286*DayTicks;
 
-
+string Machine;
 
 // Initialize a brand new RNG state, with unique seed
 gsl_rng * make_rng()
@@ -5891,7 +5891,7 @@ void process_cli(int argc, char** argv) {
         std::exit(app.exit(e));
     }
 
-    Machine = fs::absolute(output_dir).string();
+    Machine = fs::absolute(output_dir).string() + "/";
 }
 
 // MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM
