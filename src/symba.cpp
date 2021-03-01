@@ -33,19 +33,19 @@ using namespace std;
 
 
 int DayTicks = 1;
-int Week = 5*DayTicks;
-int Month = 21*DayTicks;
-int Year = 252*DayTicks;
-int Year2 = 286*DayTicks;
+int Week = 5 * DayTicks;
+int Month = 21 * DayTicks;
+int Year = 252 * DayTicks;
+int Year2 = 286 * DayTicks;
 
 string Machine;
 
 // Initialize a brand new RNG state, with unique seed
-gsl_rng * make_rng()
+gsl_rng* make_rng()
 {
     gsl_rng_default_seed = static_cast<unsigned long>(time(NULL)) + rand();
-    const gsl_rng_type * T = gsl_rng_ranlux389;
-    gsl_rng * r = gsl_rng_alloc (T);
+    const gsl_rng_type* T = gsl_rng_ranlux389;
+    gsl_rng* r = gsl_rng_alloc (T);
     return r;
 }
 
@@ -56,8 +56,8 @@ double DigitTrunk (double x, int Digits, string FloorOrCeil) {
     //ofstream outputDigitTrunk(Machine + "DigitTrunk.txt", ofstream::app);
     /*
      double x=0; double y=0;
-     gsl_rng * r = make_rng();
-     gsl_rng_set(r, static_cast<unsigned long int>(time(0)/10)); // gsl_rng_set(const gsl_rng * r, unsigned long int s)
+     gsl_rng* r = make_rng();
+     gsl_rng_set(r, static_cast<unsigned long int>(time(0)/10)); // gsl_rng_set(const gsl_rng* r, unsigned long int s)
      x=100*gsl_rng_uniform(r);
      y=100*gsl_rng_uniform(r);
      outputV << "x=" << x << ", y=" << y << endl;
@@ -99,9 +99,9 @@ double DigitTrunk (double x, int Digits, string FloorOrCeil) {
 
 // Generating random variables for specific time delays
 vector<int> STLRandomInt (int Length, string S, string Plot) {
-    //gsl_rng * r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng * r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng * r, unsigned long int s)
+    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r = make_rng();
+    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
     vector<int> V;
     srand (unsigned (time(0)));
     
@@ -124,12 +124,12 @@ vector<int> STLRandomInt (int Length, string S, string Plot) {
 
 // Generating random variables for specific time delays
 vector<double> STLRandom (int Length, string S, string Plot) {
-    //gsl_rng * r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng * r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng * r, unsigned long int s)
-    //gsl_rng * r2 = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng * r2 = make_rng();
-    gsl_rng_set(r2, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng * r, unsigned long int s)
+    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r = make_rng();
+    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
+    //gsl_rng* r2 = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r2 = make_rng();
+    gsl_rng_set(r2, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
     vector<double> V;
     if (S=="Poisson") {for (int t=0; t<Length; t++) {V.push_back((gsl_ran_poisson (r, 1))*(gsl_ran_poisson (r, 1)));};};
     if (S=="PoissonOriginal") {for (int t=0; t<Length; t++) {V.push_back(gsl_ran_poisson (r, 1));};};
@@ -164,7 +164,7 @@ void PlotSTL(vector<double> V, string Name, string XL) {
     string B2=Name;
     if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
     A2+=B2;
-    const char * Title2 = A2.c_str();
+    const char* Title2 = A2.c_str();
     ofstream outputV(Title2, ofstream::app);
     for (int t=0; t<int(V.size()); t++) {
         double x=V[t];
@@ -186,7 +186,7 @@ void PlotSTLInt(vector<int> V, string Name) {
     string B2=Name;
     if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
     A2+=B2;
-    const char * Title2 = A2.c_str();
+    const char* Title2 = A2.c_str();
     ofstream outputV(Title2, ofstream::app);
     for (int t=0; t<(int(V.size())); t++) {
         if (t==(int(V.size()))-1) {outputV << V[t]; break;};
@@ -206,7 +206,7 @@ void PlotSTLMarket(vector<double> V, string Name) {
     string B2=Name;
     if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
     A2+=B2;
-    const char * Title2 = A2.c_str();
+    const char* Title2 = A2.c_str();
     ofstream outputV(Title2, ofstream::app);
     for (int t=0; t<(int(V.size())); t++) {
         int x = int(V[t]);
@@ -221,13 +221,13 @@ void PlotSTLMarket(vector<double> V, string Name) {
 
 
 // Function plotting a GSL matrix
-void PlotGSLMatrix(gsl_matrix * M, string Name, int F) {
+void PlotGSLMatrix(gsl_matrix* M, string Name, int F) {
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
     if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
     A2+=B2;
-    const char * Title2 = A2.c_str();
+    const char* Title2 = A2.c_str();
     ofstream outputM(Title2, ofstream::app);
     for (int t=0; t<int(M->size2); t++) {
         for (int j=0; j<int(M->size1); j++) {
@@ -302,8 +302,8 @@ vector<double> StaticMoments (vector<double> V, int Start, int End, int Delta) {
 
 
 // This computes the mean and variance for a given lag at each time step of a given time series
-vector<vector<double> > DynamicMoments (vector<double> V, int Start, int End, int Lag, int Delta) {
-    vector<vector<double> > Result;
+vector<vector<double>> DynamicMoments (vector<double> V, int Start, int End, int Lag, int Delta) {
+    vector<vector<double>> Result;
     vector<double> ResultMean, ResultVariance, ResultSkewness, ResultKurtosis, ResultStdDev, TimeSeriesPlus3Sigma, TimeSeriesMinus3Sigma, ResultRealizedVolatility, ResultAutoCorr, ResultSquarredLogReturns1, ResultSquarredLogReturns2, ResultSquarredLogReturns3;
     if (End >= int(V.size())) {End=int(V.size()) -1;}; // Original
     Lag-=1;
@@ -373,7 +373,7 @@ vector<vector<double> > DynamicMoments (vector<double> V, int Start, int End, in
 
 
 //  AC-logreturns of [t-∆, t] & [t-2∆, t-∆] for ∆={3, w, 2w, 3w, m}
-double MALAutoCorrelation (gsl_matrix * X, int t, int p, int Stock) {
+double MALAutoCorrelation (gsl_matrix* X, int t, int p, int Stock) {
     double Mean1=0; double Mean2=0; double SSXY=0; double SSXX=0; double SSYY=0;
     int Start1=max(t-p, 0); int Denominator1=max(t-Start1+1, 1);
     int Start2=max(t-2*p, 0); int Denominator2=max(Start1-Start2+1, 1);
@@ -394,7 +394,7 @@ double MALAutoCorrelation (gsl_matrix * X, int t, int p, int Stock) {
 
 
 //  AC-logreturns of [t-∆, t] & [t-∆-∂,t-∂] for ∂={1, 3, w, 2w, 3w, m}
-double MALAutoCorrelationBlend (gsl_matrix * X, int t, int p, int Shift, int Stock) {
+double MALAutoCorrelationBlend (gsl_matrix* X, int t, int p, int Shift, int Stock) {
     double Mean1=0; double Mean2=0; double SSXY=0; double SSXX=0; double SSYY=0;
     int Start1=max(t-p, 0); int Start2=max(t-p-Shift, 0);
     int Denominator=max(t-Start1+1, 1);
@@ -414,7 +414,7 @@ double MALAutoCorrelationBlend (gsl_matrix * X, int t, int p, int Shift, int Sto
 };
 
 
-double MALVolatility (gsl_matrix * X, int t, int p, int Stock) {
+double MALVolatility (gsl_matrix* X, int t, int p, int Stock) {
     double Mean=0; double Variance=0;
     int Start=max(t-p, 0); int Denominator=max(t-Start+1, 1);
     for (int i=Start; i<=t; i++) {Mean+=gsl_matrix_get (X, Stock, i)/Denominator;};
@@ -426,7 +426,7 @@ double MALVolatility (gsl_matrix * X, int t, int p, int Stock) {
 };
 
 
-double MALVolatility2 (gsl_matrix * X, int t1, int t2, int Stock) {
+double MALVolatility2 (gsl_matrix* X, int t1, int t2, int Stock) {
     double Mean=0; double Variance=0;
     int Start=max(t1, 0); int Denominator=max(t2-Start+1, 1);
     for (int i=Start; i<=t2; i++) {Mean+=gsl_matrix_get (X, Stock, i)/Denominator;};
@@ -440,7 +440,7 @@ double MALVolatility2 (gsl_matrix * X, int t1, int t2, int Stock) {
 
 
 
-double StaticAutoCorrelation (gsl_matrix * X, int Start, int End, int p, int Stock, int j) { // BBB
+double StaticAutoCorrelation (gsl_matrix* X, int Start, int End, int p, int Stock, int j) { // BBB
     double Mean=0; double SSXlag=0; double SSXX=0; double SSXX2=0;
     for (int i=Start; i<=End; i++) {Mean+=gsl_matrix_get (X, Stock+8*j, i);}; Mean=Mean/(End-Start+1); // Mean of MarketBidAskTrue!!!
     for (int i=Start; i<=End-p; i++) {
@@ -459,8 +459,8 @@ double StaticAutoCorrelation (gsl_matrix * X, int Start, int End, int p, int Sto
 
 
 
-gsl_matrix * DynamicAutoCorrelation (gsl_matrix * X, int Lag, int Stock, int j) {
-    gsl_matrix * Result = gsl_matrix_alloc (5, int(X->size2));
+gsl_matrix* DynamicAutoCorrelation (gsl_matrix* X, int Lag, int Stock, int j) {
+    gsl_matrix* Result = gsl_matrix_alloc (5, int(X->size2));
     for (int i=0; i<int(X->size2)-Lag; i++) {
         gsl_matrix_set (Result, 0+6*j, i, StaticAutoCorrelation (X, i, i+Lag, DayTicks, Stock, j));
         gsl_matrix_set (Result, 1+6*j, i, StaticAutoCorrelation (X, i, i+Lag, 2*DayTicks, Stock, j));
@@ -476,8 +476,8 @@ gsl_matrix * DynamicAutoCorrelation (gsl_matrix * X, int Lag, int Stock, int j) 
 
 
 
-gsl_matrix * ProgressiveAutoCorrelation (gsl_matrix * X, int Stock, int j) {
-    gsl_matrix * Result = gsl_matrix_calloc (5, int(X->size2));
+gsl_matrix* ProgressiveAutoCorrelation (gsl_matrix* X, int Stock, int j) {
+    gsl_matrix* Result = gsl_matrix_calloc (5, int(X->size2));
     for (int i=1; i<int(X->size2); i++) {
         if (i>DayTicks) {gsl_matrix_set (Result, 0+6*j, i, StaticAutoCorrelation (X, 0, i, DayTicks, Stock, j));};
         if (i>2*DayTicks) {gsl_matrix_set (Result, 1+6*j, i, StaticAutoCorrelation (X, 0, i, 2*DayTicks, Stock, j));};
@@ -493,8 +493,8 @@ gsl_matrix * ProgressiveAutoCorrelation (gsl_matrix * X, int Stock, int j) {
 
 
 
-gsl_matrix * ExtensiveAutoCorrelation (gsl_matrix * X, int Stock, int j) {
-    gsl_matrix * Result = gsl_matrix_calloc (5, int(X->size2));
+gsl_matrix* ExtensiveAutoCorrelation (gsl_matrix* X, int Stock, int j) {
+    gsl_matrix* Result = gsl_matrix_calloc (5, int(X->size2));
     for (int i=1; i<int(X->size2); i++) {
         gsl_matrix_set (Result, 0+6*j, i, StaticAutoCorrelation (X, 0, int(X->size2)-1, i, Stock, j));
     }
@@ -506,7 +506,7 @@ gsl_matrix * ExtensiveAutoCorrelation (gsl_matrix * X, int Stock, int j) {
 
 
 
-double StaticCorrelation (gsl_matrix * X, gsl_matrix * Y, int XStart, int XEnd, int p, int Stock, int j) {
+double StaticCorrelation (gsl_matrix* X, gsl_matrix* Y, int XStart, int XEnd, int p, int Stock, int j) {
     double XMean=0; double YMean=0; double SSXY=0; double SSXX=0; double SSYY=0;
     for (int i=XStart; i<=XEnd; i++) {XMean+=gsl_matrix_get (X, Stock+6*j, i)/(XEnd-XStart+1);}; // Mean of MarketBidAskTrue!!!
     for (int i=XStart+p; i<=XEnd+p; i++) {YMean+=gsl_matrix_get (Y, Stock+6*j, i)/(XEnd-XStart+1);}; // Mean of MarketBidAskTrue!!!
@@ -524,8 +524,8 @@ double StaticCorrelation (gsl_matrix * X, gsl_matrix * Y, int XStart, int XEnd, 
 
 
 
-gsl_matrix * CFMCorrelation (gsl_matrix * X, gsl_matrix * Y, int XStart, int XEnd, int Lag, int Stock, int j) {
-    gsl_matrix * Result = gsl_matrix_calloc (1, Lag);
+gsl_matrix* CFMCorrelation (gsl_matrix* X, gsl_matrix* Y, int XStart, int XEnd, int Lag, int Stock, int j) {
+    gsl_matrix* Result = gsl_matrix_calloc (1, Lag);
     for (int i=0; i<Lag; i++) {gsl_matrix_set (Result, 0, i, StaticCorrelation (X, Y, XStart, XEnd, i, Stock, j));} // Be careful that the Lag+XEnd <= int(X->size2) !!!
     return Result;
 };
@@ -536,8 +536,8 @@ gsl_matrix * CFMCorrelation (gsl_matrix * X, gsl_matrix * Y, int XStart, int XEn
 
 
 // Function returning the p-lag autocorrelation of a gsl_matrix, between time steps begin and end
-gsl_matrix * AutocorrelationLagP (gsl_matrix * X) {
-    gsl_matrix * Res=gsl_matrix_alloc (int(X->size1), int(X->size2));
+gsl_matrix* AutocorrelationLagP (gsl_matrix* X) {
+    gsl_matrix* Res=gsl_matrix_alloc (int(X->size1), int(X->size2));
     for (int j=0; j<int(X->size1); j++) {
         for (int p=0; p<int(X->size2); p++) {
             double SSXlag=0; double SSXX1=0; double SSXX2=0; double Mean=0;
@@ -607,8 +607,8 @@ vector<double> DynamicCorrelation (vector<double> X, vector<double> Y, int Lag) 
 
 
 
-vector<vector<double> > GSLMatrixToSTLMatrix (gsl_matrix * M) {
-    vector<vector<double> > STLM;
+vector<vector<double>> GSLMatrixToSTLMatrix (gsl_matrix* M) {
+    vector<vector<double>> STLM;
     vector<double> TempLine;
     for (int i=0; i<int(M->size1); i++) {
         for (int j=0; j<int(M->size2); j++) {
@@ -639,7 +639,7 @@ vector<int> Shuffle(int n) {
 
 
 // Fail for Tool=2 and Lag=0 because Start=
-double BinaryProjection (gsl_matrix * ReflexiveValues, int t, int Tool, int Lag, int Future) {
+double BinaryProjection (gsl_matrix* ReflexiveValues, int t, int Tool, int Lag, int Future) {
     double Result=0; int Start=t-(Lag+1)*Future; if (Start<0) {Start=0;}; int Past=t-Start;
     double Mean0=0; for (int i=Start; i<t-Past/2; i++) {Mean0+=gsl_matrix_get(ReflexiveValues, 0, i)/(Past/2);};
     double Mean1=0; for (int i=t-Past/2; i<t; i++) {Mean1+=gsl_matrix_get(ReflexiveValues, 0, i)/(Past/2);};
@@ -694,7 +694,7 @@ void function_df(const gsl_vector* v, void* params, gsl_vector* df){
     double alpha = gsl_vector_get(v,0);
     double beta = gsl_vector_get(v,1);
     double mu = gsl_vector_get(v,2);
-    vector<double> *t = (vector<double> *) params;
+    vector<double>* t = (vector<double>*) params;
     size_t n = (*t).size();
     vector<double> A (n);
     vector<double> B (n);
@@ -740,7 +740,7 @@ int EstimationOzaki(std::vector<double>* t, double* Init, const double stepsize,
     gsl_vector_set_all (ss, stepsize);
     // Initialize method and iterate
     minex_func.n = 3;
-    minex_func.f = & function_f;
+    minex_func.f = &function_f;
     minex_func.params =  t;
     s = gsl_multimin_fminimizer_alloc (T, 3);
     gsl_multimin_fminimizer_set (s, &minex_func, x, ss);
@@ -827,52 +827,52 @@ vector<double>* Intensity(std::vector<double>* t, const double rescale, const do
 }
 
 // Hawkes process historical intensity
-gsl_matrix * HistoricalIntensity (gsl_matrix * TimeSeries, int k) {
+gsl_matrix* HistoricalIntensity (gsl_matrix* TimeSeries, int k) {
     int T = int(TimeSeries->size2);
-    gsl_matrix * Res = gsl_matrix_calloc (1, T);
+    gsl_matrix* Res = gsl_matrix_calloc (1, T);
     vector<double> V, GoF; for (int t=0; t<T; t++) {V.push_back(gsl_matrix_get (TimeSeries, k, t)); GoF.push_back(1);};
-    vector<double> * pV= & V;
+    vector<double>* pV= &V;
     const double Rescale=10; // Rescale factor
     const double Threshold=0.1; // Threshold (0.1)
     const size_t NumIteration=100000; // Number of iterations of the minimizer (stops before once a minimum is found)
-    double R; double * pR = & R; // Hawkes process parameters (does not need to be initialized)
-    vector<double> & pGoF = GoF; // Goodness of fit
-    vector<double> * pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
+    double R; double* pR = &R; // Hawkes process parameters (does not need to be initialized)
+    vector<double>& pGoF = GoF; // Goodness of fit
+    vector<double>* pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
     for (int t=0; t<T; t++) {gsl_matrix_set (Res, 0, t, (*pRes)[t]);}; // Hawkes process intensity
     gsl_matrix_set (Res, 0, T-1, gsl_matrix_get (Res, 0, T-2));
-    delete[] pRes; // JJJ10 void gsl_matrix_free(gsl_matrix * m)
+    delete[] pRes; // JJJ10 void gsl_matrix_free(gsl_matrix* m)
     return Res;
 }; // closes HistoricalIntensity()
 
 // Hawkes process spot intensity
-gsl_matrix * SpotIntensity (gsl_matrix * TimeSeries, int k) {
-    gsl_matrix * Res = gsl_matrix_calloc (1, int(TimeSeries->size2));
+gsl_matrix* SpotIntensity (gsl_matrix* TimeSeries, int k) {
+    gsl_matrix* Res = gsl_matrix_calloc (1, int(TimeSeries->size2));
     for (int T=5; T<int(TimeSeries->size2); T++) {
         vector<double> V, GoF; for (int t=0; t<T; t++) {V.push_back(gsl_matrix_get (TimeSeries, k, t)); GoF.push_back(1);};
-        vector<double> * pV= & V;
+        vector<double>* pV= &V;
         const double Rescale=10; // Rescale factor
         const double Threshold=0.1; // Threshold (0.1)
         const size_t NumIteration=100000; // Number of iterations of the minimizer (stops before once a minimum is found)
-        double R; double * pR = & R; // Hawkes process parameters (does not need to be initialized)
-        vector<double> & pGoF = GoF; // Goodness of fit
-        vector<double> * pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
+        double R; double* pR = &R; // Hawkes process parameters (does not need to be initialized)
+        vector<double>& pGoF = GoF; // Goodness of fit
+        vector<double>* pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
         gsl_matrix_set (Res, 0, T, (*pRes)[T-2]); // Hawkes process intensity
     }; // closes T loop
     return Res;
 }; // closes SpotIntensity()
 
 // Hawkes process spot intensity with first 100 time steps at mean
-gsl_matrix * SpotIntensity2 (gsl_matrix * TimeSeries, int k) {
-    gsl_matrix * Res = gsl_matrix_calloc (1, int(TimeSeries->size2));
+gsl_matrix* SpotIntensity2 (gsl_matrix* TimeSeries, int k) {
+    gsl_matrix* Res = gsl_matrix_calloc (1, int(TimeSeries->size2));
     for (int T=5; T<int(TimeSeries->size2); T++) {
         vector<double> V, GoF; for (int t=0; t<T; t++) {V.push_back(gsl_matrix_get (TimeSeries, k, t)); GoF.push_back(1);};
-        vector<double> * pV= & V;
+        vector<double>* pV= &V;
         const double Rescale=10; // Rescale factor
         const double Threshold=0.1; // Threshold (0.1)
         const size_t NumIteration=1000000; // Number of iterations of the minimizer (stops before once a minimum is found)
-        double R; double * pR = & R; // Hawkes process parameters (does not need to be initialized)
-        vector<double> & pGoF = GoF; // Goodness of fit
-        vector<double> * pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
+        double R; double* pR = &R; // Hawkes process parameters (does not need to be initialized)
+        vector<double>& pGoF = GoF; // Goodness of fit
+        vector<double>* pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
         gsl_matrix_set (Res, 0, T, (*pRes)[T-2]); // Hawkes process intensity
     }; // closes T loop
     double Mean=0;
@@ -892,7 +892,7 @@ gsl_matrix * SpotIntensity2 (gsl_matrix * TimeSeries, int k) {
 // Takes as input the file constructed by ImportMacro (). Then the file must be updated by hand as such:
 // LIBOR rates taken from the FED in StLouis https://fred.stlouisfed.org/categories/33003/downloaddata
 // Exchange rates taken from the Bank of England at http://www.bankofengland.co.uk/boeapps/iadb/Rates.asp?TD=12&TM=Dec&TY=2017&
-gsl_matrix * Macroeconomics () {
+gsl_matrix* Macroeconomics () {
     double FXFee=1-0.3*0.01; // FX fees from IG
     string Path=Machine + "Symba/CSV/MACROECONOMICS.csv";
     ifstream FileInput(Path); string Line; int LineNb=0;
@@ -908,7 +908,7 @@ gsl_matrix * Macroeconomics () {
         };
     };
     int Size=int(V1.size()); FileInput.close();
-    gsl_matrix * Result = gsl_matrix_calloc (6, Size);
+    gsl_matrix* Result = gsl_matrix_calloc (6, Size);
     for (int i=0; i<Size; i++) {
         gsl_matrix_set (Result, 0, i, V1[i]); // Dates
         gsl_matrix_set (Result, 1, i, V2[i]); // LIBOR in percent and based on USD
@@ -943,10 +943,10 @@ void StockIndices () {
         while (getline (LineStream, Item, '\r')) {ItemNb++; V.push_back(atof(Item.c_str()));};
     };
     // Output on 132 months
-    gsl_matrix * Result = gsl_matrix_calloc (1, 132); gsl_matrix_set (Result, 0, 0, 1);
+    gsl_matrix* Result = gsl_matrix_calloc (1, 132); gsl_matrix_set (Result, 0, 0, 1);
     for (int i=1; i<132; i++) {gsl_matrix_set (Result, 0, i, gsl_matrix_get (Result, 0, i-1)*(V[i-1]+100)/100.0);}
     // Output on 2520 days
-    gsl_matrix * Result2 = gsl_matrix_calloc (2, Size);
+    gsl_matrix* Result2 = gsl_matrix_calloc (2, Size);
     for (int i=0; i<Size; i++) {gsl_matrix_set (Result2, 0, i, gsl_matrix_get (Result, 0, i/22));}
     
     Path=Machine + "Symba/CSV/NasdaqComposite.csv"; vector<double> W;
@@ -978,9 +978,9 @@ void StockIndices () {
 class Share {
 public:
     string Symbol, Title, Exchange, File, Country, Currency, Sector, InPF;
-    gsl_matrix * Data; // Prices & cashflows
+    gsl_matrix* Data; // Prices & cashflows
     
-    void Gen (string Name, gsl_matrix * Macroeconomics, int FirstDate) {
+    void Gen (string Name, gsl_matrix* Macroeconomics, int FirstDate) {
         //int Numeraire=5;
         //if (Currency=="USD") {Numeraire=3;} else if (Currency=="GBP") {Numeraire=4;}; // This is switched off so as to study local market microstructure apart from FX perturbations // FXX
         vector<double> LocalDates, LocalOpen, LocalClose, LocalHigh, LocalLow, LocalVolumes;
@@ -1003,7 +1003,7 @@ public:
             if (gsl_matrix_get (Macroeconomics, 0, i)==FirstDate) {Cond=1;};
             if (Cond==1) {Size+=1;};
         };
-        // Populating gsl_matrix * Data
+        // Populating gsl_matrix* Data
         int PastLag=120+Year; // Steps before FirstDate necessary for BinaryProjector() to start at FirstDate
         int FirstStep=0; // STL vector index where data matches FirstDate
         int VectorSize=int(LocalDates.size());
@@ -1062,7 +1062,7 @@ public:
     // This outputs files LSEnew.txt, NYSEnew.txt, NASDAQnew.txt which are the stocks offered by IG. These files must be formatted to Legacy MAC OS (CR) text format, and can in turn be used as direct data feed
     void ProcessBrokerData () {
         InPF="Out";
-        vector<vector<string> > W;
+        vector<vector<string>> W;
         string Path=Machine + "Symba/CSV/Tiered Margin_cfd.csv";
         ifstream FileInput(Path); string Line; int LineNb=0;
         vector<string> V1, V2, V3, V4;
@@ -1126,7 +1126,7 @@ vector<Share> PortfolioGenerator (string Name, int FirstDate) {
         };
     };
     int ExchangeSize=int(VExchanges.size()); DFileInput.close();
-    gsl_matrix * Macro = Macroeconomics();
+    gsl_matrix* Macro = Macroeconomics();
     for (int m=0; m<ExchangeSize; m++) {
         string FPath=Machine + "Symba/CSV/" + VExchanges[m] + "new.txt";
         vector<string> VFiles, VSymbol, VTitles;
@@ -1185,11 +1185,11 @@ vector<Share> PortfolioGenerator (string Name, int FirstDate) {
 
 
 
-gsl_matrix * PortfolioOutput (vector<Share> PF, int Size) {
+gsl_matrix* PortfolioOutput (vector<Share> PF, int Size) {
     if (Size==0) {Size=int(PF.size());};
     string A = Machine+"PF.csv"; ofstream outputSpecs(A.c_str(), ofstream::app);
     vector<int> J=Shuffle(int(PF.size()));
-    gsl_matrix * Result = gsl_matrix_calloc (Size+1, PF[0].Data->size2-381);
+    gsl_matrix* Result = gsl_matrix_calloc (Size+1, PF[0].Data->size2-381);
     outputSpecs << fixed << "Date (yyyymmdd),"; for (int i=1; i<Size+1; i++) {outputSpecs << PF[J[i-1]].Symbol << " (" << PF[J[i-1]].Exchange << "),";}; outputSpecs << endl;
     //outputSpecs << fixed << "Date,"; for (int i=1; i<Size+1; i++) {outputSpecs << PF[J[i-1]].Exchange <<",";}; outputSpecs << endl;
     outputSpecs.close();
@@ -1205,10 +1205,10 @@ gsl_matrix * PortfolioOutput (vector<Share> PF, int Size) {
 
 
 
-vector<vector<Share> > PFTrainingTesting (vector<Share> PF, int TrainSize) {
+vector<vector<Share>> PFTrainingTesting (vector<Share> PF, int TrainSize) {
     int Size=int(PF.size());
     vector<int> J=Shuffle(Size);
-    vector<vector<Share> > PFVec;
+    vector<vector<Share>> PFVec;
     vector<Share> PFTraining, PFTesting;
     for (int k=0; k<TrainSize; k++) {PFTraining.push_back(PF[J[k]]);}; PFVec.push_back(PFTraining);
     for (int k=TrainSize; k<Size; k++) {PFTesting.push_back(PF[J[k]]);}; PFVec.push_back(PFTesting);
@@ -1217,12 +1217,12 @@ vector<vector<Share> > PFTrainingTesting (vector<Share> PF, int TrainSize) {
 
 
 
-vector<vector<gsl_matrix *> > PortfolioMultiOutput (vector<Share> PF, int Size) {
+vector<vector<gsl_matrix*>> PortfolioMultiOutput (vector<Share> PF, int Size) {
     if (Size==0) {Size=int(PF.size());};
     string A = Machine+"PF.csv"; ofstream outputSpecs(A.c_str(), ofstream::app);
     vector<int> J=Shuffle(int(PF.size()));
-    gsl_matrix * Result = gsl_matrix_calloc (Size+1, PF[0].Data->size2-381);
-    gsl_matrix * Result2 = gsl_matrix_calloc (Size+1, PF[0].Data->size2-381);
+    gsl_matrix* Result = gsl_matrix_calloc (Size+1, PF[0].Data->size2-381);
+    gsl_matrix* Result2 = gsl_matrix_calloc (Size+1, PF[0].Data->size2-381);
     outputSpecs << fixed << "Date (yyyymmdd),"; for (int i=1; i<Size+1; i++) {outputSpecs << PF[J[i-1]].Symbol << " (" << PF[J[i-1]].Exchange << "),";}; outputSpecs << endl;
     //outputSpecs << fixed << "Date,"; for (int i=1; i<Size+1; i++) {outputSpecs << PF[J[i-1]].Exchange <<",";}; outputSpecs << endl;
     outputSpecs.close();
@@ -1239,12 +1239,12 @@ vector<vector<gsl_matrix *> > PortfolioMultiOutput (vector<Share> PF, int Size) 
     };
     PlotGSLMatrix(Result, "PF.csv", 1);
     //outputMoments << "Log-return" << '\t' << "AC-1w Log-return" << '\t' << "AC-2w Log-return" << '\t' << "AC-m Log-return" << '\t' << "AC-3m Log-return" << '\t' << "AC-6m Log-return" << '\t' << "AC-y Log-return" << '\t' << "Abs-log-return" << '\t' << "AC-1w Abs-log-return" << '\t' << "AC-2w Abs-log-return" << '\t' << "AC-m Abs-log-return" << '\t' << "AC-3m Abs-log-return" << '\t' << "AC-6m Abs-log-return" << '\t' << "AC-y Abs-log-return" << '\t' << "w-Volatility" << '\t' << "AC-w w-Volatility" << '\t' << "2w-Volatility" << '\t' << "AC-2w 2w-Volatility" << '\t' << "m-Volatility" << '\t' << "AC-m m-Volatility" << '\t' << "3m-Volatility" << '\t' << "AC-3m 3m-Volatility" << '\t' << "6m-Volatility" << '\t' << "AC-6m 6m-Volatility" << '\t' << "y-Volatility" << '\t' << "AC-y y-Volatility" << '\t' << "Volumes(bsp)" << '\t' << "AC-1w Volume" << '\t' << "AC-2w Volume" << '\t' << "AC-m Volume" << '\t' << "AC-3m Volume" << '\t' << "AC-6m Volume" << '\t' << "AC-y Volume" << endl;
-    vector<vector<gsl_matrix *> > FinalResult;
+    vector<vector<gsl_matrix*>> FinalResult;
     int T=int(PF[0].Data->size2-381);
     for (int m=1; m<Size+1; m++) {
-        vector<gsl_matrix *> Temp;
-        gsl_matrix * Moments = gsl_matrix_calloc (64, T);
-        gsl_matrix * Prices = gsl_matrix_calloc (1, T); for (int t=0; t<T; t++) {gsl_matrix_set (Prices, 0, t, gsl_matrix_get (Result, m, t));};
+        vector<gsl_matrix*> Temp;
+        gsl_matrix* Moments = gsl_matrix_calloc (64, T);
+        gsl_matrix* Prices = gsl_matrix_calloc (1, T); for (int t=0; t<T; t++) {gsl_matrix_set (Prices, 0, t, gsl_matrix_get (Result, m, t));};
         //PlotGSLMatrix(Prices, "Prices.csv", 1);
         for (int t=1; t<T; t++) {
             if (gsl_matrix_get(Result, m, t-1)!=0) {gsl_matrix_set(Moments, 0, t, log(gsl_matrix_get(Result, m, t)/gsl_matrix_get(Result, m, t-1)));} // Log-return
@@ -1338,13 +1338,13 @@ vector<vector<gsl_matrix *> > PortfolioMultiOutput (vector<Share> PF, int Size) 
         };
         
         vector<double> V, GoF; for (int t=0; t<T; t++) {V.push_back(gsl_matrix_get (Prices, 0, t)); GoF.push_back(1);}; // FFF2
-        vector<double> * pV= & V;
+        vector<double>* pV= &V;
         const double Rescale=10; // Rescale factor
         const double Threshold=0.1; // Threshold (0.1)
         const size_t NumIteration=10000000; // Number of iterations of the minimizer (stops before once a minimum is found)
-        double R; double * pR = & R; // Hawkes process parameters (does not need to be initialized)
-        vector<double> & pGoF = GoF; // Goodness of fit
-        vector<double> * pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
+        double R; double* pR = &R; // Hawkes process parameters (does not need to be initialized)
+        vector<double>& pGoF = GoF; // Goodness of fit
+        vector<double>* pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
         for (int t=0; t<T; t++) {gsl_matrix_set (Moments, 63, t, (*pRes)[t]);}; // Hawkes process intensity in column 9
         for (int t=0; t<T; t++) { // Hawkes process intensity in column 9
             if ((*pRes)[t]>10) { // Maximum value of Hawkes at 10
@@ -1354,7 +1354,7 @@ vector<vector<gsl_matrix *> > PortfolioMultiOutput (vector<Share> PF, int Size) 
                 gsl_matrix_set (Moments, 63, t, 0);
             };
         };
-        //gsl_matrix * Hawkes = HistoricalIntensity (Prices, 0);
+        //gsl_matrix* Hawkes = HistoricalIntensity (Prices, 0);
         //for (int t=1; t<T; t++) {gsl_matrix_set(Moments, 42, t, gsl_matrix_get (Hawkes, 0, t));};
         
         //delete pV; delete pR; delete pRes;
@@ -1401,10 +1401,10 @@ public:
     double RFA, RBA, RFAFirst, RBAFirst, NAVOnJanFirst; // Risk-free asset (Zero Coupon Bond, ZCB), Risk-based assets (total stock holdings)
     int Bankruptcy, LiquidationFloor, TradingWindow; // Bankruptcy parameters and trading window
     vector<Stock> Stocks; // Collection of stocks
-    gsl_matrix * BiasedValues; // J*T matrix built via CointegratedWalk()
+    gsl_matrix* BiasedValues; // J*T matrix built via CointegratedWalk()
     vector<int> TradingWindowClock; // Clock counter reinitialized at each trading publication
     vector<int> ExitHorizons; // Times at which the agent must exit its position
-    vector<vector<double> > Qs; // Qs[j][i] is the arg max_a Q(s,a) of state s of 5-index i for stock j for model-based RL (updated every TradingWindow)
+    vector<vector<double>> Qs; // Qs[j][i] is the arg max_a Q(s,a) of state s of 5-index i for stock j for model-based RL (updated every TradingWindow)
     
     // COINTEGRATION VARIABLES
     vector<double> Leash, LeashVol, Accuracy; // One for each j stock. Accuracy is the prob. of bubble burst, on average 0.2,0.75,1,2 per year for Accuracy=13,11,10,9 resp.
@@ -1441,17 +1441,17 @@ public:
     // int FTenPiId[4], TTenPiId[7]; // To select an exploratory policy // DDD2
     
     // MMM
-    vector<vector<double> > dRoughVec, dSmoothVec, dMuPosVec, dMuNegVec, dSigVec, LiquidPercentVec, dFResultVec, dTResultVec; // Past values to determine median & percentiles and discrete score via History // MMM
-    vector<vector<int> > FSIndex, TSIndex, FAIndexReal, FAIndexVirtual, TAIndexReal, TAIndexVirtual; // Real and virtual actions taken (identified by its vector index) at time t // MMM
-    vector<vector<double> > FPi, TPi, FQ, TQ; // Action-value function Q(s)=E[R|s,a] as a SxA matrix // MMM
-    vector<vector<double> > ForecastReal, ForecastVirtual, Forecast5; // MMM
-    vector<vector<int> > FNumberA, TNumberA; // The number of times a was performed in s for SAM // MMM
-    vector<vector<int> > QuantitiesReal, QuantitiesVirtual; // Quantities of stock at each time step that are willed to be transacted // MMM
-    vector<vector<double> > TransactionPriceReal, TransactionPriceVirtual; // Transaction prices // MMM
+    vector<vector<double>> dRoughVec, dSmoothVec, dMuPosVec, dMuNegVec, dSigVec, LiquidPercentVec, dFResultVec, dTResultVec; // Past values to determine median & percentiles and discrete score via History // MMM
+    vector<vector<int>> FSIndex, TSIndex, FAIndexReal, FAIndexVirtual, TAIndexReal, TAIndexVirtual; // Real and virtual actions taken (identified by its vector index) at time t // MMM
+    vector<vector<double>> FPi, TPi, FQ, TQ; // Action-value function Q(s)=E[R|s,a] as a SxA matrix // MMM
+    vector<vector<double>> ForecastReal, ForecastVirtual, Forecast5; // MMM
+    vector<vector<int>> FNumberA, TNumberA; // The number of times a was performed in s for SAM // MMM
+    vector<vector<int>> QuantitiesReal, QuantitiesVirtual; // Quantities of stock at each time step that are willed to be transacted // MMM
+    vector<vector<double>> TransactionPriceReal, TransactionPriceVirtual; // Transaction prices // MMM
     
     // LOG // MMM
-    vector<vector<double> > LvolLog, SvolLog; // MMM
-    vector<vector<int> > RoughLog, SmoothLog, ReflexiveLog, ToolRealLog, LagRealLog, WeightRealLog, ToolVirtualLog, LagVirtualLog, WeightVirtualLog, MuLog, SigLog, RFALog, RBALog, LiquidityLog, PinchRealLog, QuantRealLog, PinchVirtualLog, QuantVirtualLog, FResultDisReal, FResultDisVirtual, TResultDisReal, TResultDisVirtual; // MMM
+    vector<vector<double>> LvolLog, SvolLog; // MMM
+    vector<vector<int>> RoughLog, SmoothLog, ReflexiveLog, ToolRealLog, LagRealLog, WeightRealLog, ToolVirtualLog, LagVirtualLog, WeightVirtualLog, MuLog, SigLog, RFALog, RBALog, LiquidityLog, PinchRealLog, QuantRealLog, PinchVirtualLog, QuantVirtualLog, FResultDisReal, FResultDisVirtual, TResultDisReal, TResultDisVirtual; // MMM
     
     
     
@@ -1503,7 +1503,7 @@ public:
         return Temp;
     };
     
-    void Liquidation(int i, vector<Agent> &Market) {
+    void Liquidation(int i, vector<Agent>& Market) {
         Market[i].RFA=0; Market[i].RBA=0; // Clearing all his bond holdings
         for (int j=0; j<int(Market[i].Stocks.size()); j++) {Market[i].Stocks[j].StockQuantity = 0;}; // Clearing all the agent stocks holdings
         Market[i].Bankruptcy=0; // The agent gets entirely liquidated
@@ -1520,7 +1520,7 @@ public:
     
     
     // RL algorithm for forecasting and placing order in the OB (SS6)
-    void RL (int j, int t, double Rate, gsl_matrix * ReflexiveValues, double VSpread, double LiquidPercent, int Time, int NumberOfStocks, string TradingFrequencyCond, string Plot, string VersatilityCondition, double MarketPerformance, int TimeSinceJan1st, int LearningPhase, int LeaderAgent, int LeaderQuant, int LeaderPinch, int ClusterLimit, int Trunk) {
+    void RL (int j, int t, double Rate, gsl_matrix* ReflexiveValues, double VSpread, double LiquidPercent, int Time, int NumberOfStocks, string TradingFrequencyCond, string Plot, string VersatilityCondition, double MarketPerformance, int TimeSinceJan1st, int LearningPhase, int LeaderAgent, int LeaderQuant, int LeaderPinch, int ClusterLimit, int Trunk) {
         
         
         /*
@@ -1537,9 +1537,9 @@ public:
         //#define GSL_DLL
         //#define DGSL_DLL
         //#define DWIN32
-        //gsl_rng * r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-        gsl_rng * r = make_rng();
-        gsl_rng_set(r, static_cast<unsigned long int>(time(0)+Seed)); //gsl_rng_set(const gsl_rng * r, unsigned long int s)
+        //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+        gsl_rng* r = make_rng();
+        gsl_rng_set(r, static_cast<unsigned long int>(time(0)+Seed)); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
         vector<double> VRan; for (int i=0; i<36; i++) {VRan.push_back(gsl_rng_uniform (r));}; // Generating a vector of random numbers without seeding issues
         //#undef GSL_DLL
         //#undef DGSL_DLL
@@ -3241,7 +3241,7 @@ public:
     
     
     
-    vector<double> Clear(vector<Agent> &Market, int t, int j, string Plot) { // Passing by ref to modify Market (SS11)
+    vector<double> Clear(vector<Agent>& Market, int t, int j, string Plot) { // Passing by ref to modify Market (SS11)
         double TempClearingPrice=0;
         double TotalStockQuantityTraded=0;
         int Count=0;
@@ -3346,7 +3346,7 @@ public:
     
     
     // Selecting a random level in the OB and shifting it to a metaorder (if at least one business order in the OB)
-    int MetaorderInjection(vector<Agent> &Market, int SharesOutstanding, int MetaorderImpact, int OBLevelSize) {
+    int MetaorderInjection(vector<Agent>& Market, int SharesOutstanding, int MetaorderImpact, int OBLevelSize) {
         ofstream outputMetalog(Machine+"MetaorderLog.txt", ofstream::app);
         int Res=-1;
         if (OBLevelSize>-1) {
@@ -3392,14 +3392,14 @@ public:
 
 
 // This plots the distribution of an STL vector taken as parameter in Mathematica. Setting Xmin=Xmax=0 finds these bounds automatically
-vector<vector<double> > Distribution (vector<double> X, int Precision, double Xmin, double Xmax, string Name, string Plot) {
-    vector<vector<double> > DistRes;
+vector<vector<double>> Distribution (vector<double> X, int Precision, double Xmin, double Xmax, string Name, string Plot) {
+    vector<vector<double>> DistRes;
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
     if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
     A2+=B2;
-    const char * Title = A2.c_str();
+    const char* Title = A2.c_str();
     ofstream output5(Title);
     
     int SeriesSize = int(X.size());
@@ -3432,10 +3432,10 @@ vector<vector<double> > Distribution (vector<double> X, int Precision, double Xm
 
 
 // This plots the distribution of an STL vector taken as parameter in Mathematica. Setting Xmin=Xmax=0 finds these bounds automatically
-gsl_matrix * GSLDistribution (gsl_matrix * M, int Precision) {
+gsl_matrix* GSLDistribution (gsl_matrix* M, int Precision) {
     int SeriesSize1 = int(M->size1);
     int SeriesSize2 = int(M->size2);
-    gsl_matrix * D = gsl_matrix_calloc (SeriesSize1*2, Precision);
+    gsl_matrix* D = gsl_matrix_calloc (SeriesSize1*2, Precision);
     double Xmin, Xmax;
     // Determining the min and max of each time series j from gsl_matrix M
     vector<double> X;
@@ -3477,9 +3477,9 @@ vector<double> RandomWalk(double InitialValue, double Drift, double Volatility, 
     double FundamentalValue=InitialValue/5; // Asset cannot go below 20% of its fundamental value
     Drift=0.00;
     vector<double> S,S2, StandardNormal, Jumps;
-    //gsl_rng * r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng * r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(Seed)); // gsl_rng_set(const gsl_rng * r, unsigned long int s)
+    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r = make_rng();
+    gsl_rng_set(r, static_cast<unsigned long int>(Seed)); // gsl_rng_set(const gsl_rng* r, unsigned long int s)
     for (int t=0; t<TimeSteps; t++) {Jumps.push_back(gsl_ran_poisson (r, 10));};
     for (int t=0; t<TimeSteps; t++) {StandardNormal.push_back(Skewness+gsl_ran_gaussian (r, 1));};
     S.push_back(InitialValue); // The +20 is there to ensure we have an entry price that is not negligeable
@@ -3503,9 +3503,9 @@ vector<double> RandomWalk(double InitialValue, double Drift, double Volatility, 
 // Mu is the poisson-length between each jump, and Sig the intensity of the jump
 vector<double> PoissonRandomWalk (double S0, int Mu, int Sig, int Time, double Seed) {
     vector<double> S, VSig; vector<int> VMu;
-    //gsl_rng * r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng * r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(Seed)); // gsl_rng_set(const gsl_rng * r, unsigned long int s)
+    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r = make_rng();
+    gsl_rng_set(r, static_cast<unsigned long int>(Seed)); // gsl_rng_set(const gsl_rng* r, unsigned long int s)
     for (int t=0; t<Time; t++) {
         S.push_back(S0);
         VMu.push_back(1+gsl_ran_poisson (r, Mu));
@@ -3532,9 +3532,9 @@ vector<double> CointegratedWalk(vector<double> Master, double Leash, double Leas
     vector<double> StandardNormal = STLRandom((int(Master.size())), "StandardNormal2", "NoPlot"); // Time series of size Master.size() made of values gsl_ran_gaussian (r, 1)
     S.push_back(Master[0]);
     L.push_back(Leash);
-    //gsl_rng * r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng * r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng * r, unsigned long int s)
+    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r = make_rng();
+    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
     for (int t=1; t<(int(Master.size())); t++) {
         L.push_back((L[t-1])*(1 + LeashVolatility*(gsl_ran_gaussian (r, 1)))); // The leash is elastic with its own vol
         Val = S[t-1] + LeashVolatility*(S[t-1])*(StandardNormal[t]);
@@ -3569,9 +3569,9 @@ double Compare (vector<double> X1, vector<double> X2) {
 // This function returns the Future parameters for a NumberOfAgents and a simulation of time Time, according to a quasi-hyperbolic discount function F with parameters Beta and Delta: F(0)=1, F(t)=Beta*pow(Delta, t) with 0 < Beta,Delta < 1
 vector<int> Quasihyperbolic(int NumberOfAgents, int Time, double Beta, double Delta, double Seed) {
     vector<int> Res;
-    //gsl_rng * r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng * r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(Seed)); // gsl_rng_set(const gsl_rng * r, unsigned long int s)
+    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r = make_rng();
+    gsl_rng_set(r, static_cast<unsigned long int>(Seed)); // gsl_rng_set(const gsl_rng* r, unsigned long int s)
     for (int i=0; i<NumberOfAgents+10; i++) {
         while (i>0) {
             double x = gsl_rng_uniform (r);
@@ -3591,7 +3591,7 @@ vector<int> Quasihyperbolic(int NumberOfAgents, int Time, double Beta, double De
 
 
 // Outputs the agent parameters for the stitch into one file: for each agent, the first line are integers, the second doubles, the third vector<int> Accuracy, the fourth vector<double> Leash, the fifth vector<double> LeashVol, the sixth vector<vector<int>> FPi[j][i], and the seventh vector<vector<int>> TPi[j][i]
-void AgentParametersOutput (vector<Agent> &Market, int NumberOfAgents, int NumberOfStocks, string OutputName) {
+void AgentParametersOutput (vector<Agent>& Market, int NumberOfAgents, int NumberOfStocks, string OutputName) {
     string RootName = Machine; RootName+=OutputName;
     ofstream outputParameters(RootName.c_str(), ofstream::app);
     for (int i=0; i<NumberOfAgents ; i++) {
@@ -3651,7 +3651,7 @@ void AgentParametersOutput (vector<Agent> &Market, int NumberOfAgents, int Numbe
 
 
 // Outputs the agent parameters of agents in a line
-void AgentParameters (vector<Agent> &Market, int NumberOfAgents, int NumberOfAgentsFull, int NumberOfStocks, int Time) {
+void AgentParameters (vector<Agent>& Market, int NumberOfAgents, int NumberOfAgentsFull, int NumberOfStocks, int Time) {
     ofstream outputParameters(Machine+"AgentParameters.txt", ofstream::app);
     vector<int> J = Shuffle(NumberOfAgentsFull);
     outputParameters << "I=" << NumberOfAgentsFull << ", J=" << NumberOfStocks << ", T=" << Time << endl;
@@ -3685,13 +3685,13 @@ void AgentParameters (vector<Agent> &Market, int NumberOfAgents, int NumberOfAge
 
 
 // Outputs the RL variables (mostly vectors) of agents in a line, for a given stock j
-void AgentVariables (vector<Agent> &Market, int NumberOfAgents, int NumberOfAgentsFull, int NumberOfStocks, int Time, gsl_matrix * ReflexiveValues, int j) {
+void AgentVariables (vector<Agent>& Market, int NumberOfAgents, int NumberOfAgentsFull, int NumberOfStocks, int Time, gsl_matrix* ReflexiveValues, int j) {
     vector<int> J = Shuffle(NumberOfAgentsFull);
     string A = Machine+"AgentVariables_j";
     string B=to_string(j);
     string C= ".txt";
     A+=B+C;
-    const char * Title=A.c_str();
+    const char* Title=A.c_str();
     ofstream outputParameters(Title, ofstream::app);
     outputParameters << "***********************" << "j=" << j << "***********************" << endl;
     outputParameters << "I=" << NumberOfAgentsFull << ", J=" << NumberOfStocks << ", T=" << Time << endl;
@@ -3755,13 +3755,13 @@ void AgentVariables (vector<Agent> &Market, int NumberOfAgents, int NumberOfAgen
 
 
 
-gsl_matrix *  StockMoments (gsl_matrix * ReflexiveValues, gsl_matrix * Spread, gsl_matrix * TotalStockQuantityTraded, int Time, int Lag, int Delta, int CorrLag, int j) {
-    gsl_matrix * StockIndexMoments = gsl_matrix_calloc (12, Time);
-    gsl_matrix * StocksDistributions = gsl_matrix_calloc (24, 1000);
-    gsl_matrix * AutoCorrLagP = gsl_matrix_alloc (24, Time);
+gsl_matrix*  StockMoments (gsl_matrix* ReflexiveValues, gsl_matrix* Spread, gsl_matrix* TotalStockQuantityTraded, int Time, int Lag, int Delta, int CorrLag, int j) {
+    gsl_matrix* StockIndexMoments = gsl_matrix_calloc (12, Time);
+    gsl_matrix* StocksDistributions = gsl_matrix_calloc (24, 1000);
+    gsl_matrix* AutoCorrLagP = gsl_matrix_alloc (24, Time);
     vector<double> RealizedVolatility, SpreadV, Volume, Stock;
     for (int t=0; t<Time; t++) {Stock.push_back(gsl_matrix_get(ReflexiveValues, j, t));};
-    vector<vector<double> > MomentsStockIndex = DynamicMoments (Stock, 0, int(Stock.size()), Lag, Delta);
+    vector<vector<double>> MomentsStockIndex = DynamicMoments (Stock, 0, int(Stock.size()), Lag, Delta);
     for (int t=0; t<Time; t++) {
         gsl_matrix_set(StockIndexMoments, 0, t, Stock[t]);                              // Raw Stock
         gsl_matrix_set(StockIndexMoments, 1, t, MomentsStockIndex[0][t]); // Mean of Stock
@@ -3794,7 +3794,7 @@ gsl_matrix *  StockMoments (gsl_matrix * ReflexiveValues, gsl_matrix * Spread, g
     vector<double> CorrRealizedVolatilitySpread = DynamicCorrelation (RealizedVolatility, SpreadV, CorrLag);
     vector<double> CorrSpreadVolume = DynamicCorrelation (SpreadV, Volume, CorrLag);
     int Minsize = min(int(CorrRealizedVolatilityVolume.size()), min(int(CorrRealizedVolatilitySpread.size()), int(CorrSpreadVolume.size())));
-    gsl_matrix * Correlations = gsl_matrix_alloc (3, Minsize);
+    gsl_matrix* Correlations = gsl_matrix_alloc (3, Minsize);
     for (int t=0; t<Minsize; t++) {
         gsl_matrix_set (Correlations, 0, t, CorrRealizedVolatilityVolume[t]);
         gsl_matrix_set (Correlations, 1, t, CorrRealizedVolatilitySpread[t]);
@@ -3817,7 +3817,7 @@ gsl_matrix *  StockMoments (gsl_matrix * ReflexiveValues, gsl_matrix * Spread, g
 
 // Policy distances (NON-MULTIVARIATE!)
 // The simulation can output matrices of dimension IxI of the average of the absolute differences between each value P(s,a) of two agents. This is what we call Policy Distance (PD): FPolicyDistances, TPolicyDistances, MostSuccessfulFPolicyDistances, MostSuccessfulTPolicyDistances. But the outputs are 3d plots that are hard to read. So we should create a measure of policy distance not between an agent i1 and an agent i2, but between an agent i1 and many other agents (either all others or just a subgroup, such as the most successful percentile) as the average all its policy distances with all other agents, and then we should rank these agents by their increasing Average Policy Distances (APD). Then we know that an agent with a large APD compared to the market (or subset thereof) Average of other APD's (AAPD) has a largely different policy than the rest of the market or a subset thereof. Then we can extract features about the parameters of these most different or most similar agents to market or submarket.
-gsl_matrix * PolicyDistances (vector<Agent> Market, int NumberOfAgents, int NumberOfStocks, int Time, int Percentile, int t) {
+gsl_matrix* PolicyDistances (vector<Agent> Market, int NumberOfAgents, int NumberOfStocks, int Time, int Percentile, int t) {
     // Most successful and less successful agents
     vector<double> CapitalEvolution;
     for (int i=0; i<NumberOfAgents ; i++) {
@@ -3837,21 +3837,21 @@ gsl_matrix * PolicyDistances (vector<Agent> Market, int NumberOfAgents, int Numb
     int AgentNumberPercentile=Percentile*NumberOfAgents/100;
     if (AgentNumberPercentile<=5) {AgentNumberPercentile=5;};
     
-    gsl_matrix * Res = gsl_matrix_calloc (10, AgentNumberPercentile);
-    gsl_matrix * FPolicyDistancesMostSuccessfulToMarket = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * TPolicyDistancesMostSuccessfulToMarket = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * FPolicyDistancesLessSuccessfulToMarket = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * TPolicyDistancesLessSuccessfulToMarket = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * FPolicyDistancesMostSuccessfulToMostSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * TPolicyDistancesMostSuccessfulToMostSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * FPolicyDistancesLessSuccessfulToLessSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * TPolicyDistancesLessSuccessfulToLessSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * FPolicyDistancesMostSuccessfulToLessSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * TPolicyDistancesMostSuccessfulToLessSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * FPolicyDistancesLessSuccessfulToMostSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * TPolicyDistancesLessSuccessfulToMostSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
-    gsl_matrix * FPolicyDistancesM = gsl_matrix_calloc (NumberOfAgents, NumberOfAgents);
-    gsl_matrix * TPolicyDistancesM = gsl_matrix_calloc (NumberOfAgents, NumberOfAgents);
+    gsl_matrix* Res = gsl_matrix_calloc (10, AgentNumberPercentile);
+    gsl_matrix* FPolicyDistancesMostSuccessfulToMarket = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* TPolicyDistancesMostSuccessfulToMarket = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* FPolicyDistancesLessSuccessfulToMarket = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* TPolicyDistancesLessSuccessfulToMarket = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* FPolicyDistancesMostSuccessfulToMostSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* TPolicyDistancesMostSuccessfulToMostSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* FPolicyDistancesLessSuccessfulToLessSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* TPolicyDistancesLessSuccessfulToLessSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* FPolicyDistancesMostSuccessfulToLessSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* TPolicyDistancesMostSuccessfulToLessSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* FPolicyDistancesLessSuccessfulToMostSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* TPolicyDistancesLessSuccessfulToMostSuccessful = gsl_matrix_alloc (AgentNumberPercentile, NumberOfStocks);
+    gsl_matrix* FPolicyDistancesM = gsl_matrix_calloc (NumberOfAgents, NumberOfAgents);
+    gsl_matrix* TPolicyDistancesM = gsl_matrix_calloc (NumberOfAgents, NumberOfAgents);
    
     for (int j=0; j<NumberOfStocks; j++) {
         // Computing FPolicyDistancesM and TPolicyDistancesM as the IxI matrices of all PD of each agent with each agent
@@ -3980,7 +3980,7 @@ gsl_matrix * PolicyDistances (vector<Agent> Market, int NumberOfAgents, int Numb
 
 
 void PoliciesAverages (vector<Agent> Market, int NumberOfAgents, int NumberOfStocks, int Percentile) {
-    vector<gsl_matrix *> Res;
+    vector<gsl_matrix*> Res;
     // Most successful and less successful agents
     vector<double> CapitalEvolution;
     for (int i=0; i<NumberOfAgents ; i++) {
@@ -4000,10 +4000,10 @@ void PoliciesAverages (vector<Agent> Market, int NumberOfAgents, int NumberOfSto
     int AgentNumberPercentile=Percentile*NumberOfAgents/100;
     if (AgentNumberPercentile<=5) {AgentNumberPercentile=5;};
     
-    gsl_matrix * FPoliciesAverageBest = gsl_matrix_calloc (Market[0].FA, Market[0].FS); // Heat maps
-    gsl_matrix * FPoliciesAverageWorst = gsl_matrix_calloc (Market[0].FA, Market[0].FS); // Heat maps
-    gsl_matrix * TPoliciesAverageBest = gsl_matrix_calloc (Market[0].TA, Market[0].TS); // Heat maps
-    gsl_matrix * TPoliciesAverageWorst = gsl_matrix_calloc (Market[0].TA, Market[0].TS); // Heat maps
+    gsl_matrix* FPoliciesAverageBest = gsl_matrix_calloc (Market[0].FA, Market[0].FS); // Heat maps
+    gsl_matrix* FPoliciesAverageWorst = gsl_matrix_calloc (Market[0].FA, Market[0].FS); // Heat maps
+    gsl_matrix* TPoliciesAverageBest = gsl_matrix_calloc (Market[0].TA, Market[0].TS); // Heat maps
+    gsl_matrix* TPoliciesAverageWorst = gsl_matrix_calloc (Market[0].TA, Market[0].TS); // Heat maps
 
     for (int j=0; j<NumberOfStocks; j++) {
         // Computing the F() policies averages as heat maps for Best and Worst populations
@@ -4045,7 +4045,7 @@ void PoliciesAverages (vector<Agent> Market, int NumberOfAgents, int NumberOfSto
 
 // Function to Simulate a given Market over a given number of time steps
 //pNEBLossAversion24 => pNEBLossAversion, pNEBDelayDiscounting56=>pNEBPositivity, pNEB89=>pNEBDelayDiscounting
-vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int pNEB, double LearningRateScale, int s, int Trunk, int MetaorderImpact) {
+vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int pNEB, double LearningRateScale, int s, int Trunk, int MetaorderImpact) {
     
     int pBots=100; int pNEBLossAversion=0; int pNEBPositivity=0; int pNEBNegativity=0; int pNEBDelayDiscounting=0; int pNEBFear=0; int pNEBGreed=0; int pNEBLearningRate=0;
     if (TypeNEB=="Classic") {pBots=80; pNEBLossAversion=3; pNEBPositivity=3; pNEBNegativity=3; pNEBDelayDiscounting=3; pNEBFear=3; pNEBGreed=3; pNEBLearningRate=2;}
@@ -4090,7 +4090,7 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
      string N2=to_string(t);
      string N3=".txt";
      N1+=N2+N3;
-     const char * Title = N1.c_str();
+     const char* Title = N1.c_str();
      ofstream outputLog(Title, ofstream::app);
      */
     // INITIALIZING CLOCK (SS1)
@@ -4108,35 +4108,35 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     //system("CLS");
     cout << "INITIALIZED CLOCK..." << endl;
     
-    //gsl_rng * r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng * r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); // gsl_rng_set(const gsl_rng * r, unsigned long int s)
+    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r = make_rng();
+    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); // gsl_rng_set(const gsl_rng* r, unsigned long int s)
     vector<double> StockVlm, StockVlmInit, StockIndex, StockLOD, TotalStockQuantities;
     //string TimeScope="NoTimeScope";
     
     // INITIALIZING EACH AGENT
-    gsl_matrix * ReflexiveValues = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all bids
-    gsl_matrix * AverageBids = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all bids
-    gsl_matrix * AverageAsks = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all asks
-    gsl_matrix * AverageTopBids = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all bids in buisness
-    gsl_matrix * AverageTopAsks = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all asks in buisness
-    gsl_matrix * MedianTopBids = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the median of all bids in buisness
-    gsl_matrix * MedianTopAsks = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the median of all asks in buisness
-    gsl_matrix * HighestBid = gsl_matrix_calloc (NumberOfStocks, Time);
-    gsl_matrix * LowestAsk = gsl_matrix_calloc (NumberOfStocks, Time);
-    gsl_matrix * GSLTrueValues = gsl_matrix_calloc (NumberOfStocks, Time);
-    gsl_matrix * Spread = gsl_matrix_calloc (NumberOfStocks, Time);
-    gsl_matrix * TotalStockQuantityTraded = gsl_matrix_calloc (NumberOfStocks, Time);
-    gsl_matrix * VolumesDistributions = gsl_matrix_alloc (2*NumberOfStocks, Time);
-    gsl_matrix * ReturnsDistributions = gsl_matrix_alloc (2*NumberOfStocks, Time);
-    gsl_matrix * AutoCorrLagPVolumes = gsl_matrix_alloc (2*NumberOfStocks, Time);
-    gsl_matrix * CapitalEvolution = gsl_matrix_calloc (NumberOfAgents, Time);
-    gsl_matrix * Bankruptcies = gsl_matrix_calloc (2, Time); // Bankruptcies
+    gsl_matrix* ReflexiveValues = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all bids
+    gsl_matrix* AverageBids = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all bids
+    gsl_matrix* AverageAsks = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all asks
+    gsl_matrix* AverageTopBids = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all bids in buisness
+    gsl_matrix* AverageTopAsks = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all asks in buisness
+    gsl_matrix* MedianTopBids = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the median of all bids in buisness
+    gsl_matrix* MedianTopAsks = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the median of all asks in buisness
+    gsl_matrix* HighestBid = gsl_matrix_calloc (NumberOfStocks, Time);
+    gsl_matrix* LowestAsk = gsl_matrix_calloc (NumberOfStocks, Time);
+    gsl_matrix* GSLTrueValues = gsl_matrix_calloc (NumberOfStocks, Time);
+    gsl_matrix* Spread = gsl_matrix_calloc (NumberOfStocks, Time);
+    gsl_matrix* TotalStockQuantityTraded = gsl_matrix_calloc (NumberOfStocks, Time);
+    gsl_matrix* VolumesDistributions = gsl_matrix_alloc (2*NumberOfStocks, Time);
+    gsl_matrix* ReturnsDistributions = gsl_matrix_alloc (2*NumberOfStocks, Time);
+    gsl_matrix* AutoCorrLagPVolumes = gsl_matrix_alloc (2*NumberOfStocks, Time);
+    gsl_matrix* CapitalEvolution = gsl_matrix_calloc (NumberOfAgents, Time);
+    gsl_matrix* Bankruptcies = gsl_matrix_calloc (2, Time); // Bankruptcies
     gsl_matrix_set(Bankruptcies, 1, 0, 100);
-    gsl_matrix * BiasedDelta = gsl_matrix_alloc (NumberOfStocks, Time);
-    gsl_matrix * TrueDelta = gsl_matrix_alloc (NumberOfStocks, Time);
-    vector<gsl_matrix *> PDs;
-    vector<gsl_matrix *> PAverages;
+    gsl_matrix* BiasedDelta = gsl_matrix_alloc (NumberOfStocks, Time);
+    gsl_matrix* TrueDelta = gsl_matrix_alloc (NumberOfStocks, Time);
+    vector<gsl_matrix*> PDs;
+    vector<gsl_matrix*> PAverages;
     
     // Generating the Future parameter of each agent according to quasi-hyperbolic discounting
     //vector<double> Gen = STLRandom (NumberOfStocks, "Uniform", "NoPlot");
@@ -4151,7 +4151,7 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
      //Tau/=2; // AAA
      vector<int> QH = Quasihyperbolic(NumberOfAgents, Tau, 1, 0.8, 1000*(gsl_rng_uniform (r)+0.0001)); // Beta=1, Delta=0.8 for the Hyperbolic discounting model
      vector<int> Reflex = Quasihyperbolic(NumberOfAgents, 100, 1, 0.75, 1000*(gsl_rng_uniform (r)+0.0001)); // e.g Beta=1, Delta=0.75 yields ~75% of agents with reflexivity below 0.5 // GGG
-     //gsl_matrix * QHPlot = gsl_matrix_calloc (1, int(QH.size())); for (int i=0; i<int(QH.size()); i++) {gsl_matrix_set(QHPlot, 0, i, QH[i]);}; PlotGSLMatrix(QHPlot, "QHPlot.xls", 1); exit(0);
+     //gsl_matrix* QHPlot = gsl_matrix_calloc (1, int(QH.size())); for (int i=0; i<int(QH.size()); i++) {gsl_matrix_set(QHPlot, 0, i, QH[i]);}; PlotGSLMatrix(QHPlot, "QHPlot.xls", 1); exit(0);
      //vector<int> Quasihyperbolic(int NumberOfAgents, int Time, double Beta, double Delta, double Seed) {
      */
     
@@ -4333,7 +4333,7 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
         vector<double> S = PoissonRandomWalk (100, Week+HPTrueMu*3*Month*Gen2[j], int(0.1*Time/250+0.9*Gen2[j]*Time/250), Time, 1000*Gen2[j]);
         for (int t=0; t<Time; t++) {gsl_matrix_set (GSLTrueValues, j, t, S[t]);};
     };
-    vector<vector<double> > TrueValues = GSLMatrixToSTLMatrix(GSLTrueValues);
+    vector<vector<double>> TrueValues = GSLMatrixToSTLMatrix(GSLTrueValues);
     cout << "INITIALIZED STOCKS TRUE VALUES..." << endl;
     
     
@@ -4358,9 +4358,9 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     
     
     // Checking on distribution of agents Future parameter
-    //gsl_matrix * M=gsl_matrix_alloc (1, NumberOfAgents);
+    //gsl_matrix* M=gsl_matrix_alloc (1, NumberOfAgents);
     //for (int i=0; i<NumberOfAgents; i++) {gsl_matrix_set (M, 0, i, Market[i].Future);};
-    //gsl_matrix * D = gsl_matrix_alloc (2, NumberOfAgents);
+    //gsl_matrix* D = gsl_matrix_alloc (2, NumberOfAgents);
     //D = GSLDistribution(M, 10);
     //PlotGSLMatrix(M, "MM.xls", 1);
     //PlotGSLMatrix(D, "DD.xls", 1);
@@ -4400,13 +4400,13 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     cout << "INITIALIZED MARKET INDICATORS..." << endl;
     
     // INITIALIZATION OF MARKETEVOLUTION
-    vector<vector<Agent> > MarketEvolution;
+    vector<vector<Agent>> MarketEvolution;
     MarketEvolution.push_back(Market);
     cout << "INITIALIZED MARKET EVOLUTION..." << endl;
     
     
     // INITIALIZATION OF THE ORDER BOOK
-    vector<vector<StockOrderBook> > FullOrderBook; // This is our final order book with many pages t
+    vector<vector<StockOrderBook>> FullOrderBook; // This is our final order book with many pages t
     vector<StockOrderBook> TempOrderBook; // This is the order book at time t, composed of many order books (one for each stock)
     for (int j=0; j<NumberOfStocks; j++) {
         StockOrderBook TempStockOrderBook;
@@ -4801,7 +4801,7 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
         if (Plot=="On") {outputLog << "t=" << t << ", Indicator: CapitalEvolution" << endl;};
         
         // RELATIVE MAX DRAWDOWN
-        // The (relative) max drawdown is the largest (adjusted to market) cumulated loss over a given period. We consider each year (after the second year) the lowest value of gsl_matrix * CapitalEvolution, and if this measure is below 100-Drawdown the agent reaches bankruptcy.
+        // The (relative) max drawdown is the largest (adjusted to market) cumulated loss over a given period. We consider each year (after the second year) the lowest value of gsl_matrix* CapitalEvolution, and if this measure is below 100-Drawdown the agent reaches bankruptcy.
         
         
         // Computing the average of the biased values of all agents
@@ -4867,8 +4867,8 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     
     
     // MarketBidAskTopBidTopAskTrue of j stocks, and Spread of j stocks
-    gsl_matrix * MarketBidAskTrue = gsl_matrix_alloc (12*NumberOfStocks, Time);
-    gsl_matrix * MarketBidAskTrue2 = gsl_matrix_alloc (12*NumberOfStocks, Time-LearningPhase); // Without LearningPhase
+    gsl_matrix* MarketBidAskTrue = gsl_matrix_alloc (12*NumberOfStocks, Time);
+    gsl_matrix* MarketBidAskTrue2 = gsl_matrix_alloc (12*NumberOfStocks, Time-LearningPhase); // Without LearningPhase
     for (int j=0; j<NumberOfStocks; j++) {
         int Modulo=12*j;
         for (int t=0; t<Time; t++) {
@@ -4907,8 +4907,8 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     
     // Metrics: log-returns (& AC), absolute log-returns (& AC), volatilities (& AC), volumes (& AC)
     // Calibration: we can make distributions of stacked real/simulated log-returns, absolute log-returns, volatilities, volumes, but not AC's thereof.
-    gsl_matrix * Moments = gsl_matrix_calloc (54*NumberOfStocks, Time);
-    gsl_matrix * Moments2 = gsl_matrix_calloc (54*NumberOfStocks, Time-LearningPhase);
+    gsl_matrix* Moments = gsl_matrix_calloc (54*NumberOfStocks, Time);
+    gsl_matrix* Moments2 = gsl_matrix_calloc (54*NumberOfStocks, Time-LearningPhase);
     for (int j=0; j<NumberOfStocks; j++) {
         int Modulo=12*j; // Size1 of MarketBidAskTrue above
         int ModuloMoments=54*j; // Size1 of Moments above
@@ -4995,7 +4995,7 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     
     // Meta order impact
     // We want to see at a given time t where a large order is sent (say once per year for each simulation) the metaorder impact on prices i1(t)=sigma_prices[t->t+tau]/sigma_prices[t-tau->t] (and likewise i2(t) on volumes) as a function of the metaorder size j(t)=Q_order(t)/Q_total(t), sigma being the standard deviation (of prices or volumes) over an interval of size tau, and Q being the stock quantity. For each of the S=20 simulation runs, we record and output the last 5 such tuples (j, i1(tau=w), i1(tau=2w), i1(tau=m), i1(tau=3m), i1(tau=6m), i2(tau=w), i2(tau=2w), i2(tau=m), i2(tau=3m), i2(tau=6m)), disregarding the first 5 because of being not yet learned by the agents. We do 4 such S=20 simulation runs for values of j=5%, 10%, 25%, 50%. The metaorder is sent during each run once every year by a random (yet non-bankrupt) agent whose stock holding is suddenly increased to these values (5%, 10%, 25%, 50%) of the total share outstanding at time t and then revert back to its value at time t+1.
-    gsl_matrix * MetaorderImpactResults = gsl_matrix_calloc (16, int(MetaorderInjectionTimes.size()));
+    gsl_matrix* MetaorderImpactResults = gsl_matrix_calloc (16, int(MetaorderInjectionTimes.size()));
     int Tau=Week;
     for (int k=0; k<int(MetaorderInjectionTimes.size()); k++) {
         // Quantities
@@ -5027,8 +5027,8 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     // Bull market: -20% then +20% then -20% =>
     // Crash: sudden -20% => return Pt-20% and then no Pt+10% after a month
     // Recession: sudden -20% with no recovery =>
-    gsl_matrix * SystemicRisk = gsl_matrix_calloc (15*NumberOfStocks, Time-LearningPhase); // Without LearningPhase
-    gsl_matrix * Prices = gsl_matrix_calloc (1, Time-LearningPhase); for (int t=0; t<Time-LearningPhase; t++) {gsl_matrix_set (Prices, 0, t, gsl_matrix_get (ReflexiveValues, 0, t+LearningPhase));};
+    gsl_matrix* SystemicRisk = gsl_matrix_calloc (15*NumberOfStocks, Time-LearningPhase); // Without LearningPhase
+    gsl_matrix* Prices = gsl_matrix_calloc (1, Time-LearningPhase); for (int t=0; t<Time-LearningPhase; t++) {gsl_matrix_set (Prices, 0, t, gsl_matrix_get (ReflexiveValues, 0, t+LearningPhase));};
     for (int j=0; j<NumberOfStocks; j++) {
         int Modulo=15*j; int Modulo2=54*j; double Crash=0; double TrendCounter=0;
         for (int t=0; t<Time-LearningPhase; t++) {
@@ -5060,17 +5060,17 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
         
         
         PlotGSLMatrix(Prices, "Prices.xls", 1);
-        //gsl_matrix * Hawkes = HistoricalIntensity(Prices, 0);
+        //gsl_matrix* Hawkes = HistoricalIntensity(Prices, 0);
         //for (int t=0; t<Time-LearningPhase; t++) {gsl_matrix_set(SystemicRisk, 14+Modulo, t, gsl_matrix_get (Hawkes, 0, t));};
         
         // vector<double> V, GoF; for (int t=0; t<Time-LearningPhase; t++) {V.push_back(gsl_matrix_get (Prices, 0, t)); GoF.push_back(1);};
-        // vector<double> * pV= & V;
+        // vector<double>* pV= &V;
         // const double Rescale=10; // Rescale factor
         // const double Threshold=0.1; // Threshold (0.1)
         // const size_t NumIteration=10000000; // Number of iterations of the minimizer (stops before once a minimum is found)
-        // double R; double * pR = & R; // Hawkes process parameters (does not need to be initialized)
-        // vector<double> & pGoF = GoF; // Goodness of fit
-        // vector<double> * pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
+        // double R; double* pR = &R; // Hawkes process parameters (does not need to be initialized)
+        // vector<double>& pGoF = GoF; // Goodness of fit
+        // vector<double>* pRes = Intensity (pV, Rescale, Threshold, NumIteration, pR, pGoF);
         // for (int t=0; t<Time-LearningPhase; t++) {gsl_matrix_set (SystemicRisk, 14, t, (*pRes)[t]);}; // Hawkes process intensity in column 9
         
         // for (int t=0; t<Time-LearningPhase; t++) { // Hawkes process intensity in column 9
@@ -5117,8 +5117,8 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     }; // closes k loop
     int AgentNumberPercentile=Percentile*NumberOfAgents/100;
     if (AgentNumberPercentile<=5) {AgentNumberPercentile=5;};
-    gsl_matrix * MostSuccessful = gsl_matrix_alloc (AgentNumberPercentile, Time);
-    gsl_matrix * LessSuccessful = gsl_matrix_alloc (AgentNumberPercentile, Time);
+    gsl_matrix* MostSuccessful = gsl_matrix_alloc (AgentNumberPercentile, Time);
+    gsl_matrix* LessSuccessful = gsl_matrix_alloc (AgentNumberPercentile, Time);
     for (int t=0; t<Time; t++) {
         for (int i=0; i<AgentNumberPercentile; i++) {
             gsl_matrix_set (MostSuccessful, i, t, gsl_matrix_get(CapitalEvolution, DescendingRank[i], t));};
@@ -5128,8 +5128,8 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     
     
     //Plot the distribution of each parameter of the AgentNumberPercentile% most/less successful agents (cf. Versatility, Gesture, and all NEBs: NEB1, NEBLossAversion, NEB3, NEB4, NEBPositivity, NEB6, NEB1p, NEB3p, NEB4p, NEBPositivity, NEBLearningRate, NEB8, NEB9).
-    gsl_matrix * MostSuccessfulParameters = gsl_matrix_alloc (7, AgentNumberPercentile);
-    gsl_matrix * LessSuccessfulParameters = gsl_matrix_alloc (7, AgentNumberPercentile);
+    gsl_matrix* MostSuccessfulParameters = gsl_matrix_alloc (7, AgentNumberPercentile);
+    gsl_matrix* LessSuccessfulParameters = gsl_matrix_alloc (7, AgentNumberPercentile);
     for (int i=0; i<AgentNumberPercentile; i++) {gsl_matrix_set (MostSuccessfulParameters, 0, i, Market[DescendingRank[i]].Future);};
     for (int i=0; i<AgentNumberPercentile; i++) {gsl_matrix_set (LessSuccessfulParameters, 0, i, Market[DescendingRank[i+NumberOfAgents-AgentNumberPercentile]].Future);};
     gsl_matrix_set (MostSuccessfulParameters, 1, 0, 0); // To make sure the distributions will be between 0 and 100!! (X1<=X<X2)
@@ -5152,15 +5152,15 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     
     
     // Ploting the distributions of these parameters
-    gsl_matrix * MostSuccessfulParametersDistributions = gsl_matrix_alloc (AgentNumberPercentile, 2*7);
-    gsl_matrix * LessSuccessfulParametersDistributions = gsl_matrix_alloc (AgentNumberPercentile, 2*7);
+    gsl_matrix* MostSuccessfulParametersDistributions = gsl_matrix_alloc (AgentNumberPercentile, 2*7);
+    gsl_matrix* LessSuccessfulParametersDistributions = gsl_matrix_alloc (AgentNumberPercentile, 2*7);
     MostSuccessfulParametersDistributions = GSLDistribution(MostSuccessfulParameters, 10);
     LessSuccessfulParametersDistributions = GSLDistribution(LessSuccessfulParameters, 10);
     //int pBots, int pNEBLossAversion24, int pNEBDelayDiscounting56, int pNEB89, int pNEBLossAversion23456, int pNEBLossAversion2489, int pNEBDelayDiscounting5689
     // Zipf's Law and Pareto's Principle
-    gsl_matrix * SortedNAV = gsl_matrix_alloc (1, NumberOfAgents);
-    gsl_matrix * ZipfDistribution = gsl_matrix_alloc (2, 50);
-    gsl_matrix * Pareto = gsl_matrix_alloc (2, NumberOfAgents); // Percentage of agents who own a percentage of total market capital (80% should own around 20% according to Pareto's Principle)
+    gsl_matrix* SortedNAV = gsl_matrix_alloc (1, NumberOfAgents);
+    gsl_matrix* ZipfDistribution = gsl_matrix_alloc (2, 50);
+    gsl_matrix* Pareto = gsl_matrix_alloc (2, NumberOfAgents); // Percentage of agents who own a percentage of total market capital (80% should own around 20% according to Pareto's Principle)
     double TotalCapital=0;
     for (int i=0; i<NumberOfAgents; i++) {
         TotalCapital+=Market[DescendingRank[i]].Capital();
@@ -5175,10 +5175,10 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
         gsl_matrix_set (Pareto, 1, i, TempTotalCapital);
     };
     ZipfDistribution = GSLDistribution(SortedNAV, 50); // Distribution
-    gsl_matrix * MAINDistribution = GSLDistribution(MarketBidAskTrue2, 50); // Distribution of MAIN
-    gsl_matrix * MostSuccessfulDistribution = GSLDistribution(MostSuccessfulParameters, 50); // Distribution of MostSuccessfulParameters
-    gsl_matrix * LessSuccessfulDistribution = GSLDistribution(LessSuccessfulParameters, 50); // Distribution of LessSuccessfulParameters
-    gsl_matrix * MomentsDistribution = GSLDistribution(Moments2, 50); // Distribution of Moments
+    gsl_matrix* MAINDistribution = GSLDistribution(MarketBidAskTrue2, 50); // Distribution of MAIN
+    gsl_matrix* MostSuccessfulDistribution = GSLDistribution(MostSuccessfulParameters, 50); // Distribution of MostSuccessfulParameters
+    gsl_matrix* LessSuccessfulDistribution = GSLDistribution(LessSuccessfulParameters, 50); // Distribution of LessSuccessfulParameters
+    gsl_matrix* MomentsDistribution = GSLDistribution(Moments2, 50); // Distribution of Moments
     
     
     // Output // XYZ
@@ -5281,7 +5281,7 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
     cout << "Outputted .xls files..." << endl;
     
     // BACKUP OF MATRIX RESULTS
-    vector<gsl_matrix *> MatrixResults;
+    vector<gsl_matrix*> MatrixResults;
     MatrixResults.push_back(Moments2);
     MatrixResults.push_back(MostSuccessfulParameters);
     MatrixResults.push_back(LessSuccessfulParameters);
@@ -5312,14 +5312,14 @@ vector<gsl_matrix *> MarketSimulator (int NumberOfAgents, int NumberOfStocks, in
 
 
 
-// Each run of MarketSimulator() outputs vector<gsl_matrix *> MatrixResults. We then compute S of these runs and save them in a vector of length S called vector<vector<gsl_matrix *> > MultiSim. Now function Bollinger() gets that MultiSim and accesses the m matrix of all its MatrixResults simulations (m=0 corresponds to MarketBidAskTrue, m=1 to MostSuccessfulParameters, m=2 to LessSuccessfulParameters, m=3 to SortedNAV). It then accesses all the cxr elements of all S matrix m and outputs their mean in a matrix of same dimension than matrix m.
-vector<gsl_matrix *> Bollinger (vector<vector<gsl_matrix *> > MultiSim, int m) {
-    vector<gsl_matrix * > Res;
-    gsl_matrix * ResMean = gsl_matrix_calloc (MultiSim[0][m]->size1, MultiSim[0][m]->size2);
-    gsl_matrix * ResMeanPlusSigma = gsl_matrix_calloc (MultiSim[0][m]->size1, MultiSim[0][m]->size2);
-    gsl_matrix * ResMeanMinusSigma = gsl_matrix_calloc (MultiSim[0][m]->size1, MultiSim[0][m]->size2);
-    gsl_matrix * ResMeanPlus2Sigma = gsl_matrix_calloc (MultiSim[0][m]->size1, MultiSim[0][m]->size2);
-    gsl_matrix * ResMeanMinus2Sigma = gsl_matrix_calloc (MultiSim[0][m]->size1, MultiSim[0][m]->size2);
+// Each run of MarketSimulator() outputs vector<gsl_matrix*> MatrixResults. We then compute S of these runs and save them in a vector of length S called vector<vector<gsl_matrix*>> MultiSim. Now function Bollinger() gets that MultiSim and accesses the m matrix of all its MatrixResults simulations (m=0 corresponds to MarketBidAskTrue, m=1 to MostSuccessfulParameters, m=2 to LessSuccessfulParameters, m=3 to SortedNAV). It then accesses all the cxr elements of all S matrix m and outputs their mean in a matrix of same dimension than matrix m.
+vector<gsl_matrix*> Bollinger (vector<vector<gsl_matrix*>> MultiSim, int m) {
+    vector<gsl_matrix* > Res;
+    gsl_matrix* ResMean = gsl_matrix_calloc (MultiSim[0][m]->size1, MultiSim[0][m]->size2);
+    gsl_matrix* ResMeanPlusSigma = gsl_matrix_calloc (MultiSim[0][m]->size1, MultiSim[0][m]->size2);
+    gsl_matrix* ResMeanMinusSigma = gsl_matrix_calloc (MultiSim[0][m]->size1, MultiSim[0][m]->size2);
+    gsl_matrix* ResMeanPlus2Sigma = gsl_matrix_calloc (MultiSim[0][m]->size1, MultiSim[0][m]->size2);
+    gsl_matrix* ResMeanMinus2Sigma = gsl_matrix_calloc (MultiSim[0][m]->size1, MultiSim[0][m]->size2);
     int MSsize=int(MultiSim.size());
     for (int c=0; c<int(MultiSim[0][m]->size1); c++) {
         for (int r=0; r<int(MultiSim[0][m]->size2); r++) {
@@ -5344,10 +5344,10 @@ vector<gsl_matrix *> Bollinger (vector<vector<gsl_matrix *> > MultiSim, int m) {
 
 
 // Computing mean, variance, skewness, kurtosis, median, q5, q25, q75, q95 of every column of a matrix M
-gsl_matrix * Momenta (gsl_matrix * M) {
+gsl_matrix* Momenta (gsl_matrix* M) {
     int Size1=int(M->size1);
     int Size2=int(M->size2);
-    gsl_matrix * Res = gsl_matrix_alloc (2*Size1, 9);
+    gsl_matrix* Res = gsl_matrix_alloc (2*Size1, 9);
     for (int i=0; i<Size1; i++) {
         double Mean=0; double Variance=0; double Stdev=0; double Skewness=0; double Kurtosis=0;
         for (int j=0; j<Size2; j++) {Mean+=gsl_matrix_get (M, i, j)/Size2;};
@@ -5380,12 +5380,12 @@ gsl_matrix * Momenta (gsl_matrix * M) {
 
 
 
-// Each run of MarketSimulator() outputs vector<gsl_matrix *> MatrixResults. We then compute S of these runs and save them in a vector of length S called vector<vector<gsl_matrix *> > MultiSim. Now function JointDistributions() gets that MultiSim and accesses the m matrix of all its MatrixResults simulations. It then accesses the [c,r]-element of all S matrices m and outputs their joint distributions over all S matrices and output a matrix similar to m but with twice its number of columns (each column has a range for 10 bins between Xmin and Xmax, and another for the number of counts per bin)
-void JointDistributions (vector<vector<gsl_matrix *> > MultiSim, int m, int Precision) {
+// Each run of MarketSimulator() outputs vector<gsl_matrix*> MatrixResults. We then compute S of these runs and save them in a vector of length S called vector<vector<gsl_matrix*>> MultiSim. Now function JointDistributions() gets that MultiSim and accesses the m matrix of all its MatrixResults simulations. It then accesses the [c,r]-element of all S matrices m and outputs their joint distributions over all S matrices and output a matrix similar to m but with twice its number of columns (each column has a range for 10 bins between Xmin and Xmax, and another for the number of counts per bin)
+void JointDistributions (vector<vector<gsl_matrix*>> MultiSim, int m, int Precision) {
     int MSsize = int(MultiSim.size());
     int Size1=int(MultiSim[0][m]->size1);
     int Size2=int(MultiSim[0][m]->size2);
-    gsl_matrix * Res = gsl_matrix_alloc (Size1, (MSsize*Size2));
+    gsl_matrix* Res = gsl_matrix_alloc (Size1, (MSsize*Size2));
     for (int s=0; s<MSsize; s++) {
         for (int c=0; c<Size1; c++) {
             for (int r=0; r<Size2; r++) {
@@ -5394,7 +5394,7 @@ void JointDistributions (vector<vector<gsl_matrix *> > MultiSim, int m, int Prec
         }; // closes c loop
     }; // closes s loop
     //PlotGSLMatrix(Res, "StackedRes.xls", 1);
-    gsl_matrix * JointDistributions = GSLDistribution(Res, Precision);
+    gsl_matrix* JointDistributions = GSLDistribution(Res, Precision);
     //string A = "JointDistributions_m"; string B = to_string(m); string C = ".xls"; A+=B+C;
     string A = "JointDistributions.xls";
     ofstream outputJointDistribution(Machine+"JointDistributions.xls", ofstream::app);
@@ -5430,8 +5430,8 @@ void JointDistributions (vector<vector<gsl_matrix *> > MultiSim, int m, int Prec
 
 
 // Takes a string name of the csv file as input (N2 can be something like "AAPL.csv") and returns a vector<double> for a matrix of dimension MxN at batch m (in a file of stacked matrices). For Input() to work we must 1- pre-specify the dimensions of the input, 2- the input must be converted from xls to csv (by changing the name file, not via LibreOffice)
-gsl_matrix * InputOLD (int M, int N, string S1, int m) {
-    gsl_matrix * Res = gsl_matrix_alloc (M, N);
+gsl_matrix* InputOLD (int M, int N, string S1, int m) {
+    gsl_matrix* Res = gsl_matrix_alloc (M, N);
     string S2=Machine; S2+=S1; ifstream FileInput (S2);
     string Line;
     int j = -1 + m*(N+3);
@@ -5456,8 +5456,8 @@ gsl_matrix * InputOLD (int M, int N, string S1, int m) {
 
 
 // Takes a string name of the csv file as input (N2 can be something like "AAPL.csv") and returns a vector<double> for a matrix of dimension MxN at batch m (in a file of stacked matrices). For Input() to work we must 1- pre-specify the dimensions of the input, 2- the input must be converted from xls to csv (by changing the name file, not via LibreOffice)
-gsl_matrix * Input (int M, int N, string S1, int m, int Letter, int Opt, int Period) {
-    gsl_matrix * Res = gsl_matrix_alloc (M, N);
+gsl_matrix* Input (int M, int N, string S1, int m, int Letter, int Opt, int Period) {
+    gsl_matrix* Res = gsl_matrix_alloc (M, N);
     string S2=Machine; S2+=S1; ifstream FileInput (S2);
     string Line;
     //for (int j=m*(N+2); j<m*(N+2)+Period; j++) {
@@ -5483,7 +5483,7 @@ gsl_matrix * Input (int M, int N, string S1, int m, int Letter, int Opt, int Per
             }
         }
     }
-    gsl_matrix * Res2 = gsl_matrix_alloc (M, Period);
+    gsl_matrix* Res2 = gsl_matrix_alloc (M, Period);
     for (int i=0; i<M; i++) {
         for (int j=N-Period; j<N; j++) {
             gsl_matrix_set (Res2, i, j-N+Period, gsl_matrix_get (Res, i, j));
@@ -5499,8 +5499,8 @@ gsl_matrix * Input (int M, int N, string S1, int m, int Letter, int Opt, int Per
 
 
 // Takes a string name of the csv file as input (N2 can be something like "AAPL.csv") and returns a vector<double> for a matrix of dimension MxN at batch m (in a file of stacked matrices). For Input() to work we must 1- pre-specify the dimensions of the input, 2- the input must be converted from xls to csv (by changing the name file, not via LibreOffice)
-gsl_matrix * CSVInput (int M, int N, string S1, int Opt) {
-    gsl_matrix * Res = gsl_matrix_alloc (M, N);
+gsl_matrix* CSVInput (int M, int N, string S1, int Opt) {
+    gsl_matrix* Res = gsl_matrix_alloc (M, N);
     string S2=Machine; S2+=S1; ifstream FileInput (S2);
     string Line;
     for (int j=0; j<=N; j++) {
@@ -5523,7 +5523,7 @@ gsl_matrix * CSVInput (int M, int N, string S1, int Opt) {
         }
     }
     // Inverting the matrix column elements
-    gsl_matrix * Res2 = gsl_matrix_alloc (M, N);
+    gsl_matrix* Res2 = gsl_matrix_alloc (M, N);
     for (int i=0; i<M; i++) {
         for (int j=0; j<N; j++) {
             gsl_matrix_set (Res2, i, j, gsl_matrix_get (Res, i, N-j-1));
@@ -5574,7 +5574,7 @@ double TotalCombination (int n) {
  * @brief Number of all poissble k-combinations of a set of n elements.
  */
 void TotalCombinationMatrix (int N) {
-    gsl_matrix * Res = gsl_matrix_calloc (1, N+1);
+    gsl_matrix* Res = gsl_matrix_calloc (1, N+1);
     for (int k=1; k<=N; k++) {
         gsl_matrix_set (Res, 0, k, TotalCombination (k));
         cout << "Combination at N=" << k << "/" << N << endl;
@@ -5585,13 +5585,13 @@ void TotalCombinationMatrix (int N) {
 
 
 void HPMarketSimulatorAll (int HPI, int HPGesture, double HPTrueMu, int HPAccuracy, int HPTime, int HPLiquidationFloor, string TypeNEB, string Leader, int ClusterLimit, int pNEB, double Rate, int S) {
-    vector<vector<gsl_matrix *> > MultiSim;
+    vector<vector<gsl_matrix*>> MultiSim;
     // int NEB0=50; int NEB1=13; int NEBLossAversion=13; int NEB3=12; int NEB4=12; // resp. bots, conservatism bias, loss aversion, positivity bias
     // HPAccuracy=9, 10, 11, 13 => probability of 0.2, 0.75, 1, 2 per year of bubble burst
     int J=1; double r=0.01; // int T=LearningPhase+2875; int LearningPhase=1000;
     for (int s=0; s<S; s++) {
         //MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int s)
-        vector<gsl_matrix *> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", "PDOff", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, 0);
+        vector<gsl_matrix*> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", "PDOff", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, 0);
         MultiSim.push_back(MSim); //delete MSim[0]; MSim[0]=NULL; MSim.erase(MSim.begin(), MSim.end());
     };
     for (int k=0; k<int(MultiSim[0].size()); k++) {JointDistributions (MultiSim, k, 100);};
@@ -5615,13 +5615,13 @@ void HPMarketSimulatorAll (int HPI, int HPGesture, double HPTrueMu, int HPAccura
     */
 };
 void HPMarketSimulatorAll2 (int HPI, int HPGesture, double HPTrueMu, int HPAccuracy, int HPTime, int HPLiquidationFloor, string TypeNEB, string Leader, int ClusterLimit, int pNEB, string PD, double Rate, int S) {
-    vector<vector<gsl_matrix *> > MultiSim;
+    vector<vector<gsl_matrix*>> MultiSim;
     // int NEB0=50; int NEB1=13; int NEBLossAversion=13; int NEB3=12; int NEB4=12; // resp. bots, conservatism bias, loss aversion, positivity bias
     // HPAccuracy=9, 10, 11, 13 => probability of 0.2, 0.75, 1, 2 per year of bubble burst
     int J=1; double r=0.01; // int T=LearningPhase+2875; int LearningPhase=1000;
     for (int s=0; s<S; s++) {
         //MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int s)
-        vector<gsl_matrix *> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", PD, TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, 0);
+        vector<gsl_matrix*> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", PD, TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, 0);
         MultiSim.push_back(MSim); //delete MSim[0]; MSim[0]=NULL; MSim.erase(MSim.begin(), MSim.end());
     };
     for (int k=0; k<int(MultiSim[0].size()); k++) {JointDistributions (MultiSim, k, 100);};
@@ -5645,13 +5645,13 @@ void HPMarketSimulatorAll2 (int HPI, int HPGesture, double HPTrueMu, int HPAccur
      */
 };
 void MarketSimulatorTrunk (int HPI, int HPGesture, double HPTrueMu, int HPAccuracy, int HPTime, int HPLiquidationFloor, string TypeNEB, string Leader, int ClusterLimit, int pNEB, double Rate, int S, int Trunk) {
-    vector<vector<gsl_matrix *> > MultiSim;
+    vector<vector<gsl_matrix*>> MultiSim;
     // int NEB0=50; int NEB1=13; int NEBLossAversion=13; int NEB3=12; int NEB4=12; // resp. bots, conservatism bias, loss aversion, positivity bias
     // HPAccuracy=9, 10, 11, 13 => probability of 0.2, 0.75, 1, 2 per year of bubble burst
     int J=1; double r=0.01; // int T=LearningPhase+2875; int LearningPhase=1000;
     for (int s=0; s<S; s++) {
         //MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int s)
-        vector<gsl_matrix *> MSim = MarketSimulator (HPI, J, HPTime, r, "On", "PDOff", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, Trunk, 0);
+        vector<gsl_matrix*> MSim = MarketSimulator (HPI, J, HPTime, r, "On", "PDOff", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, Trunk, 0);
         MultiSim.push_back(MSim); //delete MSim[0]; MSim[0]=NULL; MSim.erase(MSim.begin(), MSim.end());
     };
     for (int k=0; k<int(MultiSim[0].size()); k++) {JointDistributions (MultiSim, k, 100);};
@@ -5676,13 +5676,13 @@ void MarketSimulatorTrunk (int HPI, int HPGesture, double HPTrueMu, int HPAccura
 };
 
 void HPMarketSimulatorAllPD (int HPI, int HPGesture, double HPTrueMu, int HPAccuracy, int HPTime, int HPLiquidationFloor, string TypeNEB, string Leader, int ClusterLimit, int pNEB, double Rate, int S) {
-    vector<vector<gsl_matrix *> > MultiSim;
+    vector<vector<gsl_matrix*>> MultiSim;
     // int NEB0=50; int NEB1=13; int NEBLossAversion=13; int NEB3=12; int NEB4=12; // resp. bots, conservatism bias, loss aversion, positivity bias
     // HPAccuracy=9, 10, 11, 13 => probability of 0.2, 0.75, 1, 2 per year of bubble burst
     int J=1; double r=0.01; // int T=LearningPhase+2875; int LearningPhase=1000;
     for (int s=0; s<S; s++) {
         //MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int s)
-        vector<gsl_matrix *> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", "PDOn", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, 0);
+        vector<gsl_matrix*> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", "PDOn", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, 0);
         MultiSim.push_back(MSim); //delete MSim[0]; MSim[0]=NULL; MSim.erase(MSim.begin(), MSim.end());
     };
     for (int k=0; k<int(MultiSim[0].size()); k++) {JointDistributions (MultiSim, k, 100);};
@@ -5719,11 +5719,11 @@ void HPMarketSimulatorDummy () {HPMarketSimulatorAll (500, 0, 0.10, 10, 1000+100
 
 
 void HPMarketSimulatorAllOB (int HPI, int HPGesture, double HPTrueMu, int HPAccuracy, int HPTime, int HPLiquidationFloor, string TypeNEB, string Leader, int ClusterLimit, int pNEB, double Rate, int S, int MetaOrderImpact) {
-    vector<vector<gsl_matrix *> > MultiSim;
+    vector<vector<gsl_matrix*>> MultiSim;
     int J=1; double r=0.01; // int T=LearningPhase+2875; int LearningPhase=1000;
     for (int s=0; s<S; s++) {
         //MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int s)
-        vector<gsl_matrix *> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", "PDOff", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, MetaOrderImpact);
+        vector<gsl_matrix*> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", "PDOff", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, MetaOrderImpact);
         MultiSim.push_back(MSim); //delete MSim[0]; MSim[0]=NULL; MSim.erase(MSim.begin(), MSim.end());
     };
     for (int k=0; k<int(MultiSim[0].size()); k++) {JointDistributions (MultiSim, k, 100);};
@@ -5738,26 +5738,26 @@ void HPMarketSimulatorAllOB (int HPI, int HPGesture, double HPTrueMu, int HPAccu
 
 /*
 // Memory freeing check
-gsl_matrix * Coucou1 (gsl_matrix * M) {
-    gsl_matrix * Res = gsl_matrix_calloc (100, 100);
+gsl_matrix* Coucou1 (gsl_matrix* M) {
+    gsl_matrix* Res = gsl_matrix_calloc (100, 100);
     for (int i=0; i<int(M->size1); i++) {
         for (int j=0; j<int(M->size2); j++) {gsl_matrix_set (Res, i, j, gsl_matrix_get (M, i, j));};
     };
     return Res;
 };
-gsl_matrix * Coucou2 (gsl_matrix * M) {
-    gsl_matrix * Res = gsl_matrix_calloc (100, 100);
+gsl_matrix* Coucou2 (gsl_matrix* M) {
+    gsl_matrix* Res = gsl_matrix_calloc (100, 100);
     for (int i=0; i<int(M->size1); i++) {
         for (int j=0; j<int(M->size2); j++) {gsl_matrix_set (Res, i, j, gsl_matrix_get (M, i, j));};
     };
     return Res;
 };
-gsl_matrix * MemoryFreeingTest () {
-    gsl_matrix * A = gsl_matrix_calloc (100, 100);
+gsl_matrix* MemoryFreeingTest () {
+    gsl_matrix* A = gsl_matrix_calloc (100, 100);
     for (int i=0; i<int(A->size1); i++) {
         for (int j=0; j<int(A->size2); j++) {gsl_matrix_set (A, i, j, i*j);};
     };
-    gsl_matrix * Temp = Coucou1(A); gsl_matrix * Res = Coucou2(Temp);
+    gsl_matrix* Temp = Coucou1(A); gsl_matrix* Res = Coucou2(Temp);
     gsl_matrix_free(A); gsl_matrix_free(Temp);
     return Res;
 };
@@ -5771,10 +5771,10 @@ vector<double> CheckTrueGeneration (double HPTrueMu, double HPLeash) {
     vector<double> Res;
     // INITIALIZING AGENTS
     int NumberOfAgents=10; int NumberOfStocks=1; int Time=1*Year; int HPAccuracy=10;
-    gsl_rng * r = make_rng(); gsl_rng_set(r, static_cast<unsigned long int>(time(0)));
-    gsl_matrix * GSLTrueValues = gsl_matrix_calloc (NumberOfStocks, Time);
-    //gsl_matrix * Spikes = gsl_matrix_calloc (1, NumberOfStocks);
-    gsl_matrix * TrueBiased = gsl_matrix_calloc (NumberOfAgents+1, Time); // For j=0 only
+    gsl_rng* r = make_rng(); gsl_rng_set(r, static_cast<unsigned long int>(time(0)));
+    gsl_matrix* GSLTrueValues = gsl_matrix_calloc (NumberOfStocks, Time);
+    //gsl_matrix* Spikes = gsl_matrix_calloc (1, NumberOfStocks);
+    gsl_matrix* TrueBiased = gsl_matrix_calloc (NumberOfAgents+1, Time); // For j=0 only
     vector<Agent> Market;
     for (int i=0; i<NumberOfAgents; i++) {
         Agent TempAgent; TempAgent.BiasedValues = gsl_matrix_calloc (NumberOfStocks, Time);
@@ -5810,7 +5810,7 @@ vector<double> CheckTrueGeneration (double HPTrueMu, double HPLeash) {
     cout << "HPTrueMu=" << HPTrueMu << ", HPLeash=" << HPLeash << ": ";
     cout << "AnnualCounter=" << AnnualCounter << ", AnnualAmplitude=" << AnnualAmplitude << "%";
     //PlotGSLMatrix(Spikes, "Spikes.csv", 1);
-    vector<vector<double> > TrueValues = GSLMatrixToSTLMatrix(GSLTrueValues);
+    vector<vector<double>> TrueValues = GSLMatrixToSTLMatrix(GSLTrueValues);
     // GENERATING BIASED VALUES
     double BiasedDistance=0; vector<double> VBiasedDistance;
     for (int i=0; i<NumberOfAgents; i++) {
@@ -5845,7 +5845,7 @@ vector<double> CheckTrueGeneration (double HPTrueMu, double HPLeash) {
     return Res;
 }; // closes CheckTrueGeneration()
 void CheckTrueGenerationAll () {
-    gsl_matrix * Res = gsl_matrix_calloc (9, 1); // For j=0 only
+    gsl_matrix* Res = gsl_matrix_calloc (9, 1); // For j=0 only
     //double Mu[3] = {0.10, 0.10, 0.10}; double Leash[3] = {1, 1, 1};
     double Mu[1] = {0.10}; double Leash[1] = {1};
     for (int k1=0; k1<1; k1++) {
@@ -5908,7 +5908,7 @@ int main (int argc, char** argv) {
     //vector<Share> PF=PortfolioGenerator ("ExchangesLSE", 20070102); // LOADS FULL LONDON STOCK EXCHANGE RAW DATA
     //PortfolioOutput (PF, 20); exit(0);
     //JointDistributions (PortfolioMultiOutput (PF, 0), 0, 100); // OUTPUTS FULL LONDON STOCK EXCHANGE CALIBRATION STATISTICS
-    //vector<vector<Share> > PFTwin = PFTrainingTesting (PF, int(PF.size()/2)); // LOADS FULL LONDON STOCK EXCHANGE RAW DATA IN TRAINING AND TESTING SETS
+    //vector<vector<Share>> PFTwin = PFTrainingTesting (PF, int(PF.size()/2)); // LOADS FULL LONDON STOCK EXCHANGE RAW DATA IN TRAINING AND TESTING SETS
     //JointDistributions (PortfolioMultiOutput (PFTwin[0], 0), 0, 100); // OUTPUTS TRAINING SET OF LONDON STOCK EXCHANGE CALIBRATION STATISTICS
     //JointDistributions (PortfolioMultiOutput (PFTwin[1], 0), 0, 100); // OUTPUTS TESTING SET OF LONDON STOCK EXCHANGE CALIBRATION STATISTICS
     //HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Classic", "NoCluster", 1, S); // Best calib
