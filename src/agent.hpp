@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_randist.h>
 #include "stock.hpp"
 
 using namespace std;
@@ -80,5 +81,10 @@ public:
     void Liquidation(int i, vector<Agent> &Market);
 
     // RL algorithm for forecasting and placing order in the OB (SS6)
-    void RL(int j, int t, double Rate, gsl_matrix* ReflexiveValues, double VSpread, double LiquidPercent, int Time, int NumberOfStocks, string TradingFrequencyCond, string Plot, string VersatilityCondition, double MarketPerformance, int TimeSinceJan1st, int LearningPhase, int LeaderAgent, int LeaderQuant, int LeaderPinch, int ClusterLimit, int Trunk);
+    void RL(
+        int j, int t, double Rate, gsl_matrix* ReflexiveValues, double VSpread, double LiquidPercent, int Time,
+        int NumberOfStocks, string TradingFrequencyCond, string Plot, string VersatilityCondition,
+        double MarketPerformance, int TimeSinceJan1st, int LearningPhase, int LeaderAgent, int LeaderQuant,
+        int LeaderPinch, int ClusterLimit, int Trunk
+    );
 }; // closes Agent class

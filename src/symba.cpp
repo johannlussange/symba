@@ -30,68 +30,12 @@
 
 #include "global.hpp"
 #include "utility.hpp"
+#include "agent.hpp"
+#include "order_book.hpp"
+#include "share.hpp"
+#include "random_walk.hpp"
 
 using namespace std;
-
-
-// Generating random variables for specific time delays
-vector<int> STLRandomInt (int Length, string S, string Plot) {
-    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng* r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
-    vector<int> V;
-    srand (unsigned (time(0)));
-    
-    if (S=="Uniform") {for (int t=0; t<Length; t++) {V.push_back(int(1000*gsl_rng_uniform (r)));};};
-    if (S=="Rand") {for (int t=0; t<Length; t++) {V.push_back(int(rand()));};};
-    
-    if (Plot=="On") {
-        ofstream outputV(Machine + "V.txt", ofstream::app);
-        for (int t=0; t<Length; t++) {outputV << V[t] << ", ";};
-        outputV << endl <<endl;
-        outputV.close();
-    };
-    
-    gsl_rng_free (r);
-    return V;
-};
-
-
-
-
-// Generating random variables for specific time delays
-vector<double> STLRandom (int Length, string S, string Plot) {
-    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng* r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
-    //gsl_rng* r2 = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng* r2 = make_rng();
-    gsl_rng_set(r2, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
-    vector<double> V;
-    if (S=="Poisson") {for (int t=0; t<Length; t++) {V.push_back((gsl_ran_poisson (r, 1))*(gsl_ran_poisson (r, 1)));};};
-    if (S=="PoissonOriginal") {for (int t=0; t<Length; t++) {V.push_back(gsl_ran_poisson (r, 1));};};
-    if (S=="PoissonNew") {for (int t=0; t<Length; t++) {V.push_back(abs(10*(1+gsl_ran_gaussian (r, 1)+gsl_ran_poisson (r, 1))));};};
-    if (S=="PoissonJump") {for (int t=0; t<Length; t++) {V.push_back(gsl_ran_poisson (r, 10));};};
-    if (S=="StandardNormal") {for (int t=0; t<Length; t++) {V.push_back(gsl_ran_gaussian (r, 1));};};
-    if (S=="StandardNormal2") {for (int t=0; t<Length; t++) {V.push_back(gsl_ran_gaussian (r2, 1));};};
-    if (S=="NormalNew") {for (int t=0; t<Length; t++) {double x = 0.5+0.2*gsl_ran_gaussian (r, 1); if (x<0.05) {x=gsl_rng_uniform (r);}; if (x>0.95) {x=gsl_rng_uniform (r);}; V.push_back(x);};}; // This is our NEBLearningRate
-    if (S=="Uniform") {for (int t=0; t<Length; t++) {V.push_back(gsl_rng_uniform (r));};};
-    if (S=="UniformPercent") {for (int t=0; t<Length; t++) {V.push_back(100*(gsl_rng_uniform (r)));};};
-    if (S=="UniformPercentFloor") {for (int t=0; t<Length; t++) {V.push_back(floor(100*(gsl_rng_uniform (r))));};};
-    if (S=="C") {for (int t=0; t<Length; t++) {V.push_back(rand());};};
-    
-    if (Plot=="On") {
-        ofstream outputV(Machine + "V.txt", ofstream::app);
-        for (int t=0; t<Length; t++) {outputV << V[t] << ", ";};
-        outputV << endl <<endl;
-        outputV.close();
-    };
-    
-    gsl_rng_free (r);
-    return V;
-};
-
-
 
 
 // Function plotting an STL vector
@@ -99,7 +43,7 @@ void PlotSTL(vector<double> V, string Name, string XL) {
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
-    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
+    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform"))[2])); B2=to_string(B);};
     A2+=B2;
     const char* Title2 = A2.c_str();
     ofstream outputV(Title2, ofstream::app);
@@ -121,7 +65,7 @@ void PlotSTLInt(vector<int> V, string Name) {
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
-    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
+    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform"))[2])); B2=to_string(B);};
     A2+=B2;
     const char* Title2 = A2.c_str();
     ofstream outputV(Title2, ofstream::app);
@@ -141,7 +85,7 @@ void PlotSTLMarket(vector<double> V, string Name) {
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
-    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
+    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform"))[2])); B2=to_string(B);};
     A2+=B2;
     const char* Title2 = A2.c_str();
     ofstream outputV(Title2, ofstream::app);
@@ -162,7 +106,7 @@ void PlotGSLMatrix(gsl_matrix* M, string Name, int F) {
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
-    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
+    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform"))[2])); B2=to_string(B);};
     A2+=B2;
     const char* Title2 = A2.c_str();
     ofstream outputM(Title2, ofstream::app);
@@ -538,28 +482,6 @@ vector<double> DynamicCorrelation (vector<double> X, vector<double> Y, int Lag) 
     return Res;
 };
 
-
-
-
-
-
-
-vector<vector<double>> GSLMatrixToSTLMatrix (gsl_matrix* M) {
-    vector<vector<double>> STLM;
-    vector<double> TempLine;
-    for (int i=0; i<int(M->size1); i++) {
-        for (int j=0; j<int(M->size2); j++) {
-            //vector<double> Temp; V.push_back(Temp); double x=gsl_matrix_get(M,i,j); if (x!=0) {(V[i]).push_back(x);};
-            double x=gsl_matrix_get(M,i,j);
-            TempLine.push_back(x);
-        };
-        STLM.push_back(TempLine);
-        TempLine.clear();
-    };
-    return STLM;
-};
-
-
 // KEVIN
 // Fonction A(i) dans la log-likelihood
 void function_A(vector<double>* t ,double beta, vector<double>& A ){
@@ -876,147 +798,6 @@ void StockIndices () {
 };
 
 
-
-
-
-
-class Share {
-public:
-    string Symbol, Title, Exchange, File, Country, Currency, Sector, InPF;
-    gsl_matrix* Data; // Prices & cashflows
-    
-    void Gen (string Name, gsl_matrix* Macroeconomics, int FirstDate) {
-        //int Numeraire=5;
-        //if (Currency=="USD") {Numeraire=3;} else if (Currency=="GBP") {Numeraire=4;}; // This is switched off so as to study local market microstructure apart from FX perturbations // FXX
-        vector<double> LocalDates, LocalOpen, LocalClose, LocalHigh, LocalLow, LocalVolumes;
-        ifstream FileInput(Name); string Line; int LineNb=0;
-        while (getline (FileInput, Line)) {LineNb++;
-            istringstream LineStream(Line); string Item; int ItemNb=0;
-            while (getline (LineStream, Item, ',')) {ItemNb++;
-                if ((LineNb>1) && (ItemNb==3)) {LocalDates.push_back(atof(Item.c_str()));};
-                if ((LineNb>1) && (ItemNb==5)) {LocalOpen.push_back(atof(Item.c_str()));};
-                if ((LineNb>1) && (ItemNb==8)) {LocalClose.push_back(atof(Item.c_str()));};
-                if ((LineNb>1) && (ItemNb==9)) {LocalVolumes.push_back(atof(Item.c_str()));};
-                if ((LineNb>1) && (ItemNb==6)) {LocalHigh.push_back(atof(Item.c_str()));};
-                if ((LineNb>1) && (ItemNb==7)) {LocalLow.push_back(atof(Item.c_str()));};
-            };
-        };
-        FileInput.close();
-        // Computing the data size from FirstDate to today
-        int Size=0; bool Cond=0;
-        for (int i=0; i<int(Macroeconomics->size2); i++) {
-            if (gsl_matrix_get (Macroeconomics, 0, i)==FirstDate) {Cond=1;};
-            if (Cond==1) {Size+=1;};
-        };
-        // Populating gsl_matrix* Data
-        int PastLag=120+Year; // Steps before FirstDate necessary for BinaryProjector() to start at FirstDate
-        int FirstStep=0; // STL vector index where data matches FirstDate
-        int VectorSize=int(LocalDates.size());
-        Data = gsl_matrix_calloc (6, Size+PastLag);
-        Cond=0;
-        for (int i=0; i<Size; i++) {gsl_matrix_set(Data, 0, i+PastLag, gsl_matrix_get (Macroeconomics, 0, i));}; //Dates
-        for (int i=0; i<Size; i++) {
-            for (int k=0; k<VectorSize; k++) {
-                if ((LocalDates[k]==gsl_matrix_get (Macroeconomics, 0, i)) && Cond==0) {FirstStep=k; Cond=1;};
-                if (LocalDates[k]==gsl_matrix_get (Macroeconomics, 0, i)) {
-                    gsl_matrix_set(Data, 1, i+PastLag, LocalOpen[k]); //Open in €
-                    gsl_matrix_set(Data, 2, i+PastLag, LocalClose[k]); //Close in €
-                    gsl_matrix_set(Data, 3, i+PastLag, LocalVolumes[k]); // Daily volume
-                    gsl_matrix_set(Data, 4, i+PastLag, LocalHigh[k]); //High in €
-                    gsl_matrix_set(Data, 5, i+PastLag, LocalLow[k]); //Low in €
-                    break;
-                };
-            }; // closes k loop
-        }; // closes i loop
-        // Stiching so as to match Macroeconomics and other exchanges data
-        for (int i=1; i<Size; i++) {
-            if (gsl_matrix_get(Data, 1, i+PastLag)<0.0000001) {gsl_matrix_set(Data, 1, i+PastLag, gsl_matrix_get(Data, 1, i+PastLag-1));};
-            if (gsl_matrix_get(Data, 2, i+PastLag)<0.0000001) {gsl_matrix_set(Data, 2, i+PastLag, gsl_matrix_get(Data, 2, i+PastLag-1));};
-            if (gsl_matrix_get(Data, 3, i+PastLag)<0.0000001) {gsl_matrix_set(Data, 3, i+PastLag, gsl_matrix_get(Data, 3, i+PastLag-1));};
-            if (gsl_matrix_get(Data, 4, i+PastLag)<0.0000001) {gsl_matrix_set(Data, 4, i+PastLag, gsl_matrix_get(Data, 4, i+PastLag-1));};
-            if (gsl_matrix_get(Data, 5, i+PastLag)<0.0000001) {gsl_matrix_set(Data, 5, i+PastLag, gsl_matrix_get(Data, 5, i+PastLag-1));};
-        };
-        // Populating the region 0<t<PastLag for BinaryProjector
-        if (FirstStep>PastLag) {
-            for (int k=FirstStep-PastLag; k<FirstStep; k++) {
-                gsl_matrix_set(Data, 0, k-FirstStep+PastLag, LocalDates[k]);
-                gsl_matrix_set(Data, 1, k-FirstStep+PastLag, LocalOpen[k]);
-                gsl_matrix_set(Data, 2, k-FirstStep+PastLag, LocalClose[k]);
-                gsl_matrix_set(Data, 3, k-FirstStep+PastLag, LocalVolumes[k]);
-                gsl_matrix_set(Data, 4, k-FirstStep+PastLag, LocalHigh[k]);
-                gsl_matrix_set(Data, 5, k-FirstStep+PastLag, LocalLow[k]);
-            };
-        };
-        
-        // Stitching stock splits
-        for (int t=1; t<Size+PastLag; t++) {
-            double Split=1;
-            if (gsl_matrix_get(Data, 2, t-1)>0.00001) {Split=gsl_matrix_get(Data, 2, t)/gsl_matrix_get(Data, 2, t-1);};
-            if (((Split>=4) || (Split<=0.25)) && (Split>0)) {
-                for (int i=t; i<Size+PastLag; i++) {gsl_matrix_set(Data, 2, i, gsl_matrix_get(Data, 2, i)/Split);};
-            }; // if
-        }; // t loop
-        
-        
-    }; // closes Gen()
-    
-    
-    
-    
-    // Broker fees of IG are downloaded at https://www.ig.com/fr/actions/conditions-actions
-    // This outputs files LSEnew.txt, NYSEnew.txt, NASDAQnew.txt which are the stocks offered by IG. These files must be formatted to Legacy MAC OS (CR) text format, and can in turn be used as direct data feed
-    void ProcessBrokerData () {
-        InPF="Out";
-        vector<vector<string>> W;
-        string Path=Machine + "Symba/CSV/Tiered Margin_cfd.csv";
-        ifstream FileInput(Path); string Line; int LineNb=0;
-        vector<string> V1, V2, V3, V4;
-        while (getline (FileInput, Line)) {LineNb++;
-            istringstream LineStream(Line); string Item; int ItemNb=0;
-            while (getline (LineStream, Item, '\t')) {ItemNb++;
-                if ((ItemNb==1) && (LineNb>5)) {V1.push_back(Item.c_str());}; // Symbol
-                if ((ItemNb==2) && (LineNb>5)) {V2.push_back(Item.c_str());}; // Title
-                if ((ItemNb==3) && (LineNb>5)) {V3.push_back(Item.c_str());}; // Country
-                if ((ItemNb==5) && (LineNb>5)) {V4.push_back(Item.c_str());}; // Can go short?
-            };
-        };
-        // Reuters RIC: .L (London Stock Exchange), .O (NASDAQ), .N (NYSE), .P (Nyse ARCA), .PK (OTC Market Group), .OB (?), .K (New York Consolidated), .A (American Stock Exchange)
-        string Name=Machine + "Symba/CSV/" + Exchange + "/" + File;
-        string Suffix=".L";
-        if (Exchange=="NYSE") {Suffix=".N";} // Some stocks will taken as .K on the New York Consolidated!
-        else if (Exchange=="NASDAQ") {Suffix=".O";};
-        W.push_back(V1); W.push_back(V2); W.push_back(V3); W.push_back(V4);
-        ifstream FileInput2(Name); string Line2; LineNb=0;
-        while (getline (FileInput2, Line2)) {LineNb++;
-            istringstream LineStream(Line2); string Item; int ItemNb=0;
-            while (getline (LineStream, Item, ',')) {ItemNb++;
-                if ((LineNb==2) && (ItemNb==1)) {
-                    for (int i=0; i<int(W[0].size()); i++) {
-                        if (((Item.c_str()==W[0][i]) || (Item.c_str()+Suffix==W[0][i])) && (W[2][i]==Country) && (W[3][i]=="Yes")) {
-                            Symbol=W[0][i]; Title=W[1][i]; InPF="In";
-                        };
-                    }; // closes i loop
-                } // closes if
-            }; // closes while
-        }; // closes while
-        if (InPF=="In") {
-            ofstream outputLSE(Machine + "Symba/CSV/LSEnew.txt", ofstream::app);
-            ofstream outputNYSE(Machine + "Symba/CSV/NYSEnew.txt", ofstream::app);
-            ofstream outputNASDAQ(Machine + "Symba/CSV/NASDAQnew.txt", ofstream::app);
-            if (Exchange=="LSE") {outputLSE << File << ',' << Symbol << ',' << Title << ',' << Exchange << ',' << Country << ',' << Currency << endl;}
-            if (Exchange=="NYSE") {outputNYSE << File << ',' << Symbol << ',' << Title << ',' << Exchange << ',' << Country << ',' << Currency << endl;}
-            if (Exchange=="NASDAQ") {outputNASDAQ << File << ',' << Symbol << ',' << Title << ',' << Exchange << ',' << Country << ',' << Currency << endl;}
-        };
-        
-    }; // closes ProcessBrokerData()
-    
-    
-}; // closes Share class
-
-
-
-
-
 vector<Share> PortfolioGenerator (string Name, int FirstDate) {
     string ProcessedData="Yes";
     vector<Share> PF, PFFinal; int TickStart=int(time(0));
@@ -1276,17 +1057,11 @@ vector<vector<gsl_matrix*>> PortfolioMultiOutput (vector<Share> PF, int Size) {
     return FinalResult;
 };
 
-
-
-
-
 // END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE ***
 // END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE ***
 // END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE ***
 // END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE ***
 // END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE *** END OF ULM ALGORITHM CODE ***
-#include "agent.hpp"
-#include "order_book.hpp"
 
 
 // This plots the distribution of an STL vector taken as parameter in Mathematica. Setting Xmin=Xmax=0 finds these bounds automatically
@@ -1295,7 +1070,7 @@ vector<vector<double>> Distribution (vector<double> X, int Precision, double Xmi
     // Randomization of output file name
     string A2 = Machine;
     string B2=Name;
-    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform", "NoPlot"))[2])); B2=to_string(B);};
+    if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform"))[2])); B2=to_string(B);};
     A2+=B2;
     const char* Title = A2.c_str();
     ofstream output5(Title);
@@ -1356,98 +1131,6 @@ gsl_matrix* GSLDistribution (gsl_matrix* M, int Precision) {
     }; // closes j loop
     return D;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-// This function returns a lognormal random walk simulating an asset: dS/S= mu.dt + sig.N(0,1).sqrt(dt) + \mathcal P(k)
-vector<double> RandomWalk(double InitialValue, double Drift, double Volatility, int TimeSteps, double Seed) {
-    double Skewness=0.00;
-    double FundamentalValue=InitialValue/5; // Asset cannot go below 20% of its fundamental value
-    Drift=0.00;
-    vector<double> S,S2, StandardNormal, Jumps;
-    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng* r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(Seed)); // gsl_rng_set(const gsl_rng* r, unsigned long int s)
-    for (int t=0; t<TimeSteps; t++) {Jumps.push_back(gsl_ran_poisson (r, 10));};
-    for (int t=0; t<TimeSteps; t++) {StandardNormal.push_back(Skewness+gsl_ran_gaussian (r, 1));};
-    S.push_back(InitialValue); // The +20 is there to ensure we have an entry price that is not negligeable
-    S2.push_back(S[0]+FundamentalValue);
-    double dt=1;
-    int Condition=0;
-    for (int t=1; t<TimeSteps; t++) {
-        if ((Jumps[t]) > 15) {Condition=1;};
-        if ((StandardNormal[t]) >= 0) {Condition *= 1;};
-        if ((StandardNormal[t]) < 0) {Condition *= (-1);};
-        //S.push_back(floor(S[t-1] + Volatility*(S[t-1])*(StandardNormal[t]) + (S[t-1])*Condition*(Jumps[t])/100));
-        S.push_back(ceil((S[t-1])*(1 + Drift*dt + Volatility*(StandardNormal[t])*sqrt(dt) + Condition*(Jumps[t])/100)));
-        Condition=0;
-        S2.push_back(S[t]+FundamentalValue);
-    };
-    return S2;
-};
-
-
-
-// Mu is the poisson-length between each jump, and Sig the intensity of the jump
-vector<double> PoissonRandomWalk (double S0, int Mu, int Sig, int Time, double Seed) {
-    vector<double> S, VSig; vector<int> VMu;
-    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng* r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(Seed)); // gsl_rng_set(const gsl_rng* r, unsigned long int s)
-    for (int t=0; t<Time; t++) {
-        S.push_back(S0);
-        VMu.push_back(1+gsl_ran_poisson (r, Mu));
-        VSig.push_back((1+gsl_ran_poisson (r, Sig)) * (gsl_ran_gaussian (r, 1)));
-    };
-    //PlotSTLInt(VMu, "VMu.txt"); PlotSTL(VSig, "VSig.txt", "NoXL");
-    int P=VMu[0];
-    for (int t=1; t<Time; t++) {
-        if (P<=0) {P=VMu[t]; S[t] = S[t-1] + VSig[t];}
-        else {P-=1; S[t] = S[t-1];};
-        if (S[t]<=0.2*S[0]) {S[t] = S[t-1];}; // Stock cannot go below treshold of 20% of initial value
-    };
-    return S;
-};
-
-
-
-
-
-// This function returns a lognormal random walk that is cointegrated to another
-vector<double> CointegratedWalk(vector<double> Master, double Leash, double LeashVolatility, double Accuracy) {
-    double Val;
-    vector<double> S, L;
-    vector<double> StandardNormal = STLRandom((int(Master.size())), "StandardNormal2", "NoPlot"); // Time series of size Master.size() made of values gsl_ran_gaussian (r, 1)
-    S.push_back(Master[0]);
-    L.push_back(Leash);
-    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
-    gsl_rng* r = make_rng();
-    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
-    for (int t=1; t<(int(Master.size())); t++) {
-        L.push_back((L[t-1])*(1 + LeashVolatility*(gsl_ran_gaussian (r, 1)))); // The leash is elastic with its own vol
-        Val = S[t-1] + LeashVolatility*(S[t-1])*(StandardNormal[t]);
-        // Asset comes back if too far
-        if ((Master[t] - Val) > ((L[t])*(Master[t]))) {Val=S[t-1] + LeashVolatility*(S[t-1])*(abs(StandardNormal[t]));};
-        if ((Val - Master[t]) > ((L[t])*(Master[t]))) {Val=S[t-1] + LeashVolatility*(S[t-1])*(-abs(StandardNormal[t]));};
-        if ((gsl_ran_poisson (r, 1))*(gsl_ran_poisson (r, 1)) >= Accuracy) {Val=Master[t]*(1 + 0.10*StandardNormal[t]);}; //This poisson event is computed as happening 0.2, 0.75, 1, 2 per year for Accuracy=13,11,10,9 on average and brings back the cointegrated walk to the Master time series (after a news for example that reveals TruePresentValue)
-        S.push_back(Val);
-    };
-    return S;
-};
-
-
-
-
 
 
 double Compare (vector<double> X1, vector<double> X2) {
@@ -2224,7 +1907,7 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
     
     
     // GENERATING THE STOCKS TRUE VALUES
-    vector<double> Gen2 = STLRandom (NumberOfStocks, "Uniform", "NoPlot");
+    vector<double> Gen2 = STLRandom (NumberOfStocks, "Uniform");
     //double HPTrueMu=0.1;
     for (int j=0; j<NumberOfStocks; j++) {
         //vector<double> S = PoissonRandomWalk (100, Week+3*Month*Gen2[j], int(0.1*Time/250+0.9*Gen2[j]*Time/250), Time, 1000*Gen2[j]);
@@ -3664,7 +3347,7 @@ vector<double> CheckTrueGeneration (double HPTrueMu, double HPLeash) {
         Market.push_back(TempAgent);
     };
     // GENERATING TRUE VALUES
-    vector<double> Gen = STLRandom (NumberOfStocks, "Uniform", "NoPlot");
+    vector<double> Gen = STLRandom (NumberOfStocks, "Uniform");
     double AnnualCounter=0; double AnnualAmplitude=0;
     vector<double> VAnnualCounter, VAnnualAmplitude;
     for (int j=0; j<NumberOfStocks; j++) {
@@ -3749,9 +3432,7 @@ void CheckTrueGenerationAll () {
 
 
 
-/**
- * @brief Process command-line arguments.
- */
+/// Process command-line arguments.
 void process_cli(int argc, char** argv) {
     namespace fs = std::filesystem;
 

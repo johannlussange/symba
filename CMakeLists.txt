@@ -10,6 +10,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 	"src/order_book.cpp"
 	"src/agent.cpp"
 	"src/utility.cpp"
+	"src/random_walk.cpp"
+	"src/share.cpp"
 )
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)

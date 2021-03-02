@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <gsl/gsl_rng.h>
+#include <string>
 #include <gsl/gsl_matrix.h>
 
 using namespace std;
@@ -16,3 +16,11 @@ double BinaryProjection(gsl_matrix* ReflexiveValues, int t, int Tool, int Lag, i
 
 // Trunks any double number with a number "Digits" of Significant digits
 double DigitTrunk (double x, int Digits, string FloorOrCeil);
+
+// Generating random variables for specific time delays
+vector<double> STLRandom (int Length, string S);
+
+// Generating random variables for specific time delays
+vector<int> STLRandomInt (int Length, string S);
+
+vector<vector<double>> GSLMatrixToSTLMatrix (gsl_matrix* M);

@@ -69,15 +69,15 @@ void Agent::Liquidation(int i, vector<Agent> &Market) {
 
 
 // RL algorithm for forecasting and placing order in the OB (SS6)
-void Agent::RL (int j, int t, double Rate, gsl_matrix* ReflexiveValues, double VSpread, double LiquidPercent, int Time, int NumberOfStocks, string TradingFrequencyCond, string Plot, string VersatilityCondition, double MarketPerformance, int TimeSinceJan1st, int LearningPhase, int LeaderAgent, int LeaderQuant, int LeaderPinch, int ClusterLimit, int Trunk) {
-    
-    
-    /*
-        F(s): Rough={0,1,2,3}, Smooth={0,1,2,3}, Reflexive={0,1,2}
-        F(a): Tool={0,1,2}, Lag={0,1,2}, Weight={0,1,2}
-        T(s): Mu={0,1,2,3,4,5,6}, Sig={0,1,2}, RFA={0,1,2}, RBA={0,1,2}, Liquid={0,1,2,3}
-        T(a): Quant={0,1,2,3,4,5,6}, Pinch={0,1,2}
-        */
+void Agent::RL(
+    int j, int t, double Rate, gsl_matrix* ReflexiveValues, double VSpread, double LiquidPercent, int Time,
+    int NumberOfStocks, string TradingFrequencyCond, string Plot, string VersatilityCondition, double MarketPerformance,
+    int TimeSinceJan1st, int LearningPhase, int LeaderAgent, int LeaderQuant, int LeaderPinch, int ClusterLimit,
+    int Trunk) {
+    // F(s): Rough={0,1,2,3}, Smooth={0,1,2,3}, Reflexive={0,1,2}
+    // F(a): Tool={0,1,2}, Lag={0,1,2}, Weight={0,1,2}
+    // T(s): Mu={0,1,2,3,4,5,6}, Sig={0,1,2}, RFA={0,1,2}, RBA={0,1,2}, Liquid={0,1,2,3}
+    // T(a): Quant={0,1,2,3,4,5,6}, Pinch={0,1,2}
     ofstream outputLog(Machine+"SimLog.txt", ofstream::app);
     // ofstream outputDebug("/Users/admin/Documents/GNT/SYMBA/Debug.txt", ofstream::app);
     double Seed=1000*t*(RFA+RBA+AgentName);

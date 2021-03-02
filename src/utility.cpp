@@ -2,6 +2,8 @@
 #include <numeric>
 #include <random>
 #include <ctime>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 #include "utility.hpp"
 
 using namespace std;
@@ -86,3 +88,59 @@ double DigitTrunk (double x, int Digits, string FloorOrCeil) {
     if (abs(res-ceil(res))>0) {cout << "DIGITTRUNK() ISSUE : res=" << res << endl;};
     return res;
 }
+
+
+vector<double> STLRandom (int Length, string S) {
+    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r = make_rng();
+    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
+    //gsl_rng* r2 = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r2 = make_rng();
+    gsl_rng_set(r2, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
+    vector<double> V;
+    if (S=="Poisson") {for (int t=0; t<Length; t++) {V.push_back((gsl_ran_poisson (r, 1))*(gsl_ran_poisson (r, 1)));};};
+    if (S=="PoissonOriginal") {for (int t=0; t<Length; t++) {V.push_back(gsl_ran_poisson (r, 1));};};
+    if (S=="PoissonNew") {for (int t=0; t<Length; t++) {V.push_back(abs(10*(1+gsl_ran_gaussian (r, 1)+gsl_ran_poisson (r, 1))));};};
+    if (S=="PoissonJump") {for (int t=0; t<Length; t++) {V.push_back(gsl_ran_poisson (r, 10));};};
+    if (S=="StandardNormal") {for (int t=0; t<Length; t++) {V.push_back(gsl_ran_gaussian (r, 1));};};
+    if (S=="StandardNormal2") {for (int t=0; t<Length; t++) {V.push_back(gsl_ran_gaussian (r2, 1));};};
+    if (S=="NormalNew") {for (int t=0; t<Length; t++) {double x = 0.5+0.2*gsl_ran_gaussian (r, 1); if (x<0.05) {x=gsl_rng_uniform (r);}; if (x>0.95) {x=gsl_rng_uniform (r);}; V.push_back(x);};}; // This is our NEBLearningRate
+    if (S=="Uniform") {for (int t=0; t<Length; t++) {V.push_back(gsl_rng_uniform (r));};};
+    if (S=="UniformPercent") {for (int t=0; t<Length; t++) {V.push_back(100*(gsl_rng_uniform (r)));};};
+    if (S=="UniformPercentFloor") {for (int t=0; t<Length; t++) {V.push_back(floor(100*(gsl_rng_uniform (r))));};};
+    if (S=="C") {for (int t=0; t<Length; t++) {V.push_back(rand());};};
+    
+    gsl_rng_free (r);
+    return V;
+}
+
+
+vector<int> STLRandomInt (int Length, string S) {
+    //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
+    gsl_rng* r = make_rng();
+    gsl_rng_set(r, static_cast<unsigned long int>(time(0))); //gsl_rng_set(const gsl_rng* r, unsigned long int s)
+    vector<int> V;
+    srand (unsigned (time(0)));
+    
+    if (S=="Uniform") {for (int t=0; t<Length; t++) {V.push_back(int(1000*gsl_rng_uniform (r)));};};
+    if (S=="Rand") {for (int t=0; t<Length; t++) {V.push_back(int(rand()));};};
+    
+    gsl_rng_free (r);
+    return V;
+};
+
+
+vector<vector<double>> GSLMatrixToSTLMatrix (gsl_matrix* M) {
+    vector<vector<double>> STLM;
+    vector<double> TempLine;
+    for (int i=0; i<int(M->size1); i++) {
+        for (int j=0; j<int(M->size2); j++) {
+            //vector<double> Temp; V.push_back(Temp); double x=gsl_matrix_get(M,i,j); if (x!=0) {(V[i]).push_back(x);};
+            double x=gsl_matrix_get(M,i,j);
+            TempLine.push_back(x);
+        };
+        STLM.push_back(TempLine);
+        TempLine.clear();
+    };
+    return STLM;
+};
