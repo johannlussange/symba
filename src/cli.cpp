@@ -14,7 +14,7 @@ CliArgs::CliArgs(int argc, char** argv) {
     app.add_option("-j,--n-stocks", n_stocks, "Number of stocks in the simulation")
         ->default_val(1)
         ->check(NonNegativeNumber);
-    app.add_option("--time", time, "Amount of time steps")
+    app.add_option("-t,--time", time, "Amount of time steps")
         ->default_val(3875)
         ->check(NonNegativeNumber);
     app.add_option("--rate", rate, "No description")
