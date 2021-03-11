@@ -26,14 +26,13 @@
 #include <gsl/gsl_statistics_double.h>
 #include <gsl/gsl_rstat.h>
 
-#include <CLI/CLI.hpp>
-
 #include "global.hpp"
 #include "utility.hpp"
 #include "agent.hpp"
 #include "order_book.hpp"
 #include "share.hpp"
 #include "random_walk.hpp"
+#include "cli.hpp"
 
 using namespace std;
 
@@ -3428,38 +3427,14 @@ void CheckTrueGenerationAll () {
 */
 
 
-
-
-
-
-/// Process command-line arguments.
-void process_cli(int argc, char** argv) {
-    namespace fs = std::filesystem;
-
-    CLI::App app("A market simulator built in C++.", "symba");
-
-    fs::path output_dir;
-    app.add_option("-o,--output-dir", output_dir, "Output directory for simulation results")
-        ->required()
-        ->check(CLI::ExistingDirectory);
-
-    try {
-        app.parse(argc, argv);
-    }
-    catch (const CLI::ParseError& e) {
-        std::exit(app.exit(e));
-    }
-
-    Machine = fs::absolute(output_dir).string() + "/";
-}
-
 // MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM
 // SPECIFY "string Machine" JUSTE BELOW "using namespace std" ACCORDING TO LOCAL PATHWAY
 // DOWNLOAD DATA ON THE GOOGLE DRIVE: https://drive.google.com/open?id=1J0ZHXnf_2wg80QyUyQwMN2YaUU9U45Xl
 // DOWNLOAD GNU SCIENTIFIC LIBRARY GSL-v2.5 at https://www.gnu.org/software/gsl/
 // SOME MEMORY ISSUES MAY REQUIRE REBOOT AND RESUME DURING COMPUTATIONS (work in progress)
 int main (int argc, char** argv) {
-    process_cli(argc, argv);
+    CliArgs args(argc, argv);
+    Machine = args.output_dir.string() + "/";
 
     int S=20; // NUMBER OF SIMULATIONS
 
