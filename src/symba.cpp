@@ -3107,8 +3107,8 @@ double Factorial (int n) {
     double Res = 1;
 
     for (int i = 1; i <= n; i++) {
-		Res *= i;
-	}
+        Res *= i;
+    }
 
     return Res;
 }

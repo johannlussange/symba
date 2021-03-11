@@ -30,7 +30,7 @@ vector<int> Shuffle(int n) {
 
 
 double BinaryProjection(gsl_matrix* ReflexiveValues, int t, int Tool, int Lag, int Future) {
-	// Fail for Tool=2 and Lag=0 because Start=
+    // Fail for Tool=2 and Lag=0 because Start=
     double Result=0; int Start=t-(Lag+1)*Future; if (Start<0) {Start=0;}; int Past=t-Start;
     double Mean0=0; for (int i=Start; i<t-Past/2; i++) {Mean0+=gsl_matrix_get(ReflexiveValues, 0, i)/(Past/2);};
     double Mean1=0; for (int i=t-Past/2; i<t; i++) {Mean1+=gsl_matrix_get(ReflexiveValues, 0, i)/(Past/2);};
