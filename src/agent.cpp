@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 #include "agent.hpp"
 #include "global.hpp"
 #include "utility.hpp"

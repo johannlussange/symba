@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <cmath>
 #include "global.hpp"
 #include "order_book.hpp"
 #include "agent.hpp"

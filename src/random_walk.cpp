@@ -1,4 +1,5 @@
 #include <ctime>
+#include <cmath>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
