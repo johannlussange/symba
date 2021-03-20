@@ -1,21 +1,23 @@
 cmake_minimum_required(VERSION 3.17.0)
-project(Symba VERSION 0.1.0)
+project(symba VERSION 0.1.0)
+
+option(SYMBA_LINK_STATIC "Link Symba libraries statically" ON)
 
 find_package(GSL REQUIRED)
 find_package(CLI11 CONFIG REQUIRED)
 
-add_executable(${PROJECT_NAME})
-file(GLOB_RECURSE ${PROJECT_NAME}Sources 
+add_executable(symba)
+file(GLOB_RECURSE symbaSources 
     LIST_DIRECTORIES true 
     CONFIGURE_DEPENDS
     "src/*.cpp"
 )
-target_sources(${PROJECT_NAME} PRIVATE ${${PROJECT_NAME}Sources})
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
-set_target_properties(${PROJECT_NAME} PROPERTIES
+target_sources(symba PRIVATE ${symbaSources})
+target_include_directories(symba PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_compile_features(symba PRIVATE cxx_std_20)
+set_target_properties(symba PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
-target_link_libraries(${PROJECT_NAME} PRIVATE GSL::gsl GSL::gslcblas CLI11::CLI11)
+target_link_libraries(symba PRIVATE -static GSL::gsl GSL::gslcblas CLI11::CLI11)
 
-install(TARGETS ${PROJECT_NAME})
+install(TARGETS symba)
