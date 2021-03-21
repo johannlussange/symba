@@ -18,7 +18,7 @@ struct CliArgs {
     double rate;
     bool plot;
     string type_neb;
-    int hp_gesture;
+    double hp_gesture;
     int liquidation_floor;
     string leader_type;
     int cluster_limit;
