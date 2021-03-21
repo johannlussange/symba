@@ -3268,31 +3268,31 @@ void HPMarketSimulatorAllPD (int HPI, int HPGesture, double HPTrueMu, int HPAccu
 
 void HPMarketSimulator (int T, int S) {HPMarketSimulatorAll (500, 0, 0.10, 10, T, 50, "Classic", "None", 1, 0, 1, S);};
 
-void HPMarketSimulator2 (string TypeNEB, string Leader, int ClusterLimit, int S) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Classic", Leader, ClusterLimit, 0, 1, S);};
+// void HPMarketSimulator2 (string TypeNEB, string Leader, int ClusterLimit, int S) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Classic", Leader, ClusterLimit, 0, 1, S);};
 
-void HPMarketSimulatorNEB (string TypeNEB, int S) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, TypeNEB, "None", 1, 0, 1, S);};
+// void HPMarketSimulatorNEB (string TypeNEB, int S) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, TypeNEB, "None", 1, 0, 1, S);};
 
-void HPMarketSimulatorDummy () {HPMarketSimulatorAll (500, 0, 0.10, 10, 1000+1000, 50, "Classic", "None", 1, 0, 1, 3);};
-
-
+// void HPMarketSimulatorDummy () {HPMarketSimulatorAll (500, 0, 0.10, 10, 1000+1000, 50, "Classic", "None", 1, 0, 1, 3);};
 
 
 
-void HPMarketSimulatorAllOB (int HPI, int HPGesture, double HPTrueMu, int HPAccuracy, int HPTime, int HPLiquidationFloor, string TypeNEB, string Leader, int ClusterLimit, int pNEB, double Rate, int S, int MetaOrderImpact) {
-    vector<vector<gsl_matrix*>> MultiSim;
-    int J=1; double r=0.01; // int T=LearningPhase+2875; int LearningPhase=1000;
-    for (int s=0; s<S; s++) {
-        //MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int s)
-        vector<gsl_matrix*> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", "PDOff", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, MetaOrderImpact);
-        MultiSim.push_back(MSim); //delete MSim[0]; MSim[0]=NULL; MSim.erase(MSim.begin(), MSim.end());
-    };
-    for (int k=0; k<int(MultiSim[0].size()); k++) {JointDistributions (MultiSim, k, 100);};
-    // Memory freeing
-    for (int k=0; k<int(MultiSim[0].size()); k++) {
-        for (int i=0; i<S; i++) {gsl_matrix_free(MultiSim[i][k]);};
-    };
-    MultiSim.erase(MultiSim.begin(), MultiSim.end()); // Simulated moments distribution
-};
+
+
+// void HPMarketSimulatorAllOB (int HPI, int HPGesture, double HPTrueMu, int HPAccuracy, int HPTime, int HPLiquidationFloor, string TypeNEB, string Leader, int ClusterLimit, int pNEB, double Rate, int S, int MetaOrderImpact) {
+//     vector<vector<gsl_matrix*>> MultiSim;
+//     int J=1; double r=0.01; // int T=LearningPhase+2875; int LearningPhase=1000;
+//     for (int s=0; s<S; s++) {
+//         //MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int s)
+//         vector<gsl_matrix*> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", "PDOff", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, MetaOrderImpact);
+//         MultiSim.push_back(MSim); //delete MSim[0]; MSim[0]=NULL; MSim.erase(MSim.begin(), MSim.end());
+//     };
+//     for (int k=0; k<int(MultiSim[0].size()); k++) {JointDistributions (MultiSim, k, 100);};
+//     // Memory freeing
+//     for (int k=0; k<int(MultiSim[0].size()); k++) {
+//         for (int i=0; i<S; i++) {gsl_matrix_free(MultiSim[i][k]);};
+//     };
+//     MultiSim.erase(MultiSim.begin(), MultiSim.end()); // Simulated moments distribution
+// };
 
 
 
@@ -3450,19 +3450,19 @@ int main (int argc, char** argv) {
     //for (int k=1; k<=8; k++) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "LearningRate", "NoCluster", 1, 100, 0.5*k, S);}; // LearningRateScale={0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0}
     
     
-    HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
-    HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
-    HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
-    HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
-    HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
-    HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
+    // HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
+    // HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
+    // HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
+    // HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
+    // HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
+    // HPMarketSimulatorAllOB (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, 50); // Metaorder impact at 50%
     
     //HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S); // Classic
     
     //HPMarketSimulatorAllPD (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S); // Ordinary PD
     
     //for (int Trunk=0; Trunk<=6; Trunk++) {MarketSimulatorTrunk (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, Trunk);};
-    //HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S);
+    HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S);
     
     //for (int k=1; k<5; k++) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "Best", k*500/5, 0, 1, S);};
     //for (int k=1; k<5; k++) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "Worst", k*500/5, 0, 1, S);};
