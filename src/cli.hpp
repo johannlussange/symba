@@ -10,18 +10,15 @@ struct CliArgs {
     fs::path output_dir;
     int n_agents;
     int n_stocks;
-    int time;
+    int n_steps;
+    int n_rounds;
     double rate;
-    string plot;
-    string pd_condition;
+    bool plot;
     string type_neb;
     int hp_gesture;
-    double hp_true_mu;
-    int hp_accuracy;
     int liquidation_floor;
     string leader_type;
     int cluster_limit;
-    int s;
 
     CliArgs(int argc, char** argv);
 };
