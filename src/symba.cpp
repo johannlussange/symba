@@ -3436,6 +3436,9 @@ int main (int argc, char** argv) {
     CliArgs args(argc, argv);
     Machine = args.output_dir.string() + "/";
 
+    // Write CLI arguments to file for later reference and for use by the GUI.
+    args.dump(args.output_dir / "ModelParameters.json");
+
     int S=20; // NUMBER OF SIMULATIONS
 
     // REAL DATA STATISTICS

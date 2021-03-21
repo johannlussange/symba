@@ -1,4 +1,6 @@
 #include <CLI/CLI.hpp>
+#include <fstream>
+#include <iomanip>
 #include "cli.hpp"
 
 CliArgs::CliArgs(int argc, char** argv) {
@@ -50,4 +52,31 @@ CliArgs::CliArgs(int argc, char** argv) {
     catch (const ParseError& e) {
         std::exit(app.exit(e));
     }
+}
+
+void CliArgs::dump(fs::path filename, bool skip_non_model_args) {
+    json j = (*this);
+
+    if (skip_non_model_args) {
+        // Exclude non-model parameters
+        j.erase("output-dir");
+    }
+
+    ofstream ofs(filename);
+    ofs << setw(4) << j;
+}
+
+void to_json(json& j, const CliArgs& args) {
+    j["output-dir"] = args.output_dir.string();
+    j["n-agents"] = args.n_agents;
+    j["n-stocks"] = args.n_stocks;
+    j["n-steps"] = args.n_steps;
+    j["n-rounds"] = args.n_rounds;
+    j["rate"] = args.rate;
+    j["plot"] = args.plot;
+    j["type-neb"] = args.type_neb;
+    j["hp-gesture"] = args.hp_gesture;
+    j["liquidation-floor"] = args.liquidation_floor;
+    j["leader-type"] = args.leader_type;
+    j["cluster-limit"] = args.cluster_limit;
 }
