@@ -1625,8 +1625,14 @@ void PoliciesAverages (vector<Agent> Market, int NumberOfAgents, int NumberOfSto
 
 // Function to Simulate a given Market over a given number of time steps
 //pNEBLossAversion24 => pNEBLossAversion, pNEBDelayDiscounting56=>pNEBPositivity, pNEB89=>pNEBDelayDiscounting
-vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int pNEB, double LearningRateScale, int s, int Trunk, int MetaorderImpact) {
-    
+vector<gsl_matrix*> MarketSimulator(
+    int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB,
+    int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int pNEB,
+    double LearningRateScale, int s, int Trunk, int MetaorderImpact) {
+    // Log streams
+    auto& log0 = cli::log0;
+    auto& log1 = cli::log1;
+
     int pBots=100; int pNEBLossAversion=0; int pNEBPositivity=0; int pNEBNegativity=0; int pNEBDelayDiscounting=0; int pNEBFear=0; int pNEBGreed=0; int pNEBLearningRate=0;
     if (TypeNEB=="Classic") {pBots=80; pNEBLossAversion=3; pNEBPositivity=3; pNEBNegativity=3; pNEBDelayDiscounting=3; pNEBFear=3; pNEBGreed=3; pNEBLearningRate=2;}
     else if (TypeNEB=="Algorithmic") {pBots=100; pNEBLossAversion=0; pNEBPositivity=0; pNEBNegativity=0; pNEBDelayDiscounting=0; pNEBFear=0; pNEBGreed=0; pNEBLearningRate=0;}
@@ -1664,6 +1670,12 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
         outputLog << "*********************************************" << endl << endl;
     };
     
+    log1 << "Model parameters:\n"
+        << "  I = " << NumberOfAgents << "\n"
+        << "  J = " << NumberOfStocks << "\n"
+        << "  T = " << Time << "\n";
+    log1 << "Initializing:\n";
+
     /*
      int t=0;
      string N1="/Users/admin/Documents/GNT/SYMBA/SimLog";
@@ -1674,6 +1686,8 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
      ofstream outputLog(Title, ofstream::app);
      */
     // INITIALIZING CLOCK (SS1)
+    log1 << "  clock...";
+
     int TickStart=int(time(0)); // Starting the clock to measure time of computation
     int TickEnd=TickStart;
     int CountBrankrupcies=0;
@@ -1685,8 +1699,7 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
     vector<int> MetaorderInjectionTimes; // Times at which metaorders are injected
     //vector<int> MetaorderInjectionAmplitudes; // Effective volume transacted at metaorder injection
     
-    //system("CLS");
-    cout << "INITIALIZED CLOCK..." << endl;
+    log1 << "                         done\n";
     
     //gsl_rng* r = gsl_rng_alloc (gsl_rng_mt19937); // or gsl_rng_default instead of gsl_rng_mt19937
     gsl_rng* r = make_rng();
@@ -1695,6 +1708,7 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
     //string TimeScope="NoTimeScope";
     
     // INITIALIZING EACH AGENT
+    log1 << "  agents...";
     gsl_matrix* ReflexiveValues = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all bids
     gsl_matrix* AverageBids = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all bids
     gsl_matrix* AverageAsks = gsl_matrix_calloc (NumberOfStocks, Time); // Computed as the average of all asks
@@ -1902,10 +1916,11 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
         SharesOutstanding+=TempAgent.Stocks[0].StockQuantity;
     }; // closes i loop
     //outputLog << "INITIALIZED AGENTS..." << endl;
-    cout << "INITIALIZED AGENTS..." << endl;
+    log1 << "                        done\n";
     
     
     // GENERATING THE STOCKS TRUE VALUES
+    log1 << "  stocks' true values...";
     vector<double> Gen2 = STLRandom (NumberOfStocks, "Uniform");
     //double HPTrueMu=0.1;
     for (int j=0; j<NumberOfStocks; j++) {
@@ -1914,10 +1929,11 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
         for (int t=0; t<Time; t++) {gsl_matrix_set (GSLTrueValues, j, t, S[t]);};
     };
     vector<vector<double>> TrueValues = GSLMatrixToSTLMatrix(GSLTrueValues);
-    cout << "INITIALIZED STOCKS TRUE VALUES..." << endl;
+    log1 << "           done\n";
     
     
     // INITIALIZING THE AGENTS BIASED VALUES
+    log1 << "  agents' stocks' biased values...";
     for (int i=0; i<NumberOfAgents; i++) {
         for (int j=0; j<NumberOfStocks; j++) {
             vector<double> C = CointegratedWalk(TrueValues[j], Market[i].Leash[j], Market[i].LeashVol[j], Market[i].Accuracy[j]); // Master, Leash, LeashVolatility, Accuracy
@@ -1933,9 +1949,8 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
         }; // closes j loop
         Market[i].RBAFirst=Market[i].StockHoldings(); // RBA at time t=0
     }; // clloses i loop
-    cout << "INITIALIZED AGENTS BIASED VALUES..." << endl;
-    
-    
+    log1 << " done\n";
+
     
     // Checking on distribution of agents Future parameter
     //gsl_matrix* M=gsl_matrix_alloc (1, NumberOfAgents);
@@ -1968,6 +1983,7 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
     }; // closes j loop
     
     // Initializing TotalStockQuantities, the vector of total quantity of each stock
+    log1 << "  market indicators...";
     for (int j=0; j<NumberOfStocks; j++) {
         double TempStockQuantity=0;
         for (int i=0; i<NumberOfAgents; i++) {
@@ -1977,15 +1993,17 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
     }; // closes j loop
     // Initializing Market Indicators
     for (int i=0; i<NumberOfAgents; i++) {gsl_matrix_set(CapitalEvolution, i, 0, 100);};
-    cout << "INITIALIZED MARKET INDICATORS..." << endl;
+    log1 << "             done\n";
     
     // INITIALIZATION OF MARKETEVOLUTION
+    log1 << "  market evolution...";
     vector<vector<Agent>> MarketEvolution;
     MarketEvolution.push_back(Market);
-    cout << "INITIALIZED MARKET EVOLUTION..." << endl;
+    log1 << "              done\n";
     
     
     // INITIALIZATION OF THE ORDER BOOK
+    log1 << "  order book...";
     vector<vector<StockOrderBook>> FullOrderBook; // This is our final order book with many pages t
     vector<StockOrderBook> TempOrderBook; // This is the order book at time t, composed of many order books (one for each stock)
     for (int j=0; j<NumberOfStocks; j++) {
@@ -2013,25 +2031,19 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
         TempStockOrderBook.Asks.clear();
     }; // closes j loop
     FullOrderBook.push_back(TempOrderBook); // FullOrderBook is filled on first page at t=0
-    cout << "INITIALIZED ORDER BOOK..." << endl;
+    log1 << "                    done\n";
     
     
     // INITIALIZATION t=0 FINISHES HERE
     int TickMid=(int(time(0))-TickStart); // Checking the clock for time of computation of initialization
     //ofstream outputT2("/Users/admin/Documents/GNT/SYMBA/Details.txt", ofstream::app);
-    system("CLS");
-    cout << "****************************" << endl;
-    cout << "** STOCK MARKET SIMULATOR **" << endl;
-    cout << "****************************" << endl;
-    cout << "I=" << NumberOfAgents << ", J=" << NumberOfStocks << ", T=" << Time << endl << endl;
     cout.setf(ios::fixed);
-    cout << "Initialization : " << TickMid << "s" << endl;
+    log1 << "Initialization complete (" << TickMid << "s).\n";
     if (Plot=="On") {outputLog << "INITIALIZATION t=0 FINISHED..." << endl << endl;};
-    
-    
-    
+
     
     // ***** MARKET SIMULATION STARTS HERE WITH t-LOOP ***** (SS2)
+    log1 << "Simulating:\n";
     if (Plot=="On") {outputLog << "***** MARKET SIMULATION WITH t-LOOP STARTS HERE *****" << endl;};
     for (int t=1; t<Time; t++) {
         for (int j=0; j<NumberOfStocks; j++) {
@@ -2396,23 +2408,29 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
         
         
         
-        // CONSOLE INFO SCREEN
+        // Terminal info screen
         TickEnd=(int(time(0))-TickStart); // Closing the clock for time of computation
-        //system("CLS");
-        cout << "****************************" << endl;
-        cout << "** STOCK MARKET SIMULATOR **" << endl;
-        cout << "****************************" << endl;
-        cout << "I=" << NumberOfAgents << ", J=" << NumberOfStocks << ", T=" << Time << ", s=" << s << endl  << endl;
-        cout.setf(ios::fixed);
-        cout << "Initialization : " << TickMid << "s" << endl;
-        cout << "Timestep       : " << t+1 << "/" << Time << endl;
-        cout << "Elapsed time   : " << TickEnd/3600 << " h " << TickEnd/60 << " min " << TickEnd%60 << " s" << endl;
-        cout << "Remaining time : " << (Time*TickEnd/t - TickEnd)/3600 << " h " << ((Time*TickEnd/t - TickEnd)%3600)/60 << " min " << (Time*TickEnd/t - TickEnd)%60 << " s" << endl << endl;
-        cout << "Progress : " << 100*double(t)/(double(Time)) << " %" << endl;
-        if (TickEnd%4==0) {cout << "                                    |" << endl;}
-        else if (TickEnd%4==1) {cout << "                                    /" << endl;}
-        else if (TickEnd%4==2) {cout << "                                    --" << endl;}
-        else if (TickEnd%4==3) {cout << "                                    /" << endl;};
+        int output_width = cli::terminal::width();
+        if (output_width == 0) output_width = 80; // If no terminal, default to 80
+
+        // [======          ] step 12/3875 (0:12:24 remaining)
+        stringstream info_ss;
+        string time_str = to_string(Time);
+        info_ss << "  step " << setfill(' ') << setw(time_str.size()) << t + 1 << "/" << Time << " ("
+            << setfill('0') << setw(2) << (Time*TickEnd/t - TickEnd)/3600 << ":" 
+            << setw(2) << ((Time*TickEnd/t - TickEnd)%3600)/60 << ":" 
+            << setw(2) << (Time*TickEnd/t - TickEnd)%60 << " remaining) ";
+
+        string info = info_ss.str();
+        int pb_size = output_width - info.size() - 3; // Progress bar size: -3 for [, ], and \r 
+        int filled_pb_size = static_cast<int>(round((static_cast<double>(t)/Time) * pb_size));
+        int empty_pb_size = pb_size - filled_pb_size;
+        
+        log0 << "\r" << info << "[";
+        for (int i = 0; i < filled_pb_size; i++) log0 << "=";
+        for (int i = 0; i < empty_pb_size; i++) log0 << " ";
+        log0 << "]";
+        
         if ((PDCondition=="PDOn") && (t>=1000) && ((t-1000)%Year2==0)) {outputLog << "Computing PDistances..." << endl;};
             
         // END OF t-LOOP (SS13)
@@ -2430,7 +2448,8 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
         
         
     }; // closes t loop
-    cout << "Closed t-loop..." << endl;
+    log0 << "\n";
+    log1 << "Finished simulating.\n";
     outputMetalog.close();
     
     
@@ -2818,7 +2837,7 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
     outputMomentsDistribution << "Log-return" << '\t' << " " << '\t' << "AC-1w Log-return" << '\t' << " " << '\t' << "AC-2w Log-return" << '\t' << " " << '\t' << "AC-m Log-return" << '\t' << " " << '\t' << "AC-3m Log-return" << '\t' << " " << '\t' << "AC-6m Log-return" << '\t' << " " << '\t' << "AC-y Log-return" << '\t' << " " << '\t' << "Abs-log-return" << '\t' << " " << '\t' << "AC-1w Abs-log-return" << '\t' << " " << '\t' << "AC-2w Abs-log-return" << '\t' << " " << '\t' << "AC-m Abs-log-return" << '\t' << " " << '\t' << "AC-3m Abs-log-return" << '\t' << " " << '\t' << "AC-6m Abs-log-return" << '\t' << " " << '\t' << "AC-y Abs-log-return" << '\t' << " " << '\t' << "w-Volatility" << '\t' << " " << '\t' << "AC-w w-Volatility" << '\t' << " " << '\t' << "2w-Volatility" << '\t' << " " << '\t' << "AC-2w 2w-Volatility" << '\t' << " " << '\t' << "m-Volatility" << '\t' << " " << '\t' << "AC-m m-Volatility" << '\t' << " " << '\t' << "3m-Volatility" << '\t' << " " << '\t' << "AC-3m 3m-Volatility" << '\t' << " " << '\t' << "6m-Volatility" << '\t' << " " << '\t' << "AC-6m 6m-Volatility" << '\t' << " " << '\t' << "y-Volatility" << '\t' << " " << '\t' << "AC-y y-Volatility" << '\t' << " " << '\t' << "Volumes(bsp)" << '\t' << " " << '\t' << "AC-1w Volume" << '\t' << " " << '\t' << "AC-2w Volume" << '\t' << " " << '\t' << "AC-m Volume" << '\t' << " " << '\t' << "AC-3m Volume" << '\t' << " " << '\t' << "AC-6m Volume" << '\t' << " " << '\t' << "AC-y Volume" << '\t' << " " << '\t' << "AC-3w Log-return" << '\t' << " " << '\t' << "b1AC-1w Log-return" << '\t' << " " << '\t' << "b2AC-1w Log-return" << '\t' << " " << '\t' << "b3AC-1w Log-return" << '\t' << " " << '\t' << "b4AC-1w Log-return" << '\t' << " " << '\t' << "bwAC-1w Log-return" << '\t' << " " << '\t' << "b2AC-2w Log-return" << '\t' << " " << '\t' << "b4AC-2w Log-return" << '\t' << " " << '\t' << "b6AC-2w Log-return" << '\t' << " " << '\t' << "b8AC-2w Log-return" << '\t' << " " << '\t' << "b2wAC-2w Log-return" << '\t' << " " << '\t' << "b3AC-3w Log-return" << '\t' << " " << '\t' << "b6AC-3w Log-return" << '\t' << " " << '\t' << "b9AC-3w Log-return" << '\t' << " " << '\t' << "b12AC-3w Log-return" << '\t' << " " << '\t' << "b3wAC-3w Log-return" << '\t' << " " << '\t' << "b4AC-m Log-return" << '\t' << " " << '\t' << "b8AC-m Log-return" << '\t' << " " << '\t' << "b12AC-m Log-return" << '\t' << " " << '\t' << "b16AC-m Log-return" << '\t' << " " << '\t' << "bmAC-m Log-return" << endl;
     PlotGSLMatrix(MomentsDistribution, "MomentsDistribution.xls", 1);
     //PlotGSLMatrix(Pareto, "Pareto.xls", 1);
-    //cout << "Produced outputs..." << endl;
+    //log1 << "Produced outputs.\n";
     
     
     
@@ -2858,7 +2877,7 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
     
     
     outputLog.close();
-    cout << "Outputted .xls files..." << endl;
+    log1 << "Outputted .xls files.\n";
     
     // BACKUP OF MATRIX RESULTS
     vector<gsl_matrix*> MatrixResults;
@@ -2872,7 +2891,7 @@ vector<gsl_matrix*> MarketSimulator (int NumberOfAgents, int NumberOfStocks, int
     
     Market.erase (Market.begin(), Market.end()); // JJJ10
     
-    cout << "DONE" << endl;
+    log1 << "Round complete.\n\n";
     
     return MatrixResults;
 };
