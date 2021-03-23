@@ -3,13 +3,15 @@
 #include <iomanip>
 #include "cli.hpp"
 
-#if defined(_WIN32)
+#if defined(_WIN32) // Windows
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <Windows.h>
-#elif defined(__unix__)
+#elif defined(__unix__) // Unix
 #include <sys/ioctl.h>
-#endif // Windows/Unix
+#else // Something else?
+#error CLI module could not determine the platform.
+#endif
 
 namespace cli {
 
@@ -59,13 +61,28 @@ void init(int argc_, char** argv_) {
     app.add_option("--cluster-limit", cluster_limit, "Percentage of agents imitating agent leader")
         ->default_val(1)
         ->check(Range(0, 100));
-
+    app.add_flag("-v", verbosity, "Level of output verbosity");
+    
     try {
         app.parse(argc, argv);
     }
     catch (const ParseError& e) {
         std::exit(app.exit(e));
     }
+
+    // Log streams
+    #if defined(_WIN32)
+    static ofstream cnull_("nul");
+    #else
+    static ofstream cnull_("/dev/null");
+    #endif
+
+    cnull.rdbuf(cnull_.rdbuf());
+
+    log0.rdbuf(cout.rdbuf());
+
+    if (verbosity >= 1) log1.rdbuf(cout.rdbuf());
+    else log1.rdbuf(cnull.rdbuf());
 }
 
 namespace terminal {

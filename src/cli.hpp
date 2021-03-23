@@ -43,6 +43,7 @@ namespace args {
     inline int liquidation_floor;
     inline string leader_type;
     inline int cluster_limit;
+    inline int verbosity;
 
     /**
      * @brief Write the contents of args to a file.
@@ -52,5 +53,14 @@ namespace args {
     void dump(fs::path filename, bool skip_non_model_args = true);
     json to_json();
 }
+
+/// Output stream that discards contents. Rebind log streams to this using `log0.rdbuf(cnull.rdbuf())` to discard logs.
+inline std::ostream cnull(nullptr);
+
+/// Output stream for messages with a verbosity of 0 (i.e. always outputs). Equivalent to cout.
+inline std::ostream log0(nullptr);
+
+/// Output stream for messages with a verbosity of 1 (flag -v).
+inline std::ostream log1(nullptr);
 
 } // namespace cli
