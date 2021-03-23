@@ -3169,6 +3169,7 @@ void HPMarketSimulatorAll (int HPI, int HPGesture, double HPTrueMu, int HPAccura
     // HPAccuracy=9, 10, 11, 13 => probability of 0.2, 0.75, 1, 2 per year of bubble burst
     int J=1; double r=0.01; // int T=LearningPhase+2875; int LearningPhase=1000;
     for (int s=0; s<S; s++) {
+        cli::log0 << "Round " << s << "/" << S << ":\n";
         //MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int s)
         vector<gsl_matrix*> MSim = MarketSimulator (HPI, J, HPTime, r, "Off", "PDOff", TypeNEB, HPGesture, HPTrueMu, HPAccuracy, HPLiquidationFloor, Leader, ClusterLimit, pNEB, Rate, s, -1, 0);
         MultiSim.push_back(MSim); //delete MSim[0]; MSim[0]=NULL; MSim.erase(MSim.begin(), MSim.end());
