@@ -3,10 +3,24 @@
 #include <iomanip>
 #include "cli.hpp"
 
-CliArgs::CliArgs(int argc, char** argv) {
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
+#include <Windows.h>
+#elif defined(__unix__)
+#include <sys/ioctl.h>
+#endif // Windows/Unix
+
+namespace cli {
+
+void init(int argc_, char** argv_) {
+    argc = argc_;
+    argv = argv_;
+    
     using namespace CLI;
     App app("A market simulator built in C++.", "symba");
 
+    using namespace args;
     app.add_option("-o,--output-dir", output_dir, "Output directory for simulation results")
         ->required()
         ->check(ExistingDirectory);
@@ -54,8 +68,46 @@ CliArgs::CliArgs(int argc, char** argv) {
     }
 }
 
-void CliArgs::dump(fs::path filename, bool skip_non_model_args) {
-    json j = (*this);
+namespace terminal {
+
+pair<int, int> size() {
+    // I hate this
+    #if defined(_WIN32)
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    bool ok = GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+
+    if (!ok) return pair(0, 0); // Probebly no terminal
+
+    int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+    if (width == 1 and height == 1) return pair(0, 0); // No terminal
+    else return pair(width, height);
+
+    #elif defined(__unix__)
+    struct winsize w;
+    ioctl(fileno(stdout), TIOCGWINSZ, &w);
+    width = w.ws_col;
+    height = w.ws_row;
+
+    return pair(width, height);
+    #endif
+}
+
+int width() {
+    return size().first;
+}
+
+int height() {
+    return size().second;
+}
+
+} // namespace terminal
+
+namespace args {
+
+void dump(fs::path filename, bool skip_non_model_args) {
+    json j = to_json();
 
     if (skip_non_model_args) {
         // Exclude non-model parameters
@@ -66,17 +118,24 @@ void CliArgs::dump(fs::path filename, bool skip_non_model_args) {
     ofs << setw(4) << j;
 }
 
-void to_json(json& j, const CliArgs& args) {
-    j["output-dir"] = args.output_dir.string();
-    j["n-agents"] = args.n_agents;
-    j["n-stocks"] = args.n_stocks;
-    j["n-steps"] = args.n_steps;
-    j["n-rounds"] = args.n_rounds;
-    j["rate"] = args.rate;
-    j["plot"] = args.plot;
-    j["type-neb"] = args.type_neb;
-    j["hp-gesture"] = args.hp_gesture;
-    j["liquidation-floor"] = args.liquidation_floor;
-    j["leader-type"] = args.leader_type;
-    j["cluster-limit"] = args.cluster_limit;
+json to_json() {
+    json j;
+
+    j["output-dir"] = output_dir.string();
+    j["n-agents"] = n_agents;
+    j["n-stocks"] = n_stocks;
+    j["n-steps"] = n_steps;
+    j["n-rounds"] = n_rounds;
+    j["rate"] = rate;
+    j["plot"] = plot;
+    j["type-neb"] = type_neb;
+    j["hp-gesture"] = hp_gesture;
+    j["liquidation-floor"] = liquidation_floor;
+    j["leader-type"] = leader_type;
+    j["cluster-limit"] = cluster_limit;
+
+    return j;
 }
+
+} // namespace args
+} // namespace cli

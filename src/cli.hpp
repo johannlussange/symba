@@ -2,35 +2,55 @@
 #include <filesystem>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <nlohmann/json.hpp>
 
 using namespace std;
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 
-/// Processed command-line arguments.
-struct CliArgs {
-    fs::path output_dir;
-    int n_agents;
-    int n_stocks;
-    int n_steps;
-    int n_rounds;
-    double rate;
-    bool plot;
-    string type_neb;
-    double hp_gesture;
-    int liquidation_floor;
-    string leader_type;
-    int cluster_limit;
+namespace cli {
 
-    CliArgs(int argc, char** argv);
+/// Initialize command-line interface. Call this in main() as soon as possible!
+void init(int argc, char** argv);
+
+inline int argc;
+inline char** argv;
+
+/// Terminal parameters
+namespace terminal {
+    /// Terminal size - columns x rows (0x0 for no terminal).
+    pair<int, int> size();
+
+    /// Number of columns in the terminal window (0 for no terminal).
+    int width();
+
+    /// Number of rows in the terminal window (0 for no terminal).
+    int height();
+};
+
+/// Processed command-line arguments.
+namespace args {
+    inline fs::path output_dir;
+    inline int n_agents;
+    inline int n_stocks;
+    inline int n_steps;
+    inline int n_rounds;
+    inline double rate;
+    inline bool plot;
+    inline string type_neb;
+    inline double hp_gesture;
+    inline int liquidation_floor;
+    inline string leader_type;
+    inline int cluster_limit;
 
     /**
-     * @brief Write the contents of CliArgs to a file.
+     * @brief Write the contents of args to a file.
      * @param filename: path to the target file.
      * @param skip_non_model_args: skip arguments, unrelated to the SYMBA model (like output-dir).
     */
     void dump(fs::path filename, bool skip_non_model_args = true);
-};
+    json to_json();
+}
 
-void to_json(json& j, const CliArgs& args);
+} // namespace cli
