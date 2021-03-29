@@ -3163,6 +3163,30 @@ void TotalCombinationMatrix (int N) {
 //TotalCombinationMatrix(100); exit(0);
 
 
+void HPMarketSimulatorCli() {
+    // Write CLI arguments to file for later reference and for use by the GUI.
+    cli::args::dump(cli::args::output_dir / "ModelParameters.json");
+    using namespace cli::args;
+
+    vector<vector<gsl_matrix*>> MultiSim;
+    for (int s = 0; s < n_rounds; s++) {
+        cli::log0 << "Round " << s + 1 << "/" << n_rounds << ":\n";
+        //MarketSimulator (int NumberOfAgents, int NumberOfStocks, int Time, double Rate, string Plot, string PDCondition, string TypeNEB, int HPGesture, double HPTrueMu, int HPAccuracy, int LiquidationFloor, string LeaderType, int ClusterLimit, int s)
+        vector<gsl_matrix*> MSim = MarketSimulator(
+            n_agents, n_stocks, n_steps, rate, (plot ? "On" : "Off"), "PDOff", type_neb, hp_gesture, 0.10, 10,
+            liquidation_floor, leader_type, cluster_limit, 0, 1, s, -1, 0);
+        MultiSim.push_back(MSim); //delete MSim[0]; MSim[0]=NULL; MSim.erase(MSim.begin(), MSim.end());
+    };
+    for (int k=0; k<int(MultiSim[0].size()); k++) {JointDistributions (MultiSim, k, 100);};
+    
+    // Memory freeing
+    for (int k=0; k<int(MultiSim[0].size()); k++) {
+        for (int i = 0; i < n_rounds; i++) {gsl_matrix_free(MultiSim[i][k]);};
+    };
+
+    MultiSim.erase(MultiSim.begin(), MultiSim.end()); // Simulated moments distribution
+};
+
 void HPMarketSimulatorAll (int HPI, int HPGesture, double HPTrueMu, int HPAccuracy, int HPTime, int HPLiquidationFloor, string TypeNEB, string Leader, int ClusterLimit, int pNEB, double Rate, int S) {
     vector<vector<gsl_matrix*>> MultiSim;
     // int NEB0=50; int NEB1=13; int NEBLossAversion=13; int NEB3=12; int NEB4=12; // resp. bots, conservatism bias, loss aversion, positivity bias
@@ -3458,10 +3482,7 @@ int main (int argc, char** argv) {
 
     Machine = args::output_dir.string() + "/";
 
-    // Write CLI arguments to file for later reference and for use by the GUI.
-    args::dump(args::output_dir / "ModelParameters.json");
-
-    int S=20; // NUMBER OF SIMULATIONS
+    HPMarketSimulatorCli();
 
     // REAL DATA STATISTICS
     //vector<Share> PF=PortfolioGenerator ("ExchangesLSE", 20070102); // LOADS FULL LONDON STOCK EXCHANGE RAW DATA
@@ -3487,7 +3508,7 @@ int main (int argc, char** argv) {
     //HPMarketSimulatorAllPD (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S); // Ordinary PD
     
     //for (int Trunk=0; Trunk<=6; Trunk++) {MarketSimulatorTrunk (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S, Trunk);};
-    HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S);
+    //    HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "NoCluster", 1, 0, 1, S);
     
     //for (int k=1; k<5; k++) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "Best", k*500/5, 0, 1, S);};
     //for (int k=1; k<5; k++) {HPMarketSimulatorAll (500, 0, 0.10, 10, 2875+1000, 50, "Algorithmic", "Worst", k*500/5, 0, 1, S);};
