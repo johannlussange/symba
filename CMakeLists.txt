@@ -19,7 +19,7 @@ target_compile_features(symba PRIVATE cxx_std_20)
 set_target_properties(symba PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
-target_link_libraries(symba PRIVATE -static
+target_link_libraries(symba PRIVATE
     GSL::gsl
     GSL::gslcblas
     CLI11::CLI11

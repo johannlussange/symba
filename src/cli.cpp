@@ -3,14 +3,16 @@
 #include <iomanip>
 #include "cli.hpp"
 
-#if defined(_WIN32) // Windows
+#if defined(_WIN32) // Windows API
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <Windows.h>
-#elif defined(__unix__) // Unix
+#define SYMBA_OSAPI_WINDOWS
+#elif defined(__unix__) or defined(__APPLE__) // POSIX
 #include <sys/ioctl.h>
+#define SYMBA_OSAPI_POSIX
 #else // Something else?
-#error CLI module could not determine the platform.
+#error CLI module could not determine OS interface.
 #endif
 
 namespace cli {
@@ -71,10 +73,12 @@ void init(int argc_, char** argv_) {
     }
 
     // Log streams
-    #if defined(_WIN32)
+    #if defined(SYMBA_OSAPI_WINDOWS)
     static ofstream cnull_("nul");
-    #else
+    #elif defined(SYMBA_OSAPI_POSIX)
     static ofstream cnull_("/dev/null");
+    #else
+    #error Unknown OS API.
     #endif
 
     cnull.rdbuf(cnull_.rdbuf());
@@ -89,11 +93,11 @@ namespace terminal {
 
 pair<int, int> size() {
     // I hate this
-    #if defined(_WIN32)
+    #if defined(SYMBA_OSAPI_WINDOWS)
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     bool ok = GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 
-    if (!ok) return pair(0, 0); // Probebly no terminal
+    if (!ok) return pair(0, 0); // Probably no terminal
 
     int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
     int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
@@ -101,13 +105,16 @@ pair<int, int> size() {
     if (width == 1 and height == 1) return pair(0, 0); // No terminal
     else return pair(width, height);
 
-    #elif defined(__unix__)
+    #elif defined(SYMBA_OSAPI_POSIX)
     struct winsize w;
     ioctl(fileno(stdout), TIOCGWINSZ, &w);
-    width = w.ws_col;
-    height = w.ws_row;
+    int width = w.ws_col;
+    int height = w.ws_row;
 
     return pair(width, height);
+
+    #else
+    #error Unknown OS API.
     #endif
 }
 
