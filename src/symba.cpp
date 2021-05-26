@@ -3145,7 +3145,6 @@ void HPMarketSimulatorCli() {
     vector<atomic<double>> progresses(n_rounds); // Progress values in [0, 1)
 
     int jobs = n_jobs == 0 ? n_rounds : min(n_jobs, n_rounds);
-    cout << "Running " << jobs << " jobs\n"; 
 
     for (int job = 0; job < jobs; job++) {
         future_results.push_back(async(launch::async, [&, job] {
