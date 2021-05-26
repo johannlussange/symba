@@ -32,6 +32,7 @@ namespace terminal {
 /// Processed command-line arguments.
 namespace args {
     inline fs::path output_dir;
+    inline int n_jobs;
     inline int n_agents;
     inline int n_stocks;
     inline int n_steps;

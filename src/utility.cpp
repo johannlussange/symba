@@ -44,7 +44,7 @@ double BinaryProjection(gsl_matrix* ReflexiveValues, int t, int Tool, int Lag, i
 
 
 /// Trunks any double number with a number "Digits" of Significant digits
-double DigitTrunk (double x, int Digits, string FloorOrCeil) {
+double DigitTrunk(double x, int Digits, string FloorOrCeil) {
     double res=0;
     //ofstream outputDigitTrunk(cli::args::output_dir / "DigitTrunk.txt", ofstream::app);
     /*

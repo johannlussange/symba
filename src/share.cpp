@@ -82,10 +82,10 @@ void Share::Gen(const filesystem::path& Name, gsl_matrix* Macroeconomics, int Fi
 
 // Broker fees of IG are downloaded at https://www.ig.com/fr/actions/conditions-actions
 // This outputs files LSEnew.txt, NYSEnew.txt, NASDAQnew.txt which are the stocks offered by IG. These files must be formatted to Legacy MAC OS (CR) text format, and can in turn be used as direct data feed
-void Share::ProcessBrokerData () {
+void Share::ProcessBrokerData(const filesystem::path& output_dir) {
     InPF="Out";
     vector<vector<string>> W;
-    auto Path = cli::args::output_dir / "Symba/CSV/Tiered Margin_cfd.csv";
+    auto Path = output_dir / "Symba/CSV/Tiered Margin_cfd.csv";
     ifstream FileInput(Path); string Line; int LineNb=0;
     vector<string> V1, V2, V3, V4;
     while (getline (FileInput, Line)) {LineNb++;
@@ -98,7 +98,7 @@ void Share::ProcessBrokerData () {
         };
     };
     // Reuters RIC: .L (London Stock Exchange), .O (NASDAQ), .N (NYSE), .P (Nyse ARCA), .PK (OTC Market Group), .OB (?), .K (New York Consolidated), .A (American Stock Exchange)
-    auto Name = cli::args::output_dir / "Symba/CSV" / Exchange / File;
+    auto Name = output_dir / "Symba/CSV" / Exchange / File;
     string Suffix=".L";
     if (Exchange=="NYSE") {Suffix=".N";} // Some stocks will taken as .K on the New York Consolidated!
     else if (Exchange=="NASDAQ") {Suffix=".O";};
@@ -117,9 +117,9 @@ void Share::ProcessBrokerData () {
         }; // closes while
     }; // closes while
     if (InPF=="In") {
-        ofstream outputLSE(cli::args::output_dir / "Symba/CSV/LSEnew.txt", ofstream::app);
-        ofstream outputNYSE(cli::args::output_dir / "Symba/CSV/NYSEnew.txt", ofstream::app);
-        ofstream outputNASDAQ(cli::args::output_dir / "Symba/CSV/NASDAQnew.txt", ofstream::app);
+        ofstream outputLSE(output_dir / "Symba/CSV/LSEnew.txt", ofstream::app);
+        ofstream outputNYSE(output_dir / "Symba/CSV/NYSEnew.txt", ofstream::app);
+        ofstream outputNASDAQ(output_dir / "Symba/CSV/NASDAQnew.txt", ofstream::app);
         if (Exchange=="LSE") {outputLSE << File << ',' << Symbol << ',' << Title << ',' << Exchange << ',' << Country << ',' << Currency << endl;}
         if (Exchange=="NYSE") {outputNYSE << File << ',' << Symbol << ',' << Title << ',' << Exchange << ',' << Country << ',' << Currency << endl;}
         if (Exchange=="NASDAQ") {outputNASDAQ << File << ',' << Symbol << ',' << Title << ',' << Exchange << ',' << Country << ',' << Currency << endl;}

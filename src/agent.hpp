@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <filesystem>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_randist.h>
 #include "stock.hpp"
@@ -85,6 +86,6 @@ public:
         int j, int t, double Rate, gsl_matrix* ReflexiveValues, double VSpread, double LiquidPercent, int Time,
         int NumberOfStocks, string TradingFrequencyCond, string Plot, string VersatilityCondition,
         double MarketPerformance, int TimeSinceJan1st, int LearningPhase, int LeaderAgent, int LeaderQuant,
-        int LeaderPinch, int ClusterLimit, int Trunk
+        int LeaderPinch, int ClusterLimit, int Trunk, const filesystem::path& output_dir
     );
 }; // closes Agent class

@@ -15,7 +15,7 @@ vector<int> Shuffle(int n);
 double BinaryProjection(gsl_matrix* ReflexiveValues, int t, int Tool, int Lag, int Future);
 
 // Trunks any double number with a number "Digits" of Significant digits
-double DigitTrunk (double x, int Digits, string FloorOrCeil);
+double DigitTrunk(double x, int Digits, string FloorOrCeil);
 
 // Generating random variables for specific time delays
 vector<double> STLRandom (int Length, string S);

@@ -1,4 +1,5 @@
 #include <CLI/CLI.hpp>
+#include <thread>
 #include <fstream>
 #include <iomanip>
 #include "cli.hpp"
@@ -28,6 +29,9 @@ void init(int argc_, char** argv_) {
     app.add_option("-o,--output-dir", output_dir, "Output directory for simulation results")
         ->required()
         ->check(ExistingDirectory);
+    app.add_option("-j", n_jobs, "Run N jobs in parallel (0 = no limit)")
+        ->default_val(thread::hardware_concurrency())
+        ->check(NonNegativeNumber);
     app.add_option("-I,--n-agents", n_agents, "Number of agents in the simulation")
         ->default_val(500)
         ->check(Range(10, 10000));
@@ -136,6 +140,8 @@ void dump(fs::path filename, bool skip_non_model_args) {
     if (skip_non_model_args) {
         // Exclude non-model parameters
         j.erase("output-dir");
+        j.erase("j");
+        j.erase("v");
     }
 
     ofstream ofs(filename);
@@ -146,6 +152,7 @@ json to_json() {
     json j;
 
     j["output-dir"] = output_dir.string();
+    j["j"] = n_jobs;
     j["n-agents"] = n_agents;
     j["n-stocks"] = n_stocks;
     j["n-steps"] = n_steps;
@@ -157,6 +164,7 @@ json to_json() {
     j["liquidation-floor"] = liquidation_floor;
     j["leader-type"] = leader_type;
     j["cluster-limit"] = cluster_limit;
+    j["v"] = verbosity;
 
     return j;
 }
