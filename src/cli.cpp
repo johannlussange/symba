@@ -67,6 +67,14 @@ void init(int argc_, char** argv_) {
     app.add_option("--cluster-limit", cluster_limit, "Percentage of agents imitating agent leader")
         ->default_val(1)
         ->check(Range(0, 100));
+    app.add_option("--uf-alpha", uf_alpha, "Utility function alpha parameter")
+        ->default_val(1.0);
+    app.add_option("--uf-beta", uf_beta, "Utility function beta parameter")
+        ->default_val(1.0);
+    app.add_option("--uf-lambda", uf_lambda, "Utility function lambda parameter")
+        ->default_val(1.0);
+    app.add_option("--uf-xscale", uf_xscale, "Utility function X scale")
+        ->default_val(1.0);
     app.add_flag("-v", verbosity, "Level of output verbosity");
     
     try {
@@ -164,6 +172,10 @@ json to_json() {
     j["liquidation-floor"] = liquidation_floor;
     j["leader-type"] = leader_type;
     j["cluster-limit"] = cluster_limit;
+    j["uf-alpha"] = uf_alpha;
+    j["uf-beta"] = uf_beta;
+    j["uf-lambda"] = uf_lambda;
+    j["uf-xscale"] = uf_xscale;
     j["v"] = verbosity;
 
     return j;

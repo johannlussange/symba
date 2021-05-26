@@ -1435,6 +1435,27 @@ void Agent::RL(
         for (int i=0; i<int(ExitHorizons.size()); i++) {
             if (t==ExitHorizons[i]) {CondRecord=1;};
         };
+
+        // prospect-theory: utility function ---------------------------------------------------------------------------
+        // see https://doi.org/10.2307/1914185
+        auto utility = [](double x) {
+            double λ = cli::args::uf_lambda;
+            double α = cli::args::uf_alpha;
+            double β = cli::args::uf_beta;
+            // Parameter that controls horizontal scaling of the utility function
+            double k = cli::args::uf_xscale;
+
+            if (x >= 0) {
+                return pow(x / k, α);
+            }
+            else {
+                return -λ * pow(-x / k, β);
+            }
+        };
+
+        dTResultReal = utility(dTResultReal);
+        // -------------------------------------------------------------------------------------------------------------
+
         if (CondRecord==1) { // JJJ3
             for (int i=0; i<dTResultVecSize; i++) { // sorting the vector SmoothVec by ascending values
                 if (dTResultReal<dTResultVec[j][i]) {

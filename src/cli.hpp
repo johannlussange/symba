@@ -44,6 +44,10 @@ namespace args {
     inline int liquidation_floor;
     inline string leader_type;
     inline int cluster_limit;
+    inline double uf_alpha;
+    inline double uf_beta;
+    inline double uf_lambda;
+    inline double uf_xscale;
     inline int verbosity;
 
     /**
