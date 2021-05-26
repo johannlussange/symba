@@ -3,9 +3,6 @@
 
 using namespace std;
 
-
-inline string Machine;
-
 constexpr int DayTicks = 1;
 constexpr int Week = 5 * DayTicks;
 constexpr int Month = 21 * DayTicks;

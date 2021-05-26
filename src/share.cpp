@@ -3,9 +3,10 @@
 #include <sstream>
 #include "share.hpp"
 #include "global.hpp"
+#include "cli.hpp"
 
 
-void Share::Gen(string Name, gsl_matrix* Macroeconomics, int FirstDate) {
+void Share::Gen(const filesystem::path& Name, gsl_matrix* Macroeconomics, int FirstDate) {
     //int Numeraire=5;
     //if (Currency=="USD") {Numeraire=3;} else if (Currency=="GBP") {Numeraire=4;}; // This is switched off so as to study local market microstructure apart from FX perturbations // FXX
     vector<double> LocalDates, LocalOpen, LocalClose, LocalHigh, LocalLow, LocalVolumes;
@@ -84,7 +85,7 @@ void Share::Gen(string Name, gsl_matrix* Macroeconomics, int FirstDate) {
 void Share::ProcessBrokerData () {
     InPF="Out";
     vector<vector<string>> W;
-    string Path=Machine + "Symba/CSV/Tiered Margin_cfd.csv";
+    auto Path = cli::args::output_dir / "Symba/CSV/Tiered Margin_cfd.csv";
     ifstream FileInput(Path); string Line; int LineNb=0;
     vector<string> V1, V2, V3, V4;
     while (getline (FileInput, Line)) {LineNb++;
@@ -97,7 +98,7 @@ void Share::ProcessBrokerData () {
         };
     };
     // Reuters RIC: .L (London Stock Exchange), .O (NASDAQ), .N (NYSE), .P (Nyse ARCA), .PK (OTC Market Group), .OB (?), .K (New York Consolidated), .A (American Stock Exchange)
-    string Name=Machine + "Symba/CSV/" + Exchange + "/" + File;
+    auto Name = cli::args::output_dir / "Symba/CSV" / Exchange / File;
     string Suffix=".L";
     if (Exchange=="NYSE") {Suffix=".N";} // Some stocks will taken as .K on the New York Consolidated!
     else if (Exchange=="NASDAQ") {Suffix=".O";};
@@ -116,9 +117,9 @@ void Share::ProcessBrokerData () {
         }; // closes while
     }; // closes while
     if (InPF=="In") {
-        ofstream outputLSE(Machine + "Symba/CSV/LSEnew.txt", ofstream::app);
-        ofstream outputNYSE(Machine + "Symba/CSV/NYSEnew.txt", ofstream::app);
-        ofstream outputNASDAQ(Machine + "Symba/CSV/NASDAQnew.txt", ofstream::app);
+        ofstream outputLSE(cli::args::output_dir / "Symba/CSV/LSEnew.txt", ofstream::app);
+        ofstream outputNYSE(cli::args::output_dir / "Symba/CSV/NYSEnew.txt", ofstream::app);
+        ofstream outputNASDAQ(cli::args::output_dir / "Symba/CSV/NASDAQnew.txt", ofstream::app);
         if (Exchange=="LSE") {outputLSE << File << ',' << Symbol << ',' << Title << ',' << Exchange << ',' << Country << ',' << Currency << endl;}
         if (Exchange=="NYSE") {outputNYSE << File << ',' << Symbol << ',' << Title << ',' << Exchange << ',' << Country << ',' << Currency << endl;}
         if (Exchange=="NASDAQ") {outputNASDAQ << File << ',' << Symbol << ',' << Title << ',' << Exchange << ',' << Country << ',' << Currency << endl;}

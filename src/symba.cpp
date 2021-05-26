@@ -40,12 +40,10 @@ using namespace std;
 // Function plotting an STL vector
 void PlotSTL(vector<double> V, string Name, string XL) {
     // Randomization of output file name
-    string A2 = Machine;
     string B2=Name;
     if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform"))[2])); B2=to_string(B);};
-    A2+=B2;
-    const char* Title2 = A2.c_str();
-    ofstream outputV(Title2, ofstream::app);
+
+    ofstream outputV(cli::args::output_dir / B2, ofstream::app);
     for (int t=0; t<int(V.size()); t++) {
         double x=V[t];
         if (XL=="XL") {x=int(x);};
@@ -62,12 +60,10 @@ void PlotSTL(vector<double> V, string Name, string XL) {
 // Function plotting an STL vector
 void PlotSTLInt(vector<int> V, string Name) {
     // Randomization of output file name
-    string A2 = Machine;
     string B2=Name;
     if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform"))[2])); B2=to_string(B);};
-    A2+=B2;
-    const char* Title2 = A2.c_str();
-    ofstream outputV(Title2, ofstream::app);
+
+    ofstream outputV(cli::args::output_dir / B2, ofstream::app);
     for (int t=0; t<(int(V.size())); t++) {
         if (t==(int(V.size()))-1) {outputV << V[t]; break;};
         outputV << V[t] << endl;
@@ -82,12 +78,10 @@ void PlotSTLInt(vector<int> V, string Name) {
 // Function plotting an STL vector
 void PlotSTLMarket(vector<double> V, string Name) {
     // Randomization of output file name
-    string A2 = Machine;
     string B2=Name;
     if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform"))[2])); B2=to_string(B);};
-    A2+=B2;
-    const char* Title2 = A2.c_str();
-    ofstream outputV(Title2, ofstream::app);
+
+    ofstream outputV(cli::args::output_dir / B2, ofstream::app);
     for (int t=0; t<(int(V.size())); t++) {
         int x = int(V[t]);
         if (t==(int(V.size()))-1) {outputV << x; break;};
@@ -103,12 +97,10 @@ void PlotSTLMarket(vector<double> V, string Name) {
 // Function plotting a GSL matrix
 void PlotGSLMatrix(gsl_matrix* M, string Name, int F) {
     // Randomization of output file name
-    string A2 = Machine;
     string B2=Name;
     if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform"))[2])); B2=to_string(B);};
-    A2+=B2;
-    const char* Title2 = A2.c_str();
-    ofstream outputM(Title2, ofstream::app);
+
+    ofstream outputM(cli::args::output_dir / B2, ofstream::app);
     for (int t=0; t<int(M->size2); t++) {
         for (int j=0; j<int(M->size1); j++) {
             //int x = int(floor(F*gsl_matrix_get(M,j,t)));
@@ -720,7 +712,7 @@ gsl_matrix* SpotIntensity2 (gsl_matrix* TimeSeries, int k) {
 // Exchange rates taken from the Bank of England at http://www.bankofengland.co.uk/boeapps/iadb/Rates.asp?TD=12&TM=Dec&TY=2017&
 gsl_matrix* Macroeconomics () {
     double FXFee=1-0.3*0.01; // FX fees from IG
-    string Path=Machine + "Symba/CSV/MACROECONOMICS.csv";
+    auto Path = cli::args::output_dir / "Symba/CSV/MACROECONOMICS.csv";
     ifstream FileInput(Path); string Line; int LineNb=0;
     vector<double> V1, V2, V3, V4, V5;
     while (getline (FileInput, Line)) {LineNb++;
@@ -762,7 +754,7 @@ gsl_matrix* Macroeconomics () {
 // Barclay Equity L/S Index between 1.1.2007 and 1.1.2018 (132 months, one month being 21.75=22 days)
 void StockIndices () {
     int Size=2872;
-    string Path=Machine + "Symba/CSV/BarclayHFI.csv"; vector<double> V;
+    auto Path = cli::args::output_dir / "Symba/CSV/BarclayHFI.csv"; vector<double> V;
     ifstream FileInput(Path); string Line; int LineNb=0;
     while (getline (FileInput, Line)) {LineNb++;
         istringstream LineStream(Line); string Item; int ItemNb=0;
@@ -775,7 +767,7 @@ void StockIndices () {
     gsl_matrix* Result2 = gsl_matrix_calloc (2, Size);
     for (int i=0; i<Size; i++) {gsl_matrix_set (Result2, 0, i, gsl_matrix_get (Result, 0, i/22));}
     
-    Path=Machine + "Symba/CSV/NasdaqComposite.csv"; vector<double> W;
+    Path=cli::args::output_dir / "Symba/CSV/NasdaqComposite.csv"; vector<double> W;
     ifstream FileInput2(Path); string Line2; LineNb=0;
     while (getline (FileInput2, Line2)) {LineNb++;
         istringstream LineStream(Line2); string Item; int ItemNb=0;
@@ -800,7 +792,7 @@ void StockIndices () {
 vector<Share> PortfolioGenerator (string Name, int FirstDate) {
     string ProcessedData="Yes";
     vector<Share> PF, PFFinal; int TickStart=int(time(0));
-    string DPath=Machine + "Symba/CSV/" + Name + ".txt";
+    auto DPath=cli::args::output_dir / "Symba/CSV" / (Name + ".txt");
     ifstream DFileInput(DPath);string DLine; vector<string> VExchanges, VCountries, VCurrencies;
     while (getline (DFileInput, DLine, '\r')) {
         istringstream LineStream(DLine); string DItem; int DItemNb=0;
@@ -813,9 +805,9 @@ vector<Share> PortfolioGenerator (string Name, int FirstDate) {
     int ExchangeSize=int(VExchanges.size()); DFileInput.close();
     gsl_matrix* Macro = Macroeconomics();
     for (int m=0; m<ExchangeSize; m++) {
-        string FPath=Machine + "Symba/CSV/" + VExchanges[m] + "new.txt";
+        auto FPath=cli::args::output_dir / "Symba/CSV" / (VExchanges[m] + "new.txt");
         vector<string> VFiles, VSymbol, VTitles;
-        if (ProcessedData=="No") {FPath=Machine + "Symba/CSV/" + VExchanges[m] + ".txt";};
+        if (ProcessedData=="No") {FPath = cli::args::output_dir / "Symba/CSV" / (VExchanges[m] + ".txt");};
         ifstream FFileInput(FPath); string FLine;
         if (ProcessedData=="No") {
             while (getline (FFileInput, FLine, '\r')) {VFiles.push_back(FLine);};
@@ -839,12 +831,12 @@ vector<Share> PortfolioGenerator (string Name, int FirstDate) {
             else if (ProcessedData=="No") {X.ProcessBrokerData();};
             //cout << X.InPF << endl;
             if ((X.InPF=="In") && (ProcessedData=="No")) {
-                X.Gen(Machine + "Symba/CSV/" + VExchanges[m] + "/" + VFiles[s], Macro, FirstDate);
+                X.Gen(cli::args::output_dir / "Symba/CSV" / VExchanges[m] / VFiles[s], Macro, FirstDate);
                 PF.push_back(X);
                 cout << VExchanges[m] << " (" << floor(s*100.0/StockSize) << "%): " << X.Symbol << ", " << X.Title << " (" << X.Country << ", " << X.Currency << ")" << endl;
             };
             if (ProcessedData=="Yes") {
-                X.Gen(Machine + "Symba/CSV/" + VExchanges[m] + "/" + VFiles[s], Macro, FirstDate);
+                X.Gen(cli::args::output_dir / "Symba/CSV" / VExchanges[m] / VFiles[s], Macro, FirstDate);
                 PF.push_back(X);
                 cout << VExchanges[m] << " (" << floor(s*100.0/StockSize) << "%): " << X.Symbol << ", " << X.Title << " (" << X.Country << ", " << X.Currency << ")" << endl;
             };
@@ -872,7 +864,9 @@ vector<Share> PortfolioGenerator (string Name, int FirstDate) {
 
 gsl_matrix* PortfolioOutput (vector<Share> PF, int Size) {
     if (Size==0) {Size=int(PF.size());};
-    string A = Machine+"PF.csv"; ofstream outputSpecs(A.c_str(), ofstream::app);
+    auto A = cli::args::output_dir / "PF.csv";
+    ofstream outputSpecs(A, ofstream::app);
+
     vector<int> J=Shuffle(int(PF.size()));
     gsl_matrix* Result = gsl_matrix_calloc (Size+1, PF[0].Data->size2-381);
     outputSpecs << fixed << "Date (yyyymmdd),"; for (int i=1; i<Size+1; i++) {outputSpecs << PF[J[i-1]].Symbol << " (" << PF[J[i-1]].Exchange << "),";}; outputSpecs << endl;
@@ -904,7 +898,9 @@ vector<vector<Share>> PFTrainingTesting (vector<Share> PF, int TrainSize) {
 
 vector<vector<gsl_matrix*>> PortfolioMultiOutput (vector<Share> PF, int Size) {
     if (Size==0) {Size=int(PF.size());};
-    string A = Machine+"PF.csv"; ofstream outputSpecs(A.c_str(), ofstream::app);
+    auto A = cli::args::output_dir / "PF.csv";
+    ofstream outputSpecs(A, ofstream::app);
+
     vector<int> J=Shuffle(int(PF.size()));
     gsl_matrix* Result = gsl_matrix_calloc (Size+1, PF[0].Data->size2-381);
     gsl_matrix* Result2 = gsl_matrix_calloc (Size+1, PF[0].Data->size2-381);
@@ -1046,7 +1042,7 @@ vector<vector<gsl_matrix*>> PortfolioMultiOutput (vector<Share> PF, int Size) {
         //pV=0; pR=0; pRes=0;
         
         PlotGSLMatrix(Moments, "MomentsReal.xls", 1);
-        ofstream outputLog(Machine+"MomentsReal.xls", ofstream::app); outputLog << endl;
+        ofstream outputLog(cli::args::output_dir / "MomentsReal.xls", ofstream::app); outputLog << endl;
         Temp.push_back(Moments);
         FinalResult.push_back(Temp);
         //Temp.erase(Temp.begin(), Temp.end());
@@ -1067,12 +1063,10 @@ vector<vector<gsl_matrix*>> PortfolioMultiOutput (vector<Share> PF, int Size) {
 vector<vector<double>> Distribution (vector<double> X, int Precision, double Xmin, double Xmax, string Name, string Plot) {
     vector<vector<double>> DistRes;
     // Randomization of output file name
-    string A2 = Machine;
     string B2=Name;
     if (Name=="000") {int B = int(1000*((STLRandom(5, "Uniform"))[2])); B2=to_string(B);};
-    A2+=B2;
-    const char* Title = A2.c_str();
-    ofstream output5(Title);
+
+    ofstream output5(cli::args::output_dir / B2);
     
     int SeriesSize = int(X.size());
     double res;
@@ -1172,8 +1166,8 @@ vector<int> Quasihyperbolic(int NumberOfAgents, int Time, double Beta, double De
 
 // Outputs the agent parameters for the stitch into one file: for each agent, the first line are integers, the second doubles, the third vector<int> Accuracy, the fourth vector<double> Leash, the fifth vector<double> LeashVol, the sixth vector<vector<int>> FPi[j][i], and the seventh vector<vector<int>> TPi[j][i]
 void AgentParametersOutput (vector<Agent>& Market, int NumberOfAgents, int NumberOfStocks, string OutputName) {
-    string RootName = Machine; RootName+=OutputName;
-    ofstream outputParameters(RootName.c_str(), ofstream::app);
+    ofstream outputParameters(cli::args::output_dir / OutputName, ofstream::app);
+
     for (int i=0; i<NumberOfAgents ; i++) {
         // int Future, History, TradingWindow, LiquidationFloor, Exploration, NEB, NEB1, NEBLossAversion, NEB3, NEB4, NEBPositivity, NEB6
         outputParameters << Market[i].Future << ", " << Market[i].History << ", " << Market[i].TradingWindow << ", " << Market[i].LiquidationFloor << ", " << Market[i].Exploration << ", " << Market[i].NEB << ", " << Market[i].NEBLossAversion << ", " << Market[i].NEBPositivity << endl;
@@ -1232,7 +1226,7 @@ void AgentParametersOutput (vector<Agent>& Market, int NumberOfAgents, int Numbe
 
 // Outputs the agent parameters of agents in a line
 void AgentParameters (vector<Agent>& Market, int NumberOfAgents, int NumberOfAgentsFull, int NumberOfStocks, int Time) {
-    ofstream outputParameters(Machine+"AgentParameters.txt", ofstream::app);
+    ofstream outputParameters(cli::args::output_dir / "AgentParameters.txt", ofstream::app);
     vector<int> J = Shuffle(NumberOfAgentsFull);
     outputParameters << "I=" << NumberOfAgentsFull << ", J=" << NumberOfStocks << ", T=" << Time << endl;
     outputParameters << "***********************" << endl;
@@ -1267,11 +1261,8 @@ void AgentParameters (vector<Agent>& Market, int NumberOfAgents, int NumberOfAge
 // Outputs the RL variables (mostly vectors) of agents in a line, for a given stock j
 void AgentVariables (vector<Agent>& Market, int NumberOfAgents, int NumberOfAgentsFull, int NumberOfStocks, int Time, gsl_matrix* ReflexiveValues, int j) {
     vector<int> J = Shuffle(NumberOfAgentsFull);
-    string A = Machine+"AgentVariables_j";
-    string B=to_string(j);
-    string C= ".txt";
-    A+=B+C;
-    const char* Title=A.c_str();
+    auto Title = cli::args::output_dir / ("AgentVariables_j" + to_string(j) + ".txt");
+    
     ofstream outputParameters(Title, ofstream::app);
     outputParameters << "***********************" << "j=" << j << "***********************" << endl;
     outputParameters << "I=" << NumberOfAgentsFull << ", J=" << NumberOfStocks << ", T=" << Time << endl;
@@ -1649,9 +1640,9 @@ vector<gsl_matrix*> MarketSimulator(
     
     string VersatilityCondition="Off"; string TradingFrequencyCond="On"; int Percentile=10; string OutputName="OutputCondOff";
     // ofstream outputDebug("/Users/admin/Documents/GNT/SYMBA/Debug.txt", ofstream::app);
-    ofstream outputLog(Machine+"SimLog.txt", ofstream::app);
-    ofstream outputMetalog(Machine+"MetaorderLog.txt", ofstream::app);
-    ofstream outputClustered(Machine+"ClusteredBestWorstAgent.csv", ofstream::app);
+    ofstream outputLog(cli::args::output_dir / "SimLog.txt", ofstream::app);
+    ofstream outputMetalog(cli::args::output_dir / "MetaorderLog.txt", ofstream::app);
+    ofstream outputClustered(cli::args::output_dir / "ClusteredBestWorstAgent.csv", ofstream::app);
     if (Plot=="On") {
         outputLog << "**********SUM UP OF SIMULATION**********" << endl;
         outputLog << "SS1: Initialization at t=0" << endl;
@@ -2269,7 +2260,7 @@ vector<gsl_matrix*> MarketSimulator(
         //     if ((FullOrderBook[t][0].Bids[k].Price < FullOrderBook[t][0].Asks[k].Price) && (OBLevel==0)) {OBLevel=1; OBLevelSize=k-1;};
         //     CountOB=1;
         // }; // closes k loop
-        // //ofstream outputOBLevels(Machine+"OBlevels.log", ofstream::app); outputOBLevels << " At t=" << t << " OB size =" << OBLevelSize << endl;;
+        // //ofstream outputOBLevels(cli::args::output_dir / "OBlevels.log", ofstream::app); outputOBLevels << " At t=" << t << " OB size =" << OBLevelSize << endl;;
         // // Meta order injection
         // if ((t>500) && (t-LastMetaorder>=6*Month) && (MetaorderImpact>0)) {
         //     int Res=FullOrderBook[t][0].MetaorderInjection(Market, SharesOutstanding, MetaorderImpact, OBLevelSize);
@@ -2781,7 +2772,7 @@ vector<gsl_matrix*> MarketSimulator(
     
     
     // Output // XYZ
-    ofstream outputMain(Machine+"MAIN.xls", ofstream::app);
+    ofstream outputMain(cli::args::output_dir / "MAIN.xls", ofstream::app);
     outputMain << "Market($)" << '\t' << "True($)" << '\t' << "Bid($)" << '\t' << "Ask($)" << '\t' << "Return" << '\t' << "Spread(%)" << '\t' << "Volume(bsp)" << '\t' << "Banruptcy(%)" << '\t' << "LogReturns" << '\t' << "AbsLogReturns" << '\t' << "Volumes(bsp)" << '\t' << "MarketPerfYTD(%)" << endl;
     PlotGSLMatrix(MarketBidAskTrue2, "MAIN.xls", 1); // Contains info for all j stocks: market, average bids, average asks, top bids, top asks, True, daily returns pct, spread pct, volume bsp
     PlotGSLMatrix(MAINDistribution, "MAINDistribution.xls", 1);
@@ -2795,12 +2786,12 @@ vector<gsl_matrix*> MarketSimulator(
     //PlotGSLMatrix(MostSuccessful, "MostSuccessful.xls", 1);
     //PlotGSLMatrix(LessSuccessful, "LessSuccessful.xls", 1);
     
-    ofstream outputSystemic(Machine+"SystemicRisk.xls", ofstream::app);
+    ofstream outputSystemic(cli::args::output_dir / "SystemicRisk.xls", ofstream::app);
     outputSystemic << "Market($)" << '\t' << "Biased/Pt(%)" << '\t' << "True/Pt(%)" << '\t' << "FormalSpread(%)" << '\t' << "Return(%)" << '\t' << "Volume(bsp)" << '\t' << "Banruptcy(%)" << '\t' << "MarketPerfYTD(%)" << '\t' << "w-Volatility" << '\t' << "m-Volatility" << '\t' << "6m-Volatility" << '\t' << "P[t-w,t]/P[t-2w,t-w](%)" << '\t' << "Crash" << '\t' << "TrendCounter" << '\t' << "Hawkes" << endl;
     PlotGSLMatrix(SystemicRisk, "SystemicRisk.xls", 1); // Contains info for all j stocks: market, average bids, average asks, top bids, top asks, True, daily returns pct, spread pct, volume bsp
     outputSystemic.close();
     
-    ofstream outputSystemicDistribution(Machine+"SystemicRiskDistribution.xls", ofstream::app);
+    ofstream outputSystemicDistribution(cli::args::output_dir / "SystemicRiskDistribution.xls", ofstream::app);
     outputSystemicDistribution<< "Market($)" << '\t' << " " << '\t' << "Biased/Pt(%)" << '\t' << " " << '\t' << "True/Pt(%)" << '\t' << " " << '\t' << "FormalSpread(%)" << '\t' << " " << '\t' << "Return(%)" << '\t' << " " << '\t' << "Volume(bsp)" << '\t' << " " << '\t' << "Banruptcy(%)" << '\t' << " " << '\t' << "MarketPerfYTD(%)" << '\t' << " " << '\t' << "w-Volatility" << '\t' << " " << '\t' << "m-Volatility" << '\t' << " " << '\t' << "6m-Volatility" << '\t' << " " << '\t' << "P[t-w,t]/P[t-2w,t-w](%)" << '\t' << " " << '\t' << "Crash" << '\t' << " " << '\t' << "TrendCounter" << '\t' << " " << '\t' << "Hawkes" << endl;
     PlotGSLMatrix(GSLDistribution(SystemicRisk, 50), "SystemicRiskDistribution.xls", 1);
     outputSystemicDistribution.close();
@@ -2809,13 +2800,13 @@ vector<gsl_matrix*> MarketSimulator(
     
     //MetaorderImpactResults
     //We want to see at a given time t where a large order is sent (say once per year for each simulation) the metaorder impact on prices i1(t)=sigma_prices[t->t+tau]/sigma_prices[t-tau->t] (and likewise i2(t) on volumes) as a function of the metaorder size j(t)=Q_order(t)/Q_total(t), sigma being the standard deviation (of prices or volumes) over an interval of size tau, and Q being the stock quantity. For each of the S=20 simulation runs, we record and output the last 5 such tuples (j, i1(tau=w), i1(tau=2w), i1(tau=m), i1(tau=3m), i1(tau=6m), i2(tau=w), i2(tau=2w), i2(tau=m), i2(tau=3m), i2(tau=6m)), disregarding the first 5 because of being not yet learned by the agents. We do 4 such S=20 simulation runs for values of j=5%, 10%, 25%, 50%. The metaorder is sent during each run once every year by a random (yet non-bankrupt) agent whose stock holding is suddenly increased to these values (5%, 10%, 25%, 50%) of the total share outstanding at time t and then revert back to its value at time t+1.
-    ofstream outputMetaorderImpactResults(Machine+"MetaorderImpact_size" + to_string(MetaorderImpact) + "pct.xls", ofstream::app);
+    ofstream outputMetaorderImpactResults(cli::args::output_dir / ("MetaorderImpact_size" + to_string(MetaorderImpact) + "pct.xls"), ofstream::app);
     outputMetaorderImpactResults<< "Q/Qtot(%)" << '\t' << "Psig(t,t+w)/Psig(t-w,t)(%)" << '\t' << "Psig(t,t+2w)/Psig(t-2w,t)(%)" << '\t' << "Psig(t,t+3w)/Psig(t-3w,t)(%)" << '\t' << "Psig(t,t+4w)/Psig(t-4w,t)(%)" << '\t' << "Psig(t,t+5w)/Psig(t-5w,t)(%)" << '\t' << "Psig(t,t+6w)/Psig(t-6w,t)(%)" << '\t' << "Psig(t,t+7w)/Psig(t-7w,t)(%)" << '\t' << "Vsig(t,t+w)/Vsig(t-w,t)(%)" << '\t' << "Vsig(t,t+2w)/Vsig(t-2w,t)(%)" << '\t' << "Vsig(t,t+3w)/Vsig(t-3w,t)(%)" << '\t' << "Vsig(t,t+4w)/Vsig(t-4w,t)(%)" << '\t' << "Vsig(t,t+5w)/Vsig(t-5w,t)(%)" << '\t' << "Vsig(t,t+6w)/Vsig(t-6w,t)(%)" << '\t' << "Vsig(t,t+7w)/Vsig(t-7w,t)(%)" << '\t' << "t" << endl;
     PlotGSLMatrix(MetaorderImpactResults, "MetaorderImpact_size" + to_string(MetaorderImpact) + "pct.xls", 1);
     outputMetaorderImpactResults.close();
     
     
-    ofstream outputSuccessful(Machine+"MostLessSuccessfulParameters.xls", ofstream::app);
+    ofstream outputSuccessful(cli::args::output_dir / "MostLessSuccessfulParameters.xls", ofstream::app);
     outputSuccessful<< "Future" << '\t' << "Reflexivity(%)" << '\t' << "TradingWindow" << '\t' << "Gesture" << '\t' << "History" << '\t' << "NEBLearningRate" << '\t' << "NEB" << endl;
     PlotGSLMatrix(MostSuccessfulParameters, "MostLessSuccessfulParameters.xls", 1);
     PlotGSLMatrix(LessSuccessfulParameters, "MostLessSuccessfulParameters.xls", 1);
@@ -2829,11 +2820,11 @@ vector<gsl_matrix*> MarketSimulator(
     //PlotGSLMatrix(LessSuccessfulParametersDistributions, "LessSuccessfulParametersDistributions.xls", 1);
     PlotGSLMatrix(SortedNAV, "Zipf&Distribution.xls", 1);
     PlotGSLMatrix(ZipfDistribution, "Zipf&Distribution.xls", 1);
-    ofstream outputMoments(Machine+"Moments.xls", ofstream::app);
+    ofstream outputMoments(cli::args::output_dir / "Moments.xls", ofstream::app);
     outputMoments << "Log-return" << '\t' << "AC-1w Log-return" << '\t' << "AC-2w Log-return" << '\t' << "AC-m Log-return" << '\t' << "AC-3m Log-return" << '\t' << "AC-6m Log-return" << '\t' << "AC-y Log-return" << '\t' << "Abs-log-return" << '\t' << "AC-1w Abs-log-return" << '\t' << "AC-2w Abs-log-return" << '\t' << "AC-m Abs-log-return" << '\t' << "AC-3m Abs-log-return" << '\t' << "AC-6m Abs-log-return" << '\t' << "AC-y Abs-log-return" << '\t' << "w-Volatility" << '\t' << "AC-w w-Volatility" << '\t' << "2w-Volatility" << '\t' << "AC-2w 2w-Volatility" << '\t' << "m-Volatility" << '\t' << "AC-m m-Volatility" << '\t' << "3m-Volatility" << '\t' << "AC-3m 3m-Volatility" << '\t' << "6m-Volatility" << '\t' << "AC-6m 6m-Volatility" << '\t' << "y-Volatility" << '\t' << "AC-y y-Volatility" << '\t' << "Volumes(bsp)" << '\t' << "AC-1w Volume" << '\t' << "AC-2w Volume" << '\t' << "AC-m Volume" << '\t' << "AC-3m Volume" << '\t' << "AC-6m Volume" << '\t' << "AC-y Volume" << '\t' << "AC-3w Log-return" << '\t' << "b1AC-1w Log-return" << '\t' << "b2AC-1w Log-return" << '\t' << "b3AC-1w Log-return" << '\t' << "b4AC-1w Log-return" << '\t' << "bwAC-1w Log-return" << '\t' << "b2AC-2w Log-return" << '\t' << "b4AC-2w Log-return" << '\t' << "b6AC-2w Log-return" << '\t' << "b8AC-2w Log-return" << '\t' << "b2wAC-2w Log-return" << '\t' << "b3AC-3w Log-return" << '\t' << "b6AC-3w Log-return" << '\t' << "b9AC-3w Log-return" << '\t' << "b12AC-3w Log-return" << '\t' << "b3wAC-3w Log-return" << '\t' << "b4AC-m Log-return" << '\t' << "b8AC-m Log-return" << '\t' << "b12AC-m Log-return" << '\t' << "b16AC-m Log-return" << '\t' << "bmAC-m Log-return" << endl;
     
     PlotGSLMatrix(Moments2, "Moments.xls", 1);
-    ofstream outputMomentsDistribution(Machine+"MomentsDistribution.xls", ofstream::app);
+    ofstream outputMomentsDistribution(cli::args::output_dir / "MomentsDistribution.xls", ofstream::app);
     outputMomentsDistribution << "Log-return" << '\t' << " " << '\t' << "AC-1w Log-return" << '\t' << " " << '\t' << "AC-2w Log-return" << '\t' << " " << '\t' << "AC-m Log-return" << '\t' << " " << '\t' << "AC-3m Log-return" << '\t' << " " << '\t' << "AC-6m Log-return" << '\t' << " " << '\t' << "AC-y Log-return" << '\t' << " " << '\t' << "Abs-log-return" << '\t' << " " << '\t' << "AC-1w Abs-log-return" << '\t' << " " << '\t' << "AC-2w Abs-log-return" << '\t' << " " << '\t' << "AC-m Abs-log-return" << '\t' << " " << '\t' << "AC-3m Abs-log-return" << '\t' << " " << '\t' << "AC-6m Abs-log-return" << '\t' << " " << '\t' << "AC-y Abs-log-return" << '\t' << " " << '\t' << "w-Volatility" << '\t' << " " << '\t' << "AC-w w-Volatility" << '\t' << " " << '\t' << "2w-Volatility" << '\t' << " " << '\t' << "AC-2w 2w-Volatility" << '\t' << " " << '\t' << "m-Volatility" << '\t' << " " << '\t' << "AC-m m-Volatility" << '\t' << " " << '\t' << "3m-Volatility" << '\t' << " " << '\t' << "AC-3m 3m-Volatility" << '\t' << " " << '\t' << "6m-Volatility" << '\t' << " " << '\t' << "AC-6m 6m-Volatility" << '\t' << " " << '\t' << "y-Volatility" << '\t' << " " << '\t' << "AC-y y-Volatility" << '\t' << " " << '\t' << "Volumes(bsp)" << '\t' << " " << '\t' << "AC-1w Volume" << '\t' << " " << '\t' << "AC-2w Volume" << '\t' << " " << '\t' << "AC-m Volume" << '\t' << " " << '\t' << "AC-3m Volume" << '\t' << " " << '\t' << "AC-6m Volume" << '\t' << " " << '\t' << "AC-y Volume" << '\t' << " " << '\t' << "AC-3w Log-return" << '\t' << " " << '\t' << "b1AC-1w Log-return" << '\t' << " " << '\t' << "b2AC-1w Log-return" << '\t' << " " << '\t' << "b3AC-1w Log-return" << '\t' << " " << '\t' << "b4AC-1w Log-return" << '\t' << " " << '\t' << "bwAC-1w Log-return" << '\t' << " " << '\t' << "b2AC-2w Log-return" << '\t' << " " << '\t' << "b4AC-2w Log-return" << '\t' << " " << '\t' << "b6AC-2w Log-return" << '\t' << " " << '\t' << "b8AC-2w Log-return" << '\t' << " " << '\t' << "b2wAC-2w Log-return" << '\t' << " " << '\t' << "b3AC-3w Log-return" << '\t' << " " << '\t' << "b6AC-3w Log-return" << '\t' << " " << '\t' << "b9AC-3w Log-return" << '\t' << " " << '\t' << "b12AC-3w Log-return" << '\t' << " " << '\t' << "b3wAC-3w Log-return" << '\t' << " " << '\t' << "b4AC-m Log-return" << '\t' << " " << '\t' << "b8AC-m Log-return" << '\t' << " " << '\t' << "b12AC-m Log-return" << '\t' << " " << '\t' << "b16AC-m Log-return" << '\t' << " " << '\t' << "bmAC-m Log-return" << endl;
     PlotGSLMatrix(MomentsDistribution, "MomentsDistribution.xls", 1);
     //PlotGSLMatrix(Pareto, "Pareto.xls", 1);
@@ -2982,7 +2973,7 @@ void JointDistributions (vector<vector<gsl_matrix*>> MultiSim, int m, int Precis
     gsl_matrix* JointDistributions = GSLDistribution(Res, Precision);
     //string A = "JointDistributions_m"; string B = to_string(m); string C = ".xls"; A+=B+C;
     string A = "JointDistributions.xls";
-    ofstream outputJointDistribution(Machine+"JointDistributions.xls", ofstream::app);
+    ofstream outputJointDistribution(cli::args::output_dir / "JointDistributions.xls", ofstream::app);
     if (m==0) {
         outputJointDistribution<< "Moments" << endl;
         outputJointDistribution << "Log-return" << '\t' << " " << '\t' << "AC-1w Log-return" << '\t' << " " << '\t' << "AC-2w Log-return" << '\t' << " " << '\t' << "AC-m Log-return" << '\t' << " " << '\t' << "AC-3m Log-return" << '\t' << " " << '\t' << "AC-6m Log-return" << '\t' << " " << '\t' << "AC-y Log-return" << '\t' << " " << '\t' << "Abs-log-return" << '\t' << " " << '\t' << "AC-1w Abs-log-return" << '\t' << " " << '\t' << "AC-2w Abs-log-return" << '\t' << " " << '\t' << "AC-m Abs-log-return" << '\t' << " " << '\t' << "AC-3m Abs-log-return" << '\t' << " " << '\t' << "AC-6m Abs-log-return" << '\t' << " " << '\t' << "AC-y Abs-log-return" << '\t' << " " << '\t' << "w-Volatility" << '\t' << " " << '\t' << "AC-w w-Volatility" << '\t' << " " << '\t' << "2w-Volatility" << '\t' << " " << '\t' << "AC-2w 2w-Volatility" << '\t' << " " << '\t' << "m-Volatility" << '\t' << " " << '\t' << "AC-m m-Volatility" << '\t' << " " << '\t' << "3m-Volatility" << '\t' << " " << '\t' << "AC-3m 3m-Volatility" << '\t' << " " << '\t' << "6m-Volatility" << '\t' << " " << '\t' << "AC-6m 6m-Volatility" << '\t' << " " << '\t' << "y-Volatility" << '\t' << " " << '\t' << "AC-y y-Volatility" << '\t' << " " << '\t' << "Volumes(bsp)" << '\t' << " " << '\t' << "AC-1w Volume" << '\t' << " " << '\t' << "AC-2w Volume" << '\t' << " " << '\t' << "AC-m Volume" << '\t' << " " << '\t' << "AC-3m Volume" << '\t' << " " << '\t' << "AC-6m Volume" << '\t' << " " << '\t' << "AC-y Volume" << '\t' << " " << '\t' << "AC-3w Log-return" << '\t' << " " << '\t' << "b1AC-1w Log-return" << '\t' << " " << '\t' << "b2AC-1w Log-return" << '\t' << " " << '\t' << "b3AC-1w Log-return" << '\t' << " " << '\t' << "b4AC-1w Log-return" << '\t' << " " << '\t' << "bwAC-1w Log-return" << '\t' << " " << '\t' << "b2AC-2w Log-return" << '\t' << " " << '\t' << "b4AC-2w Log-return" << '\t' << " " << '\t' << "b6AC-2w Log-return" << '\t' << " " << '\t' << "b8AC-2w Log-return" << '\t' << " " << '\t' << "b2wAC-2w Log-return" << '\t' << " " << '\t' << "b3AC-3w Log-return" << '\t' << " " << '\t' << "b6AC-3w Log-return" << '\t' << " " << '\t' << "b9AC-3w Log-return" << '\t' << " " << '\t' << "b12AC-3w Log-return" << '\t' << " " << '\t' << "b3wAC-3w Log-return" << '\t' << " " << '\t' << "b4AC-m Log-return" << '\t' << " " << '\t' << "b8AC-m Log-return" << '\t' << " " << '\t' << "b12AC-m Log-return" << '\t' << " " << '\t' << "b16AC-m Log-return" << '\t' << " " << '\t' << "bmAC-m Log-return" << endl;
@@ -3017,7 +3008,7 @@ void JointDistributions (vector<vector<gsl_matrix*>> MultiSim, int m, int Precis
 /// Takes a string name of the csv file as input (N2 can be something like "AAPL.csv") and returns a vector<double> for a matrix of dimension MxN at batch m (in a file of stacked matrices). For Input() to work we must 1- pre-specify the dimensions of the input, 2- the input must be converted from xls to csv (by changing the name file, not via LibreOffice)
 gsl_matrix* InputOLD (int M, int N, string S1, int m) {
     gsl_matrix* Res = gsl_matrix_alloc (M, N);
-    string S2=Machine; S2+=S1; ifstream FileInput (S2);
+    ifstream FileInput(cli::args::output_dir / S1);
     string Line;
     int j = -1 + m*(N+3);
     while (getline (FileInput, Line)) {
@@ -3043,7 +3034,7 @@ gsl_matrix* InputOLD (int M, int N, string S1, int m) {
 /// Takes a string name of the csv file as input (N2 can be something like "AAPL.csv") and returns a vector<double> for a matrix of dimension MxN at batch m (in a file of stacked matrices). For Input() to work we must 1- pre-specify the dimensions of the input, 2- the input must be converted from xls to csv (by changing the name file, not via LibreOffice)
 gsl_matrix* Input (int M, int N, string S1, int m, int Letter, int Opt, int Period) {
     gsl_matrix* Res = gsl_matrix_alloc (M, N);
-    string S2=Machine; S2+=S1; ifstream FileInput (S2);
+    ifstream FileInput(cli::args::output_dir / S1);
     string Line;
     //for (int j=m*(N+2); j<m*(N+2)+Period; j++) {
     //for (int j=m*(N+2)+N-Period; j<m*(N+2)+N; j++) {
@@ -3086,7 +3077,7 @@ gsl_matrix* Input (int M, int N, string S1, int m, int Letter, int Opt, int Peri
 /// Takes a string name of the csv file as input (N2 can be something like "AAPL.csv") and returns a vector<double> for a matrix of dimension MxN at batch m (in a file of stacked matrices). For Input() to work we must 1- pre-specify the dimensions of the input, 2- the input must be converted from xls to csv (by changing the name file, not via LibreOffice)
 gsl_matrix* CSVInput (int M, int N, string S1, int Opt) {
     gsl_matrix* Res = gsl_matrix_alloc (M, N);
-    string S2=Machine; S2+=S1; ifstream FileInput (S2);
+    ifstream FileInput(cli::args::output_dir / S1);
     string Line;
     for (int j=0; j<=N; j++) {
         getline (FileInput, Line);
@@ -3472,15 +3463,13 @@ void CheckTrueGenerationAll () {
 
 
 // MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM - MAIN PROGRAM
-// SPECIFY "string Machine" JUSTE BELOW "using namespace std" ACCORDING TO LOCAL PATHWAY
+// SPECIFY CLI ARGUMENT "--output-dir" ACCORDING TO LOCAL PATHWAY
 // DOWNLOAD DATA ON THE GOOGLE DRIVE: https://drive.google.com/open?id=1J0ZHXnf_2wg80QyUyQwMN2YaUU9U45Xl
 // DOWNLOAD GNU SCIENTIFIC LIBRARY GSL-v2.5 at https://www.gnu.org/software/gsl/
 // SOME MEMORY ISSUES MAY REQUIRE REBOOT AND RESUME DURING COMPUTATIONS (work in progress)
 int main (int argc, char** argv) {
     cli::init(argc, argv);
     using namespace cli;
-
-    Machine = args::output_dir.string() + "/";
 
     HPMarketSimulatorCli();
 

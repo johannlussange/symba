@@ -2,11 +2,13 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <iostream>
 #include <cmath>
 #include "global.hpp"
 #include "order_book.hpp"
 #include "agent.hpp"
 #include "utility.hpp"
+#include "cli.hpp"
 
 using namespace std;
 
@@ -59,7 +61,7 @@ vector<double> StockOrderBook::Clear(vector<Agent>& Market, int t, int j, string
     //double AverageBids=0;
     //double AverageAsks=0;
     //ofstream outputTest("/Users/admin/Documents/GNT/SYMBA/ZULU.txt", ofstream::app); int NumberOfAgents=30; int NumberOfStocks=2;
-    ofstream outputLog(Machine+"SimLog.txt", ofstream::app);
+    ofstream outputLog(cli::args::output_dir / "SimLog.txt", ofstream::app);
     if (Plot=="On") {outputLog << endl << endl << "***************CLEAR() AT TIME t=" << t << "**************" << endl;};
     for (int k=-1; k<int(min(Bids.size(), Asks.size())); k++) {
         if (int(min(Bids.size(), Asks.size()))==0) {/*outputLog << "Function Clear() not activated" << endl;*/ break;}
@@ -140,7 +142,7 @@ vector<double> StockOrderBook::Clear(vector<Agent>& Market, int t, int j, string
     Res.push_back(TempClearingPriceLast); // Market price given by the latest (lowest) clearing price
     Res.push_back(TotalStockQuantityTradedLast); // Total stock quantity that was traded at this time step t
     Res.push_back(CountLast); // Indicator of emptyness of OB
-    //ofstream outputOBLevels(Machine+"OBlevels.csv", ofstream::app);
+    //ofstream outputOBLevels(cli::args::output_dir / "OBlevels.csv", ofstream::app);
     //outputOBLevels << CountLast << endl;
     //Res.push_back(AverageBids); // Average of all Bids
     //Res.push_back(AverageAsks); // Average of all Asks
@@ -153,7 +155,7 @@ vector<double> StockOrderBook::Clear(vector<Agent>& Market, int t, int j, string
 
 // Selecting a random level in the OB and shifting it to a metaorder (if at least one business order in the OB)
 int StockOrderBook::MetaorderInjection(vector<Agent> &Market, int SharesOutstanding, int MetaorderImpact, int OBLevelSize) {
-    ofstream outputMetalog(Machine+"MetaorderLog.txt", ofstream::app);
+    ofstream outputMetalog(cli::args::output_dir / "MetaorderLog.txt", ofstream::app);
     int Res=-1;
     if (OBLevelSize>-1) {
         vector<int> J = Shuffle(OBLevelSize+1);

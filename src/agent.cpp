@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -6,6 +7,7 @@
 #include "agent.hpp"
 #include "global.hpp"
 #include "utility.hpp"
+#include "cli.hpp"
 
 using namespace std;
 
@@ -79,7 +81,7 @@ void Agent::RL(
     // F(a): Tool={0,1,2}, Lag={0,1,2}, Weight={0,1,2}
     // T(s): Mu={0,1,2,3,4,5,6}, Sig={0,1,2}, RFA={0,1,2}, RBA={0,1,2}, Liquid={0,1,2,3}
     // T(a): Quant={0,1,2,3,4,5,6}, Pinch={0,1,2}
-    ofstream outputLog(Machine+"SimLog.txt", ofstream::app);
+    ofstream outputLog(cli::args::output_dir / "SimLog.txt", ofstream::app);
     // ofstream outputDebug("/Users/admin/Documents/GNT/SYMBA/Debug.txt", ofstream::app);
     double Seed=1000*t*(RFA+RBA+AgentName);
     //double Seed=1000*t*gsl_matrix_get(ReflexiveValues, j, t);
