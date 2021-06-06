@@ -3203,7 +3203,7 @@ void HPMarketSimulatorCli() {
         cli::log0 << "\r" << info << "[";
         for (int i = 0; i < filled_pb_size; i++) cli::log0 << "=";
         for (int i = 0; i < empty_pb_size; i++) cli::log0 << " ";
-        cli::log0 << "]";
+        cli::log0 << "]" << flush;
     };
 
     for (int s = 0; s < n_rounds; s++) {
