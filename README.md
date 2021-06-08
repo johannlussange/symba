@@ -4,7 +4,7 @@ A market simulator built in C++.
 ## Building symba
 To build Symba you will need [CMake](https://cmake.org/) 3.17+ and any C++ compiler with support for C++11. This project recommends [Ninja](https://ninja-build.org/) as the CMake build system.
 
-This project requires libraries [GSL](https://www.gnu.org/software/gsl/) and [CLI11](https://github.com/CLIUtils/CLI11). They are available in both [vcpkg](https://github.com/microsoft/vcpkg) and [Conan](https://conan.io/) package managers.
+This project requires libraries [GSL](https://www.gnu.org/software/gsl/) [CLI11](https://github.com/CLIUtils/CLI11), and [nlohmann-json](https://github.com/nlohmann/json). They are available in both [vcpkg](https://github.com/microsoft/vcpkg) and [Conan](https://conan.io/) package managers. See their documentation to know more on installing packages.
 
 <details><summary>Example: building on Windows with vcpkg</summary><p>
 
@@ -17,7 +17,7 @@ The following example builds Symba on Windows (cmd) using vcpkg and Ninja:
 
 2. Install GSL using vcpkg:
 ```
-"<path-to-vcpkg>/vcpkg" install gsl:x64-windows-static
+"<path-to-vcpkg>/vcpkg" install gsl:x64-windows-static cli11:x64-windows-static nlohmann-json:x64-windows-static
 ```
 
 3. Clone this project:
@@ -43,7 +43,6 @@ cmake --install build --config Release --prefix install
 The executable can then be found in the `install/bin` directory.
 
 </p></details>
-<br/>
 
 ## Running symba
 Symba has a command-line interface where you can specify the output directory. A basic example of running it would be:
